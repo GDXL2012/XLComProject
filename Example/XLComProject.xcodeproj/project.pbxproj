@@ -40,7 +40,7 @@
 		20A7AFA7D71390BCEB1B833E /* Pods-XLComProject_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XLComProject_Tests.debug.xcconfig"; path = "Target Support Files/Pods-XLComProject_Tests/Pods-XLComProject_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		2F8A84B1121B6AE9656A1DF2 /* Pods_XLComProject_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XLComProject_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3604D242E7B1C7F7FF1F0B30 /* Pods-XLComProject_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XLComProject_Tests.release.xcconfig"; path = "Target Support Files/Pods-XLComProject_Tests/Pods-XLComProject_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		5FADD742136AFE67BF1300E9 /* XLComProject.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = XLComProject.podspec; path = ../XLComProject.podspec; sourceTree = "<group>"; };
+		5FADD742136AFE67BF1300E9 /* XLComProject.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = XLComProject.podspec; path = ../XLComProject.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		6003F58A195388D20070C39A /* XLComProject_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XLComProject_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -62,11 +62,11 @@
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		A66ED9018B5EEC8410A8A655 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		A66ED9018B5EEC8410A8A655 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		BBEBFCD15A9C26FF797765A2 /* Pods-XLComProject_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XLComProject_Example.release.xcconfig"; path = "Target Support Files/Pods-XLComProject_Example/Pods-XLComProject_Example.release.xcconfig"; sourceTree = "<group>"; };
 		C06B0384A811C2FC22F8C7DC /* Pods_XLComProject_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XLComProject_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4DAC68DDC7FE623B7C9A07E /* Pods-XLComProject_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XLComProject_Example.debug.xcconfig"; path = "Target Support Files/Pods-XLComProject_Example/Pods-XLComProject_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		FC79D0E1296DA5B8AA333F88 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		FC79D0E1296DA5B8AA333F88 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,7 +103,6 @@
 				20A7AFA7D71390BCEB1B833E /* Pods-XLComProject_Tests.debug.xcconfig */,
 				3604D242E7B1C7F7FF1F0B30 /* Pods-XLComProject_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -246,7 +245,7 @@
 			attributes = {
 				CLASSPREFIX = XL;
 				LastUpgradeCheck = 0720;
-				ORGANIZATIONNAME = yangdawei;
+				ORGANIZATIONNAME = GDXL2012;
 				TargetAttributes = {
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
@@ -258,6 +257,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

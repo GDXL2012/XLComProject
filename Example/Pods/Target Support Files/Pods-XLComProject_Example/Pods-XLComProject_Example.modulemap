@@ -1,0 +1,6 @@
+framework module Pods_XLComProject_Example {
+  umbrella header "Pods-XLComProject_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

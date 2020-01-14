@@ -1,0 +1,6 @@
+framework module Pods_XLComProject_Tests {
+  umbrella header "Pods-XLComProject_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
