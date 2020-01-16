@@ -23,17 +23,17 @@ pod 'XLComProject'
 
 ## DESCRIPTION 【持续更新...】
 ### XLConfig 配置信息 
-##### - 适配配置 XLAdaptationConfig
+##### 适配配置 XLAdaptationConfig
 - UIModalPresentationStyle 控制模态弹出模式
 - UIStatusBarStyle 状态栏风格
 - backImageName 返回按钮图标
 - showBackTitle 返回按钮显示文字
-##### - 预定义颜色配置 XLColorConfig 
+##### 预定义颜色配置 XLColorConfig 
 - 主题颜色、导航栏颜色、背景色等
-##### - 通用配置 XLComConfig 
+##### 通用配置 XLComConfig 
 - 远端图片加载失败默认图片
 - 图片原图地址获取方法：图片预览等显示缩略图、原图
-##### - 字体配置 XLFontConfig
+##### 字体配置 XLFontConfig
 - 字体缩放等级、字体缩放倍数
 - 用于获取可变字体大小，应用支持字体大小设置时使用
 - 相关.h、.m文件【UIFont+XLCategory、XLMacroFont】
@@ -41,17 +41,17 @@ pod 'XLComProject'
 - 控件左右间距、内部间距、分割线、圆角等，方便页面统一
  
 ### XLMacro 宏定义
-##### - 常用宏 XLComMacro
+##### 常用宏 XLComMacro
 - 文件、路径、weakself、GCD等
-##### - 颜色宏 XLMacroColor
+##### 颜色宏 XLMacroColor
 - 对应 XLColorConfig 中预定义值
-##### - 字体宏 XLMacroFont 
+##### 字体宏 XLMacroFont 
 - 常用字体定义、可变字体
-##### - 控件间距宏 XLMacroLayout
+##### 控件间距宏 XLMacroLayout
 - 对应XLLayoutConfig 中预定义值
-##### - 屏幕适配常用宏 XLDeviceMacro
+##### 屏幕适配常用宏 XLDeviceMacro
 - 屏幕尺寸、分辨率、物理分辨率，状态栏、导航栏、标签栏高度【适配刘海屏】
-##### - 系统版本 XLSystemMacro
+##### 系统版本 XLSystemMacro
 - 系统版本判断
 
 ### Category 常用类添加类别添加工具方法
@@ -112,7 +112,7 @@ pod 'XLComProject'
 - XLBarButtonItem 导航栏按钮自定义
 - XLMoreMenuView 导航栏右上角更多菜单按钮
 
-## 控制器基类 - XLBase
+### 控制器基类 - XLBase
 ##### XLNavigationController.h
 - 封装了TabBar标签设置方法
 - 基于XLColorConfig.h中配置的导航栏风格设置
