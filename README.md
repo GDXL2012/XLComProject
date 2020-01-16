@@ -22,6 +22,10 @@ pod 'XLComProject'
 ```
 
 ## DESCRIPTION 【持续更新...】
+```
+库中方法90%以上为以往开发过程中使用到的方法，因精力有限，验证难免有不到位的地方，如你在使用过程中遇到任何问题，或发现有错漏之处，请联系我
+联系方式【微信：GDXL2012、QQ：346959318、邮箱：liyijun_1989@163.com】
+```
 ### 配置信息 XLConfig
 ##### 适配配置 XLAdaptationConfig
 - UIModalPresentationStyle 控制模态弹出模式
