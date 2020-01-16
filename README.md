@@ -103,7 +103,7 @@ pod 'XLComProject'
 ##### 控制器工具类 XLViewControllerTools
 - 获取根控制器、获取最上层控制器、获取最上层模态控制器
 
-### 部分系统空间封装 XLWidget
+### 部分系统控件封装 XLWidget
 - XLCollectionReusableView：预设分组标题
 - XLTableReusableView：预设分组标题
 - XLRefreshTableView 基于[MJRefresh](https://github.com/CoderMJLee/MJRefresh)封装的下拉刷新/上拉加载更多列表，重载/替换了部分方法，支持动态设置上拉/下拉状态
