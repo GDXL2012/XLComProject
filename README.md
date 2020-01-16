@@ -22,7 +22,7 @@ pod 'XLComProject'
 ```
 
 ## DESCRIPTION 【持续更新...】
-### XLConfig 配置信息 
+### 配置信息 XLConfig
 ##### 适配配置 XLAdaptationConfig
 - UIModalPresentationStyle 控制模态弹出模式
 - UIStatusBarStyle 状态栏风格
@@ -40,7 +40,7 @@ pod 'XLComProject'
 ##### - 通用间距配置 XLLayoutConfig
 - 控件左右间距、内部间距、分割线、圆角等，方便页面统一
  
-### XLMacro 宏定义
+### 宏定义 XLMacro
 ##### 常用宏 XLComMacro
 - 文件、路径、weakself、GCD等
 ##### 颜色宏 XLMacroColor
@@ -54,7 +54,7 @@ pod 'XLComProject'
 ##### 系统版本 XLSystemMacro
 - 系统版本判断
 
-### Category 常用类添加类别添加工具方法
+### 常用类添加类别添加工具方法 XLCategory 
 - 数组、NSData、JSON、NSString转换，判空：NSArray+XLCategory
 - 字典、NSData、JSON、NSString转换，判空：NSDictionary+XLCategory
 - NSError快速创建：NSError+XLCategory
