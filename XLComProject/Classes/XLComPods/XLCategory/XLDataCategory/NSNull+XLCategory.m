@@ -15,10 +15,10 @@
  */
 -(id)forwardingTargetForSelector:(SEL)aSelector{
 #ifdef Debug
+    return self;
+#else
     NSString *targetString = @"";
     return targetString;
-#else
-    return self;
 #endif
     
 }

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface XLWeakProxy : NSObject
+@interface XLWeakProxy : NSProxy
 
 +(instancetype)proxyWithTarget:(id)target;
 -(instancetype)initWithTarget:(id)target;

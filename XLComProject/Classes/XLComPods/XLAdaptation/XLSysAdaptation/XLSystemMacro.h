@@ -21,6 +21,7 @@
 #define XLiOS12  ((XLSysVersion >= 12.0) && (XLSysVersion < 13.0))
 #define XLiOS13  ((XLSysVersion >= 13.0) && (XLSysVersion < 14.0))
 #define XLiOS14  ((XLSysVersion >= 14.0) && (XLSysVersion < 15.0))
+#define XLiOS(a) ((XLSysVersion >= a)    && (XLSysVersion < a + 1))
 
 #define XLAvailableiOS13    @available(iOS 13.0, *) // iOS 13
 #define XLAvailableiOS12    @available(iOS 12.0, *) // iOS 12
@@ -35,5 +36,6 @@
 #define XLAboveiOS12        (XLSysVersion >= 12.0)   // iOS12以上
 #define XLAboveiOS13        (XLSysVersion >= 13.0)   // iOS13以上
 #define XLAboveiOS14        (XLSysVersion >= 14.0)   // iOS14以上
+#define XLAboveiOS(a)       (XLSysVersion >= a)   // iOS a以上
 
 #endif /* XLSystemMacro_h */
