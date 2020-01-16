@@ -85,7 +85,7 @@ pod 'XLComProject'
 
 ### 工具类 XLTools
 ##### 应用信息 XLAppInfoTools
-- 应用名车、短版本号、版本号
+- 应用名、短版本号、版本号
 ##### 应用工具 XLApplicationTools
 - 第三方应用跳转或打开链接：openURLScheme:
 - 系统拨号：makePhoneCall:
