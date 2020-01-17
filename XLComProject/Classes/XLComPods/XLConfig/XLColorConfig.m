@@ -57,7 +57,7 @@
 /// 其他信息颜色：时间等 默认"#999999"
 @property (nonatomic, strong) UIColor *xlOtherColorDark;
 
-@property (nonatomic, copy) NSMutableDictionary *xlExtColor;
+@property (nonatomic, strong) NSMutableDictionary *xlExtColor;
 #endif
 @end
 @implementation XLColorConfig

@@ -23,9 +23,9 @@ extern NSString *const XLCollectionReusableFooterID;
 
 @property (nonatomic, assign) XLCollectionReusableType reusableType;
 
-@property (nonatomic, copy) NSString            *xlTitle;
-@property (nonatomic, copy) NSAttributedString  *xlAttributedTitle;
-@property (nonatomic, copy) UIFont              *xlFont;
+@property (nonatomic, copy)   NSString            *xlTitle;
+@property (nonatomic, strong) NSAttributedString  *xlAttributedTitle;
+@property (nonatomic, copy)   UIFont              *xlFont;
 
 @property (nonatomic, readonly) UILabel         *xlLabel; // 标题
 

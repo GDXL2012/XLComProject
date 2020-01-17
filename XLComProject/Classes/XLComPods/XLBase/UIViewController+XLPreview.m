@@ -18,7 +18,7 @@
 
 /// 管理类：
 @interface XLImagePreviewManager : NSObject <UICollectionViewDelegate, UICollectionViewDataSource, UIScrollViewDelegate>
-@property (nonatomic, copy) NSMutableArray      *previewInfoArray; // 预览信息列表
+@property (nonatomic, strong) NSMutableArray      *previewInfoArray; // 预览信息列表
 
 /// 图片预览开始及结束时的黑色背景，开始是为了仿微信效果，后来发现这个暂时看必须添加，
 /// 否则在预览过程中设置的图层层级及zPosition会导致页面显示错乱

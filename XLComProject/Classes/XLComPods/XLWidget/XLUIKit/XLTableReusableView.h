@@ -19,9 +19,9 @@ extern NSString *const XLTableReusableHeadID;
 extern NSString *const XLTableReusableFooterID;
 @interface XLTableReusableView : UITableViewHeaderFooterView
 
-@property (nonatomic, copy) NSString            *xlTitle;    // 标题
-@property (nonatomic, copy) NSAttributedString  *xlAttributedTitle;
-@property (nonatomic, copy) UIFont              *xlFont;
+@property (nonatomic, copy)     NSString            *xlTitle;    // 标题
+@property (nonatomic, strong)   NSAttributedString  *xlAttributedTitle;
+@property (nonatomic, copy)     UIFont              *xlFont;
 
 @property (nonatomic, readonly) UILabel         *xlLabel;
 
