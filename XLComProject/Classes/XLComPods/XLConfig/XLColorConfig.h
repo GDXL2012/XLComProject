@@ -21,7 +21,7 @@
 @property (nonatomic, strong) UIColor *xlBarTitleColor;
 -(void)setXlBarTitleColor:(UIColor *)xlBarTitleColor dark:(UIColor *)darkColor;
 
-/// 导航栏颜色：xlBarTitleColor
+/// 导航栏标题颜色：xlBarTitleColor
 @property (nonatomic, strong) UIColor *xlBarItemColor;
 -(void)setXlBarItemColor:(UIColor *)xlBarItemColor dark:(UIColor *)darkColor;
 

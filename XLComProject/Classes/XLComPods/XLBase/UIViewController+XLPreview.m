@@ -18,11 +18,12 @@
 
 /// 管理类：
 @interface XLImagePreviewManager : NSObject <UICollectionViewDelegate, UICollectionViewDataSource, UIScrollViewDelegate>
-@property (nonatomic, strong) NSMutableArray      *previewInfoArray; // 预览信息列表
+@property (nonatomic, strong) NSMutableArray    *previewInfoArray; // 预览信息列表
 
-/// 图片预览开始及结束时的黑色背景，开始是为了仿微信效果，后来发现这个暂时看必须添加，
-/// 否则在预览过程中设置的图层层级及zPosition会导致页面显示错乱
+/// 图片预览开始及结束时的黑色背景，仿微信效果
 @property (nonatomic, strong) UIView            *backgroundView;
+/// 动画过渡view
+@property (nonatomic, strong) UIImageView       *transitionImgView;
 @property (nonatomic, strong) UICollectionView  *xlCollectionView;  /// 预览展示
 
 /// 可见区域View：用于图片预览销毁时判断动画执行，多张图片时有效，且为预览参数为ImageView类型
@@ -66,6 +67,9 @@ static XLImagePreviewManager *previewManager;
         
         _backgroundView = [[UIView alloc] initWithFrame:XLScreenBounds];
         _backgroundView.backgroundColor = [UIColor blackColor];
+        
+        _transitionImgView = [[UIImageView alloc] init];
+        _transitionImgView.backgroundColor = [UIColor blackColor];
         
         _layout = [[UICollectionViewFlowLayout alloc] init];
         _layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -240,76 +244,20 @@ static XLImagePreviewManager *previewManager;
     }
 }
 
-static const char XLLayerMasksKey       = '\0';
-static const char XLLayerZPositionKey   = '\0';
-/// 将图片发送到最前端:不同级View会出现遮挡问题，需要将preview分支的父类View图层调到最上层
-/// @param preview <#preview description#>
--(void)bringPreviewToFront:(UIView *)preview{
-    UIView *superView = preview.superview;
-    UIWindow *window = [UIApplication sharedApplication].delegate.window;
-    BOOL isVisibleView = NO;
-    while (superView && superView != window) {
-        /// 可见图层内需要设置图层不被遮挡
-        if (superView == self.visibleView) {
-            /// 当父类是visibleView后，则图层遮挡不再处理，只处理图层剪切
-            isVisibleView = YES;
-        }
-        if (!isVisibleView) {
-            CGFloat zPosition = superView.layer.zPosition;
-            objc_setAssociatedObject(superView, &XLLayerZPositionKey, @(zPosition), OBJC_ASSOCIATION_ASSIGN);
-            superView.layer.zPosition = 998;
-        }
-        
-        BOOL masks = superView.layer.masksToBounds;
-        objc_setAssociatedObject(superView, &XLLayerMasksKey, @(masks), OBJC_ASSOCIATION_ASSIGN);
-        superView.layer.masksToBounds = NO;
-        
-        superView = superView.superview;
-    }
-}
-
-/// 恢复图层层级
-/// @param preview <#preview description#>
--(void)resetPreviewZPosition:(UIView *)preview{
-    UIView *superView = preview.superview;
-    UIWindow *window = [UIApplication sharedApplication].delegate.window;
-    BOOL isVisibleView = NO;
-    while (superView && superView != window) {
-        /// 可见图层内需要设置图层不被遮挡
-        if (superView == self.visibleView) {
-            /// 当父类是visibleView后，则图层遮挡不再处理，只处理图层剪切
-            isVisibleView = YES;
-        }
-        if (!isVisibleView) {
-            superView.layer.zPosition = 0;
-            NSNumber *zPosition = objc_getAssociatedObject(superView, &XLLayerZPositionKey);
-            if (zPosition) {
-                superView.layer.zPosition = zPosition.floatValue;
-            }
-        }
-        
-        /// 图层分支树中，需要将图层剪切去除，否则会导致图片缩放过程中出现剪切
-        NSNumber *masks = objc_getAssociatedObject(superView, &XLLayerMasksKey);
-        if (masks) {
-            superView.layer.masksToBounds = masks.boolValue;
-        }
-        superView = superView.superview;
-    }
-}
-
 /// 显示预览开始动画
 /// @param view <#view description#>
 -(void)showAnimateInView:(UIView *)view{
     XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.selelctIndex];
-    UIView *originalView = info.originalPreviewInfo;
-    originalView.layer.zPosition = 1000;
-    [originalView.superview addSubview:self.backgroundView];
-    self.backgroundView.layer.zPosition = 999;
-    self.backgroundView.center = view.center;
-    [self bringPreviewToFront:originalView];
+    UIImageView *originalView = info.originalPreviewInfo;
+    
+    [view addSubview:self.backgroundView];
+    self.transitionImgView.image = originalView.image;
+    self.transitionImgView.frame = info.originalFrame;
+    [view addSubview:self.transitionImgView];
     [UIView animateWithDuration:0.2f animations:^{
         [self enlargeOriginalView:info inView:view];
     } completion:^(BOOL finished) {
+        [self.xlCollectionView.superview bringSubviewToFront:self.xlCollectionView];
         self.xlCollectionView.hidden = NO;
     }];
 }
@@ -325,6 +273,8 @@ static const char XLLayerZPositionKey   = '\0';
 -(void)removeBackgroundView{
     [self.backgroundView removeFromSuperview];
     self.backgroundView = nil;
+    [self.transitionImgView removeFromSuperview];
+    self.transitionImgView = nil;
 }
 
 /// 释放预览信息
@@ -334,20 +284,12 @@ static const char XLLayerZPositionKey   = '\0';
 }
 
 /// 图片恢复:恢复指定图片缩放状态
--(void)recoveryPreviewInfoAtIndex:(NSInteger)selectIndex{
-    XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:selectIndex];
-    UIView *originalView = info.originalPreviewInfo;
-    CGRect oldFrame = info.originalFrame;
-    CGPoint center = CGPointMake(oldFrame.origin.x + oldFrame.size.width / 2, oldFrame.origin.y + oldFrame.size.height / 2);
-    originalView.transform = CGAffineTransformIdentity;
-    originalView.layer.zPosition = 0;
-    originalView.center = center;
-    
-    [self resetPreviewZPosition:originalView];
+-(void)recoveryPreviewInfo{
+    self.transitionImgView.transform = CGAffineTransformIdentity;
 }
 
 /// 隐藏预览
-/// @param gesture <#gesture description#>
+/// @param gesture gesture description
 -(void)hiddenPreview:(UIGestureRecognizer *)gesture{
     if (self.previewItemType == XLPreviewItemImageView ||
         self.previewItemType == XLPreviewItemSDImageView) {
@@ -383,13 +325,11 @@ static const char XLLayerZPositionKey   = '\0';
 -(void)previewDisappearForInvisible{
     /// 1.设置预览图片
     XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.selelctIndex];
-    UIImageView *originalView = (UIImageView *)info.originalPreviewInfo;
     
     XLImagePreviewCell *cell = [self.xlCollectionView visibleCells].lastObject;
     UIImageView *previewView = cell.previewView.previewImageView;
     
-    UIImage *originalImage = originalView.image;
-    originalView.image = previewView.image;
+    self.transitionImgView.image = previewView.image;
     
     /// 2.销毁预览页面
     [self destoryPreviewCollectionView];
@@ -398,73 +338,10 @@ static const char XLLayerZPositionKey   = '\0';
     CGRect oldFrame = info.originalFrame;
     CGPoint center = CGPointMake(oldFrame.origin.x + oldFrame.size.width / 2, oldFrame.origin.y + oldFrame.size.height / 2);
     [UIView animateWithDuration:0.3f animations:^{
-        originalView.center = center;
-        originalView.transform = CGAffineTransformIdentity;
-    } completion:^(BOOL finished) {
-        originalView.image = originalImage;
-        [self removeBackgroundView];
-        originalView.layer.zPosition = 0;
-        [self releasePreviewInfo];
-        [self resetPreviewZPosition:originalView];
-    }];
-}
-
-/// 不可见预览图片消失：最终预览图片在View中不可见，预览图片回到选中的预览图片位置
-/// 方法废弃，如果有导航栏，且图片被导航栏部分遮挡等类似情况
-/// 图片预览消失时会出现图片将导航栏遮挡问题
--(void)previewDisappearForInvisible1 DEPRECATED_MSG_ATTRIBUTE("Please use [XLImagePreviewManager previewDisappearForInvisible]"){
-    XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.selelctIndex];
-    UIView *selectView = (UIImageView *)info.originalPreviewInfo;
-    CGRect oldFrame = info.originalFrame;
-    
-    /// 预览图片机制，可见cell只会有一个
-    XLImagePreviewCell *cell = [self.xlCollectionView visibleCells].lastObject;
-    UIImageView *previewView = cell.previewView.previewImageView;
-    /// 设置图片全部填充，否者图片会出现黑框等问题
-    previewView.contentMode = UIViewContentModeScaleAspectFill;
-    previewView.clipsToBounds = YES;
-    
-    UIView *superView = selectView.superview;
-    CGRect newRect = [previewView.superview convertRect:oldFrame fromView:superView];
-    CGSize imageSize = selectView.frame.size;
-    CGSize previewSize = previewView.frame.size;
-    /// 处理图片区域大小
-    if (previewSize.width / previewSize.height > imageSize.width / imageSize.height) {
-        /// 图片超宽
-        previewSize.width = previewSize.height * imageSize.width / imageSize.height;
-    } else {
-        /// 图片超高
-        previewSize.height = previewSize.width * imageSize.height / imageSize.width;
-    }
-    
-    /// 处理预览图片截取
-    if (previewSize.width / previewSize.height > oldFrame.size.width / oldFrame.size.height) {
-        /// 图片超宽
-        previewSize.width = previewSize.height * oldFrame.size.width / oldFrame.size.height;
-    } else {
-        /// 图片超高
-        previewSize.height = previewSize.width * oldFrame.size.height / oldFrame.size.width;
-    }
-    CGRect previewFrame = previewView.frame;
-    previewFrame.size = previewSize;
-    CGPoint previewCenter = previewView.center;
-    previewView.frame = previewFrame;
-    previewView.center = previewCenter;
-    
-    /// 点击图片中心位置
-    CGPoint newCenter = CGPointMake(newRect.origin.x + newRect.size.width / 2.0f, newRect.origin.y + newRect.size.height / 2.0f);
-    
-    previewView.layer.zPosition = 1001;
-    [cell clearBackgroundColor];
-    self.xlCollectionView.backgroundColor = [UIColor clearColor];
-    /// 首次选中图片恢复
-    [self recoveryPreviewInfoAtIndex:self.selelctIndex];
-    [UIView animateWithDuration:0.2f animations:^{
-        previewView.center = newCenter;
-        previewView.frame = newRect;
+        self.transitionImgView.center = center;
+        self.transitionImgView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         [self removeBackgroundView];
-        [self destoryPreviewCollectionView];
         [self releasePreviewInfo];
     }];
 }
@@ -474,30 +351,25 @@ static const char XLLayerZPositionKey   = '\0';
     /// 1.首次选中图片恢复:注意顺序
     /// 如果恢复操作在步骤2中的bringPreviewToFront之后
     /// 两张图片控件的父类分支有重叠，则会导致动画结束后resetPreviewZPosition操作结果错误
-    [self recoveryPreviewInfoAtIndex:self.selelctIndex];
+    [self recoveryPreviewInfo];
     
     /// 2.设置当前预览图片放大处理
     XLPreviewItemInfo *currentInfo = [self.previewInfoArray objectAtIndex:self.currentIndex];
-    UIView *currentView = currentInfo.originalPreviewInfo;
-    currentView.layer.zPosition = 1000;
-    [currentView.superview addSubview:self.backgroundView];
-    self.backgroundView.layer.zPosition = 999;
-    
+    UIImageView *imageView = currentInfo.originalPreviewInfo;
+    self.transitionImgView.image = imageView.image;
+    self.transitionImgView.frame = currentInfo.originalFrame;
     [self enlargeOriginalView:currentInfo inView:nil];
-    [self bringPreviewToFront:currentView];
     
     /// 当前预览View销毁
     [self destoryPreviewCollectionView];
-    [UIView animateWithDuration:0.2f animations:^{
+    [UIView animateWithDuration:0.3f animations:^{
         CGRect currentFrame = currentInfo.originalFrame;
         CGPoint currentCenter = CGPointMake(currentFrame.origin.x + currentFrame.size.width / 2, currentFrame.origin.y + currentFrame.size.height / 2);
-        currentView.center = currentCenter;
-        currentView.transform = CGAffineTransformIdentity;
+        self.transitionImgView.center = currentCenter;
+        self.transitionImgView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         [self removeBackgroundView];
-        currentView.layer.zPosition = 0;
         [self releasePreviewInfo];
-        [self resetPreviewZPosition:currentView];
     }];
 }
 
@@ -508,24 +380,21 @@ static const char XLLayerZPositionKey   = '\0';
     
     /// 2.恢复选中图片位置
     XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.selelctIndex];
-    UIView *originalView = info.originalPreviewInfo;
     CGRect oldFrame = info.originalFrame;
     CGPoint center = CGPointMake(oldFrame.origin.x + oldFrame.size.width / 2, oldFrame.origin.y + oldFrame.size.height / 2);
     
     [UIView animateWithDuration:0.3f animations:^{
-        originalView.center = center;
-        originalView.transform = CGAffineTransformIdentity;
+        self.transitionImgView.center = center;
+        self.transitionImgView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         [self removeBackgroundView];
-        originalView.layer.zPosition = 0;
         [self releasePreviewInfo];
-        [self resetPreviewZPosition:originalView];
     }];
 }
 
 /// 默认预览画面消失:按透明度慢慢隐去
 -(void)previewDisappearForDefault{
-    [UIView animateWithDuration:0.2f animations:^{
+    [UIView animateWithDuration:0.3f animations:^{
         self.xlCollectionView.alpha = 0;
     } completion:^(BOOL finished) {
         [self removeBackgroundView];
@@ -538,7 +407,6 @@ static const char XLLayerZPositionKey   = '\0';
 /// @param original <#original description#>
 /// @param supperView <#supperView description#>
 -(void)enlargeOriginalView:(XLPreviewItemInfo *)original inView:(UIView *)supperView{
-    UIView *originalView = original.originalPreviewInfo;
     CGRect oldFrame = original.originalFrame;
     CGFloat xScale = XLScreenWidth / oldFrame.size.width;
     CGFloat yScale = XLScreenHeight / oldFrame.size.height;
@@ -548,14 +416,18 @@ static const char XLLayerZPositionKey   = '\0';
     } else {
         yScale = xScale;
     }
-    originalView.layer.transform = CATransform3DMakeScale(xScale, yScale, 1);
-    CGPoint center;
-    if (supperView) {
-        center = supperView.center;
-    } else {
-        center = [UIApplication sharedApplication].delegate.window.center;
+    
+    self.transitionImgView.layer.transform = CATransform3DMakeScale(xScale, yScale, 1);
+    /// 计算最终位置
+    if (!supperView) {
+        supperView = [UIApplication sharedApplication].delegate.window;
     }
-    originalView.center = center;
+    CGPoint center = supperView.center;
+    CGRect endFrame = oldFrame;
+    endFrame.origin.x = center.x - endFrame.size.width / 2.0f;
+    endFrame.origin.y = center.y - endFrame.size.height / 2.0f;
+    CGPoint center1 = CGPointMake(endFrame.origin.x + endFrame.size.width / 2.0f, endFrame.origin.y + endFrame.size.height / 2.0f);
+    self.transitionImgView.center = center1;
 }
 
 #pragma mark - UICollectionViewDataSource && Delegate
