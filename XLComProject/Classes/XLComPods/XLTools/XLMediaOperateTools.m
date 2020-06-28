@@ -8,8 +8,7 @@
 
 #import "XLMediaOperateTools.h"
 
-#import <MobileCoreServices/MobileCoreServices.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+#import <CoreServices/CoreServices.h>
 #import <Photos/Photos.h>
 #import <AVFoundation/AVFoundation.h>
 

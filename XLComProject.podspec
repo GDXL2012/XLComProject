@@ -38,7 +38,7 @@ DES OF 【iOS 工程通用基类库.】
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  s.frameworks = 'AVFoundation', 'UIKit', 'Foundation', 'CoreGraphics', 'MobileCoreServices', 'AssetsLibrary', 'MessageUI'
+  s.frameworks = 'AVFoundation', 'UIKit', 'Foundation', 'CoreGraphics', 'CoreServices', 'MessageUI'
   # s.dependency 'AFNetworking', '~> 2.3'
   s.dependency 'RegexKitLite'
   s.dependency 'SDWebImage'
