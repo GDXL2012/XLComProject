@@ -9,9 +9,7 @@
 #define XL3rdHeader_h
 
 #import "XL3rdCoreHelper.h"
-#import "Masonry.h"
 #import "XLProgressHUDHelper.h"
 #import "UIView+XLAdditions.h"
-#import "UIImageView+WebCache.h"
 
 #endif /* XL3rdHeader_h */
