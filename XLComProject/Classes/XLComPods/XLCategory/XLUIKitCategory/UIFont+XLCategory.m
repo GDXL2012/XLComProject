@@ -7,30 +7,30 @@
 //
 
 #import "UIFont+XLCategory.h"
-#import "XLComPods.h"
+#import "XLConfigManager.h"
 
 @implementation UIFont (XLCategory)
 + (UIFont *)gradeFontWithName:(NSString *)fontName size:(CGFloat)fontSize{
     // 计算缩放后的字体大小
-    CGFloat transFontsize = fontSize * [[XLComPods manager].fontConfig userFontScal];
+    CGFloat transFontsize = fontSize * [[XLConfigManager xlConfigManager].fontConfig userFontScal];
     return [UIFont fontWithName:fontName size:transFontsize];
 }
 
 + (UIFont *)gradeSystemFontOfSize:(CGFloat)fontSize{
     // 计算缩放后的字体大小
-    CGFloat transFontsize = fontSize * [[XLComPods manager].fontConfig userFontScal];
+    CGFloat transFontsize = fontSize * [[XLConfigManager xlConfigManager].fontConfig userFontScal];
     return [UIFont systemFontOfSize:transFontsize];
 }
 
 + (UIFont *)gradeBoldSystemFontOfSize:(CGFloat)fontSize{
     // 计算缩放后的字体大小
-    CGFloat transFontsize = fontSize * [[XLComPods manager].fontConfig userFontScal];
+    CGFloat transFontsize = fontSize * [[XLConfigManager xlConfigManager].fontConfig userFontScal];
     return [UIFont boldSystemFontOfSize:transFontsize];
 }
 
 + (UIFont *)gradeItalicSystemFontOfSize:(CGFloat)fontSize{
     // 计算缩放后的字体大小
-    CGFloat transFontsize = fontSize * [[XLComPods manager].fontConfig userFontScal];
+    CGFloat transFontsize = fontSize * [[XLConfigManager xlConfigManager].fontConfig userFontScal];
     return [UIFont italicSystemFontOfSize:transFontsize];
 }
 @end

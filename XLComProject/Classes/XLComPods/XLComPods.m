@@ -8,14 +8,6 @@
 
 #import "XLComPods.h"
 
-static XLComPods *manager;
 @implementation XLComPods
-
-+(instancetype)manager{
-    if (!manager) {
-        manager = [[XLComPods alloc] init];
-    }
-    return manager;
-}
 
 @end

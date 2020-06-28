@@ -28,6 +28,12 @@ NS_ASSUME_NONNULL_BEGIN
  @param enable <#enable description#>
  */
 + (void)enableAutoToolbar:(BOOL)enable;
+
+#pragma mark - UIActivityIndicatorView
+
+/// 等待框菊花颜色
+/// @param color <#color description#>
++ (void)MBProgressHUDActivityIndicatorViewColor:(UIColor *)color;
 @end
 
 NS_ASSUME_NONNULL_END

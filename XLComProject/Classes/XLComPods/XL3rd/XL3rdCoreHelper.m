@@ -43,4 +43,10 @@
 + (void)enableAutoToolbar:(BOOL)enable{
     [IQKeyboardManager sharedManager].enableAutoToolbar = enable;
 }
+
+/// 等待框菊花颜色
+/// @param color <#color description#>
++ (void)MBProgressHUDActivityIndicatorViewColor:(UIColor *)color{
+    [UIActivityIndicatorView appearanceWhenContainedInInstancesOfClasses:@[[MBProgressHUD class]]].color = color;
+}
 @end

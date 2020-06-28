@@ -10,8 +10,29 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// 规则类型
+typedef NS_ENUM(NSInteger, XLPredicateRegexType){
+    XLPredicateRegexPassword,
+    XLPredicateRegexAccount,
+    XLPredicateRegexMobile,
+    XLPredicateRegexTel,       /// 座机
+    XLPredicateRegexEmail,
+    XLPredicateRegexIdCard     /// 身份证
+};
+
 /// 通用校验方法
 @interface XLComCheckTools : NSObject
+
+/// 注入正则匹配格式
+/// @param Regex <#Regex description#>
+/// @param regexType <#regexType description#>
++(void)injectioRegex:(NSString *)Regex type:(XLPredicateRegexType)regexType;
+
+/// 字符串正则表达式匹配
+/// @param string <#string description#>
+/// @param regex <#regex description#>
++(BOOL)predicateString:(NSString *)string regex:(NSString *)regex;
+
 /**
  是否是数字
 
@@ -46,23 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 +(BOOL)isPasswordFormat:(NSString *)password;
 
 /**
- 获取移动运营商
- 移动
- 139、138、137、136、135、134、159、158、157、150、151、152、
- 147（数据卡）、188、187、182、183、184、178
- 联通
- 130、131、132、156、155、186、185、145（数据卡）、176
- 电信
- 133、153、189、180、181、177、173（待放）
- 
- 前3位是网络识别号 ,  4-7位是地区编码 ,  8-11位是用户号码
- @param mobile 号码
- @return 移动、联通、电信、其他则为空@""
- */
-+(NSString *)mobileCarriers:(NSString *)mobile;
-
-/**
- 校验字符串是否为手机号:简单校验
+ 校验字符串是否为手机号
  
  @param mobile 待校验字符串
  @return YES 手机号  NO 非手机号

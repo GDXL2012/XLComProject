@@ -7,9 +7,7 @@
 //
 
 #import "XLViewController.h"
-#import "UIImageView+WebCache.h"
-#import "Masonry.h"
-#import "UIViewController+XLPreview.h"
+#import "XLComPods.h"
 
 @interface XLViewController ()
 

@@ -9,8 +9,71 @@
 #import "XLComCheckTools.h"
 #import "NSString+XLCategory.h"
 #import "NSError+XLCategory.h"
+#import "XLComMacro.h"
+
+#define XLPredRegexPreKey           @"XLPredicateRegexKey_"
 
 @implementation XLComCheckTools
+
+/// <#Description#>
+/// @param regexType <#regexType description#>
++(NSString *)regexKeyForType:(XLPredicateRegexType)regexType{
+    NSString *string = [NSString stringWithInterger:regexType];
+    return [XLPredRegexPreKey stringByAppendingString:string];
+}
+
+/// 注入正则匹配格式
+/// @param Regex <#Regex description#>
+/// @param regexType <#regexType description#>
++(void)injectioRegex:(NSString *)regex type:(XLPredicateRegexType)regexType{
+    NSString *key = [XLComCheckTools regexKeyForType:regexType];
+    [XLUserDefaults setValue:regex forKey:key];
+    [XLUserDefaults synchronize];
+}
+
+/// 获取正则表达式
+/// @param regexType <#regexType description#>
++(NSString *)regexStringWithType:(XLPredicateRegexType)regexType{
+    NSString *key = [XLComCheckTools regexKeyForType:regexType];
+    NSString *regex = [XLUserDefaults valueForKey:key];
+    if ([NSString isEmpty:regex]) {
+        switch (regexType) {
+            case XLPredicateRegexPassword:
+                regex = @"^[a-z0-9]{6,18}$";
+                break;
+            case XLPredicateRegexAccount: /// 默认按手机号处理
+                regex = @"^(1[0-9][0-9])+\\d{8}$";
+                break;
+            case XLPredicateRegexMobile:
+                regex = @"^(1[0-9][0-9])+\\d{8}$";
+                break;
+            case XLPredicateRegexTel:
+                regex = @"^(0[0-9]{2,3})?([2-9][0-9]{6,7})+(-[0-9]{1,4})?$|(^(0[0-9]{2,3}-)?([2-9][0-9]{6,7})+(-[0-9]{1,4})?$)";
+                break;
+            case XLPredicateRegexEmail:
+                regex = @"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+                break;
+            case XLPredicateRegexIdCard:
+                regex = @"^(\\d{14}|\\d{17})(\\d|[xX])$";
+                break;
+            default:
+                break;
+        }
+    }
+    return regex;
+}
+
+/// 字符串正则表达式匹配
+/// @param string <#string description#>
+/// @param regex <#regex description#>
++(BOOL)predicateString:(NSString *)string regex:(NSString *)regex{
+    if (string.length == 0 || regex.length == 0) {
+        return NO;
+    }
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",regex];
+    return [pred evaluateWithObject:string];
+}
+
 /**
  是否是数字
  
@@ -18,15 +81,8 @@
  @return <#return value description#>
  */
 +(BOOL)isNumber:(NSString *)string{
-    if (string.length == 0) {
-        return NO;
-    }
     NSString *regex = @"[0-9]*";
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",regex];
-    if ([pred evaluateWithObject:string]) {
-        return YES;
-    }
-    return NO;
+    return [XLComCheckTools predicateString:string regex:regex];
 }
 
 /**
@@ -40,11 +96,22 @@
     if ([NSString isEmptyString:account]) {
         *error = [NSError errorWithCode:XLErrorMobileNumberEmpty];
         return NO;
-    } else if (![XLComCheckTools isMobileNumber:account]){
-        *error = [NSError errorWithCode:XLErrorMobileNumberInvalid];
+    } else if (![XLComCheckTools checkAccount:account]){
+        *error = [NSError errorWithCode:XLErrorInvalidAccount];
         return NO;
     }
     return YES;
+}
+
+/**
+ 校验账号是否合法
+ 
+ @param account 待校验账号
+ @return YES 账号验证通过  NO 账号校验不通过
+ */
++(BOOL)checkAccount:(NSString *)account{
+    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexAccount];
+    return [XLComCheckTools predicateString:account regex:regex];
 }
 
 /**
@@ -72,57 +139,8 @@
  @return YES 格式正确 NO 格式错误
  */
 +(BOOL)isPasswordFormat:(NSString *)password{
-    NSString *passwordNUM = @"^[a-z0-9]{6,18}$";
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", passwordNUM];
-    if ([pred evaluateWithObject:password]) {
-        return YES;
-    }
-    return NO;
-}
-
-/**
- 获取移动运营商
- 移动
- 139、138、137、136、135、134、159、158、157、150、151、152、
- 147（数据卡）、188、187、182、183、184、178
- 联通
- 130、131、132、156、155、186、185、145（数据卡）、176
- 电信
- 133、153、189、180、181、177、173（待放）
- 
- 前3位是网络识别号 ,  4-7位是地区编码 ,  8-11位是用户号码
- @param mobile 号码
- @return 移动、联通、电信、其他则为空@""
- */
-+(NSString *)mobileCarriers:(NSString *)mobile{
-    /**
-     * 移动号段正则表达式
-     */
-    NSString *CM_NUM = @"^((13[4-9])|(147)|(15[0-2,7-9])|(178)|(18[2-4,7-8]))\\d{8}|(1705)\\d{7}$";
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CM_NUM];
-    if ([pred evaluateWithObject:mobile]) {
-        return @"中国移动";
-    }
-    
-    /**
-     * 联通号段正则表达式
-     */
-    NSString *CU_NUM = @"^((13[0-2])|(145)|(15[5-6])|(176)|(18[5,6]))\\d{8}|(1709)\\d{7}$";
-    pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CU_NUM];
-    if([pred evaluateWithObject:mobile]){
-        return @"中国联通";
-    }
-    
-    /**
-     * 电信号段正则表达式
-     */
-    NSString *CT_NUM = @"^((133)|(153)|(177)|(18[0,1,9]))\\d{8}$";
-    pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CT_NUM];
-    if([pred evaluateWithObject:mobile]){
-        return @"中国电信";
-    }
-    
-    return @"";
+    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexPassword];
+    return [XLComCheckTools predicateString:password regex:regex];
 }
 
 /**
@@ -133,18 +151,12 @@
  */
 +(BOOL)isMobileNumber:(NSString *)mobile{
     /// 过滤特殊字符
-    mobile = [NSString filterCharacterForPone:mobile];
+    mobile = [NSString filterCharacterForPhone:mobile];
     if (mobile.length != 11) {
         return NO;
     }
-    NSString *MOBILE = @"^(1[0-9][0-9])+\\d{8}$";
-    NSPredicate *regextestmobile = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", MOBILE];
-    BOOL res = [regextestmobile evaluateWithObject:mobile];
-    if (res) {
-        return YES;
-    } else {
-        return NO;
-    }
+    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexMobile];
+    return [XLComCheckTools predicateString:mobile regex:regex];
 }
 
 /**
@@ -155,9 +167,8 @@
  */
 +(BOOL)isTelephone:(NSString *)phone{
     //验证输入的固话中不带"-"与带"-"符号
-    NSString *strNum = @"^(0[0-9]{2,3})?([2-9][0-9]{6,7})+(-[0-9]{1,4})?$|(^(0[0-9]{2,3}-)?([2-9][0-9]{6,7})+(-[0-9]{1,4})?$)";
-    NSPredicate *checktest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", strNum];
-    return [checktest evaluateWithObject:phone];
+    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexTel];
+    return [XLComCheckTools predicateString:phone regex:regex];
 }
 
 /**
@@ -168,9 +179,13 @@
  */
 +(BOOL)isPhoneNumber:(NSString *)phone{
     //验证输入的固话中不带"-"与带"-"符号
-    NSString *strNum = @"^(0[0-9]{2,3})?([2-9][0-9]{6,7})+(-[0-9]{1,4})?$|(^(0[0-9]{2,3}-)?([2-9][0-9]{6,7})+(-[0-9]{1,4})?$)|(^(0|86|17951)?(13[0-9]|15[012356789]|17[0678]|18[0-9]|14[57])[0-9]{8}$)";
-    NSPredicate *checktest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", strNum];
-    return [checktest evaluateWithObject:phone];
+    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexMobile];
+    if ([XLComCheckTools predicateString:phone regex:regex]) {
+        return YES;
+    } else {
+        regex = [XLComCheckTools regexKeyForType:XLPredicateRegexTel];
+        return [XLComCheckTools predicateString:phone regex:regex];
+    }
 }
 
 /**
@@ -180,9 +195,8 @@
  @return YES 邮箱 NO 非邮箱
  */
 +(BOOL)isEmailString:(NSString *)email{
-    NSString *emailRegex = @"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-    NSPredicate *pre = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",emailRegex];
-    return [pre evaluateWithObject:email];
+    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexEmail];
+    return [XLComCheckTools predicateString:email regex:regex];
 }
 
 /**
@@ -192,8 +206,7 @@
  @return YES 身份证 NO 非身份证
  */
 +(BOOL)isIdentityCard:(NSString *)card{
-    NSString *regex2 = @"^(\\d{14}|\\d{17})(\\d|[xX])$";
-    NSPredicate *pre = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",regex2];
-    return [pre evaluateWithObject:card];
+    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexIdCard];
+    return [XLComCheckTools predicateString:card regex:regex];
 }
 @end

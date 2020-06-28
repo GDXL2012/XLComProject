@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param phone <#phone description#>
  @return <#return value description#>
  */
-+(NSString *)filterCharacterForPone:(NSString *)phone;
++(NSString *)filterCharacterForPhone:(NSString *)phone;
 
 /** 数字转字符串 */
 +(NSString *)stringWithInt:(int)value;

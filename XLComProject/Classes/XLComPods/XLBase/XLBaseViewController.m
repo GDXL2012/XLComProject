@@ -8,7 +8,7 @@
 
 #import "XLBaseViewController.h"
 #import "XLSystemMacro.h"
-#import "XLComPods.h"
+#import "XLConfigManager.h"
 #import "XLMacroColor.h"
 #import "NSString+XLCategory.h"
 
@@ -29,7 +29,7 @@
     
     [self xlRegisterNotification];
     
-    self.modalPresentationStyle = [XLComPods manager].adaptationConfig.modalPresentationStyle;
+    self.modalPresentationStyle = [XLConfigManager xlConfigManager].adaptationConfig.modalPresentationStyle;
 }
 
 -(void)dealloc{
@@ -55,14 +55,14 @@
  导航栏风格配置
  */
 -(void)navigationBarStyleConfig{
-    NSString *string = [XLComPods manager].adaptationConfig.backImageName;
+    NSString *string = [XLConfigManager xlConfigManager].adaptationConfig.backImageName;
     if (![NSString isEmpty:string] && self.navigationController) {
         // 替换系统自带的返回按钮
         UIImage *buttonNormal = [[UIImage imageNamed:string] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         [self.navigationController.navigationBar setBackIndicatorImage:buttonNormal];
         [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:buttonNormal];
         
-        BOOL showBackTitle = [XLComPods manager].adaptationConfig.showBackTitle;
+        BOOL showBackTitle = [XLConfigManager xlConfigManager].adaptationConfig.showBackTitle;
         if (!showBackTitle) {
             // 设置没有返回按钮后面的文字
             UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -128,7 +128,7 @@
  @return <#return value description#>
  */
 -(UIStatusBarStyle)preferredStatusBarStyle{
-    return [XLComPods manager].adaptationConfig.preferredStatusBarStyle;
+    return [XLConfigManager xlConfigManager].adaptationConfig.preferredStatusBarStyle;
 }
 
 /**

@@ -13,7 +13,7 @@
 #import "UIView+WebCache.h"
 #import "NSString+XLCategory.h"
 #import "XLComMacro.h"
-#import "XLComPods.h"
+#import "XLConfigManager.h"
 
 @interface XLImagePreviewView () <UIScrollViewDelegate>
 
@@ -126,7 +126,7 @@
     NSString *imgPath = [originalImageView.sd_imageURL absoluteString];
     if (![NSString isEmpty:imgPath]) {
         SDWebImageManager *manager = [SDWebImageManager sharedManager];
-        id<XLComConfigDelegate> delegate = [XLComPods manager].comConfig.xlConfigDelegate;
+        id<XLComConfigDelegate> delegate = [XLConfigManager xlConfigManager].comConfig.xlConfigDelegate;
         NSString *original = imgPath;
         if (delegate &&
             [delegate respondsToSelector:@selector(originalRemotePathFromUrl:)]) {
@@ -144,7 +144,7 @@
                 XLStrongSelf
                 [strongSelf.indicatorView stopAnimating];
                 if (error) { /// 图片加载失败
-                    UIImage *image = [XLComPods manager].comConfig.loadingFaileImage;
+                    UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFaileImage;
                     strongSelf.previewImageView.image = image;
                 } else {
                     /// 加载成功，赋值原图片
@@ -168,7 +168,7 @@
         XLStrongSelf
         [strongSelf.indicatorView stopAnimating];
         if (error) { /// 图片加载失败
-            UIImage *image = [XLComPods manager].comConfig.loadingFaileImage;
+            UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFaileImage;
             strongSelf.previewImageView.image = image;
         }
     }];

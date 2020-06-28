@@ -28,7 +28,7 @@
 -(void)defaultConfig{
     self.xlBtnHMargin           = 35.0f; /// 按钮水平边距：默认35.0f
     
-    self.xlHMargin              = 16.0f; /// 外部左右边距：默认16.0f
+    self.xlHMargin              = 15.0f; /// 外部左右边距：默认15.0f
     self.xlVMargin              = 12.0f; /// 外部上下边距：默认12.0f
     
     self.xlHSpace               = 10.0f; /// 内部左右间距：默认10.0f

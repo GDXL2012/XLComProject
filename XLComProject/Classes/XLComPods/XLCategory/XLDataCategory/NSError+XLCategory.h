@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, XLErrorCode) {
-    XLErrorInvalidAccount           = 221001,   // 账号无效
+    XLErrorInvalidAccount           = 221001,   // 账号格式错误
     XLErrorInvalidPassword          = 221002,   // 密码无效
     
     XLErrorMobileNumberInvalid      = 321001,   // 手机号码无效

@@ -7,23 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "XLColorConfig.h"
-#import "XLFontConfig.h"
-#import "XLLayoutConfig.h"
-#import "XLAdaptationConfig.h"
-#import "XLComConfig.h"
+
+#import "XL3rdHeader.h"
+#import "XLAdaptation.h"
+#import "XLBaseHeader.h"
+#import "XLCategoryHeader.h"
+#import "XLConfigManager.h"
+#import "XLMacroHeader.h"
+#import "XLToolsHeader.h"
+#import "XLUIKit.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface XLComPods : NSObject
-
-+(instancetype)manager;
-
-@property (nonatomic, strong) XLColorConfig      *colorConfig;
-@property (nonatomic, strong) XLFontConfig       *fontConfig;
-@property (nonatomic, strong) XLLayoutConfig     *layoutConfig;
-@property (nonatomic, strong) XLAdaptationConfig *adaptationConfig;
-@property (nonatomic, strong) XLComConfig        *comConfig;
 
 @end
 

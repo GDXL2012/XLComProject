@@ -127,7 +127,7 @@
  @param phone <#phone description#>
  @return <#return value description#>
  */
-+(NSString *)filterCharacterForPone:(NSString *)phone{
++(NSString *)filterCharacterForPhone:(NSString *)phone{
     NSCharacterSet *setForRemoe = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789"] invertedSet];
     NSArray *characters = [phone componentsSeparatedByCharactersInSet:setForRemoe];
     phone = [characters componentsJoinedByString:@""];

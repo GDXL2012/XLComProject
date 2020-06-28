@@ -70,7 +70,7 @@ NSString *const XLUserDefinedErrorMSG   = @"com.xlComProject.ErrorDomain";
 +(NSString *)getErrorDesWithCode:(NSInteger)code{
     static NSDictionary *errorDesInfo = nil;
     if (!errorDesInfo) {
-        errorDesInfo = @{@"221001" : @"账号无效",
+        errorDesInfo = @{@"221001" : @"账号格式错误",
                          @"221002" : @"密码无效",
                          
                          @"321001" : @"手机号码无效",
