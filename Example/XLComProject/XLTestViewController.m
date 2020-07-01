@@ -1,31 +1,22 @@
 //
-//  XLLoginBaseViewController.m
-//  XLComProject
+//  XLTestViewController.m
+//  XLComProject_Example
 //
-//  Created by GDXL2012 on 2019/11/27.
-//  Copyright © 2019 GDXL2012. All rights reserved.
+//  Created by GDXL2012 on 2020/7/1.
+//  Copyright © 2020 GDXL2012. All rights reserved.
 //
 
-#import "XLLoginBaseViewController.h"
+#import "XLTestViewController.h"
 
-@interface XLLoginBaseViewController ()
+@interface XLTestViewController ()
 
 @end
 
-@implementation XLLoginBaseViewController
+@implementation XLTestViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-}
-
-/**
- 导航栏隐藏
- 
- @return YES 隐藏
- */
--(BOOL)xlNeedNavigationBarHidden{
-    return YES;
 }
 
 /*

@@ -8,6 +8,7 @@
 
 #import "UIImage+XLCategory.h"
 #import <AVFoundation/AVFoundation.h>
+#import "XLMacroLayout.h"
 
 @implementation UIImage (XLCategory)
 /**
@@ -251,15 +252,19 @@
  @return 纯色图片
  */
 + (UIImage *)imageWithColor:(UIColor *)color alpha:(CGFloat)alpha{
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextSetAlpha(context, alpha);
-    CGContextFillRect(context, rect);
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
+    CGSize size = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    return [UIImage imageWithColor:color size:size alpha:alpha];
+}
+
+/**
+ 生成纯色分割线image
+ 
+ @param color 颜色值
+ @param alpha 透明度
+ @return 纯色图片
+ */
++ (UIImage *)sepImageWithColor:(UIColor *)color alpha:(CGFloat)alpha{
+    return [UIImage imageWithColor:color size:CGSizeMake(1.0f, XLCellSepHeight) alpha:alpha];
 }
 
 /**
@@ -270,10 +275,23 @@
  @return 纯色图片
  */
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size{
+    return [UIImage imageWithColor:color size:size alpha:1.0f];
+}
+
+/**
+ 生成纯色image
+ 
+ @param color 颜色值
+ @param size 大小
+ @param alpha 透明度
+ @return 纯色图片
+ */
++ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size alpha:(CGFloat)alpha{
     CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextSetAlpha(context, alpha);
     CGContextFillRect(context, rect);
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

@@ -28,9 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat xlHMinSpace;
 
 #pragma mark - Frame
-/// 分割线宽：默认0.5f
+/// 分割线宽：默认0.5f像素
 @property (nonatomic, assign) CGFloat xlCellSepHeight;
-/// 线宽：默认0.5f
+/// 线宽：默认0.5f像素
 @property (nonatomic, assign) CGFloat xlBorderSepWidth;
 /// 按钮圆角：默认5.0f
 @property (nonatomic, assign) CGFloat xlButtonRadius;

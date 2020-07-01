@@ -106,6 +106,16 @@ NS_ASSUME_NONNULL_BEGIN
  @return 纯色图片
  */
 + (UIImage *)imageWithColor:(UIColor *)color alpha:(CGFloat)alpha;
+
+/**
+ 生成纯色分割线image
+ 
+ @param color 颜色值
+ @param alpha 透明度
+ @return 纯色图片
+ */
++ (UIImage *)sepImageWithColor:(UIColor *)color alpha:(CGFloat)alpha;
+
 /**
  生成纯色image
  
@@ -114,6 +124,16 @@ NS_ASSUME_NONNULL_BEGIN
  @return 纯色图片
  */
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
+
+/**
+ 生成纯色image
+ 
+ @param color 颜色值
+ @param size 大小
+ @param alpha 透明度
+ @return 纯色图片
+ */
++ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size alpha:(CGFloat)alpha;
 
 /**
  生成纯色的圆角图片

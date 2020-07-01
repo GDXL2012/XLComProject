@@ -10,6 +10,7 @@
 #import "XLComPods.h"
 #import "Masonry.h"
 #import "UIImageView+WebCache.h"
+#import "XLTestViewController.h"
 
 @interface XLViewController ()
 
@@ -59,12 +60,16 @@
 }
 
 -(void)tapGesture{
-    NSArray *array = @[@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1588578921699&di=766a725d4e2bc5aaa129b9217355fba6&imgtype=0&src=http%3A%2F%2Fqcloud.dpfile.com%2Fpc%2FUglJmFpQ4mufo3HUBQguN2aovEJf3KWLcT6tr5jAYnCfA-CHIjiwp8uGsS8A4LZUTK-l1dfmC-sNXFHV2eRvcw.jpg",
-                       @"https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2075387255,274293919&fm=26&gp=0.jpg",
-                       @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1588509233124&di=4e7d2e93bfe60f9d09c4de45dff30ca5&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg"];
+    XLTestViewController *vc = [[XLTestViewController alloc] init];
+    XLNavigationController *nv = [[XLNavigationController alloc] initWithRootViewController:vc];
+    nv.showBarMetrics = NO;
+    [self presentViewController:nv animated:YES completion:nil];
+//    NSArray *array = @[@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1588578921699&di=766a725d4e2bc5aaa129b9217355fba6&imgtype=0&src=http%3A%2F%2Fqcloud.dpfile.com%2Fpc%2FUglJmFpQ4mufo3HUBQguN2aovEJf3KWLcT6tr5jAYnCfA-CHIjiwp8uGsS8A4LZUTK-l1dfmC-sNXFHV2eRvcw.jpg",
+//                       @"https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2075387255,274293919&fm=26&gp=0.jpg",
+//                       @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1588509233124&di=4e7d2e93bfe60f9d09c4de45dff30ca5&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F64%2F76%2F20300001349415131407760417677.jpg"];
 //    [self previewImageArray:@[_imageView] atSelectIndex:0];
 //    [self previewImageArray:@[_imageView] atSelectIndex:0];
-    [self previewImageUrlArray:array atSelectIndex:1];
+//    [self previewImageUrlArray:array atSelectIndex:1];
 }
 
 -(void)tapGesture1{

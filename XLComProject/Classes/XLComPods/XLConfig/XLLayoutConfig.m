@@ -35,8 +35,8 @@
     self.xlVSpace               = 8.0f;  /// 内部上下间距：默认8.0f
     self.xlHMinSpace            = 5.0f;  /// 内部左右最小间距：默认5.0f
     
-    self.xlCellSepHeight        = 0.5f; /// 分割线宽：默认0.5f
-    self.xlBorderSepWidth       = 0.5f; /// 线宽：默认0.5f
+    self.xlCellSepHeight        = 1.0f / [UIScreen mainScreen].scale;; /// 分割线宽：默认0.5f
+    self.xlBorderSepWidth       = 1.0f / [UIScreen mainScreen].scale;; /// 线宽：默认0.5f
     
     self.xlButtonRadius         = 5.0f; /// 按钮圆角：默认5.0f
     self.xlInputViewRadius      = 3.0f; /// 输入框圆角：默认3.0f

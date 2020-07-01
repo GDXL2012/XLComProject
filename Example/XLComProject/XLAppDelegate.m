@@ -7,12 +7,15 @@
 //
 
 #import "XLAppDelegate.h"
+#import "XLConfigManager.h"
 
 @implementation XLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    [XLConfigManager xlConfigManager].colorConfig.xlThemeColor = [UIColor whiteColor];
+    [XLConfigManager xlConfigManager].colorConfig.xlBarTitleColor = [UIColor whiteColor];
     return YES;
 }
 

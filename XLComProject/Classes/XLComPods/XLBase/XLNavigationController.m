@@ -42,13 +42,15 @@
 /// 设置导航栏分割线显示状态
 /// @param shadowHidden shadowHidden description
 -(void)setNavgationBarShadowHidden:(BOOL)shadowHidden{
+    UIImage *themeImage = [UIImage imageWithColor:XLThemeColor];
     if (shadowHidden) {
-        UIImage *image = [UIImage imageWithColor:XLComSepColor];
+        UIImage *image = [UIImage sepImageWithColor:XLComSepColor alpha:1.0f];
         [self.navigationBar setShadowImage:image];
-        [self.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
+        [self.navigationBar setBackgroundImage:themeImage forBarMetrics:UIBarMetricsDefault];
     } else {
-        [self.navigationBar setShadowImage:nil];
-        [self.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        UIImage *image = [UIImage sepImageWithColor:XLThemeColor alpha:1.0f];
+        [self.navigationBar setShadowImage:image];
+        [self.navigationBar setBackgroundImage:themeImage forBarMetrics:UIBarMetricsDefault];
     }
 }
 
