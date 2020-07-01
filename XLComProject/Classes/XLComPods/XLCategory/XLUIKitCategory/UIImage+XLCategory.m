@@ -252,7 +252,7 @@
  @return 纯色图片
  */
 + (UIImage *)imageWithColor:(UIColor *)color alpha:(CGFloat)alpha{
-    CGSize size = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    CGSize size = CGSizeMake(1.0f, 1.0f);
     return [UIImage imageWithColor:color size:size alpha:alpha];
 }
 
