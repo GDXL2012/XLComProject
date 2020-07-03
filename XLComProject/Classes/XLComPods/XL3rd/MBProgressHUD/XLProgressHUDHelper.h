@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param toast <#toast description#>
  */
-+(void)toast:(NSString *)toast;
++(void)toast:(nullable NSString *)toast;
 
 /**
  指定View上显示提示信息
@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param toast <#toast description#>
  @param view <#view description#>
  */
-+(void)toast:(NSString *)toast inView:(UIView *)view;
++(void)toast:(nullable NSString *)toast inView:(UIView *)view;
 
 #pragma mark - Waiting
 /**
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param tips <#tips description#>
  */
-+(void)waitInfo:(NSString *)tips;
++(void)waitInfo:(nullable NSString *)tips;
 
 /**
  window上移除等待框
@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param tips <#tips description#>
  @param view <#view description#>
  */
-+(void)waitInfo:(NSString *)tips inView:(UIView *)view;
++(void)waitInfo:(nullable NSString *)tips inView:(UIView *)view;
 
 /**
  从view上移除等待框

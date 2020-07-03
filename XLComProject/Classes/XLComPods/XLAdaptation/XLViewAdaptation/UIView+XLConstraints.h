@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param header 头部
  @param bottom 底部
  */
--(void)makeConstraintsWithView:(UIView *)view header:(UIView *)header bottom:(UIView *)bottom;
+-(void)makeConstraintsWithView:(UIView *)view header:(nullable UIView *)header bottom:(nullable UIView *)bottom;
 
 /**
  设置约束条件
@@ -118,7 +118,9 @@ NS_ASSUME_NONNULL_BEGIN
  @param header 头部
  @param bottom 底部
  */
--(void)makeUnsafeConstraintsWithView:(UIView *)view header:(UIView *)header bottom:(UIView *)bottom;
+-(void)makeUnsafeConstraintsWithView:(UIView *)view
+                              header:(nullable UIView *)header
+                              bottom:(nullableUIView *)bottom;
 
 /// 设置View抗压缩
 -(void)setContentCompressionHugging;
