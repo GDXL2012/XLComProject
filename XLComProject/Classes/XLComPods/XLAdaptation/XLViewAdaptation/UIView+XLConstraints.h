@@ -120,7 +120,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 -(void)makeUnsafeConstraintsWithView:(UIView *)view
                               header:(nullable UIView *)header
-                              bottom:(nullableUIView *)bottom;
+                              bottom:(nullable UIView *)bottom;
 
 /// 设置View抗压缩
 -(void)setContentCompressionHugging;
