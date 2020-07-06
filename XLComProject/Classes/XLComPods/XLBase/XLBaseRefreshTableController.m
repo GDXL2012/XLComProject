@@ -42,7 +42,7 @@
 /**
  初始化列表
  */
--(void)initViewDisplay{
+-(void)xlInitViewDisplay{
     _xlRefreshTableView = [[XLRefreshTableView alloc] initWithFrame:CGRectZero style:self.xlTableStyle];
     [_xlRefreshTableView configDelegate:self];
     [self.view addSubview:self.xlRefreshTableView];
