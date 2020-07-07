@@ -35,7 +35,7 @@
     [self xlUserCustomizationView];
 }
 
--(void)initViewDisplay{
+-(void)xlInitViewDisplay{
     _xlTableView = [[XLTableView alloc] initWithFrame:CGRectZero style:self.xlTableStyle];
     [_xlTableView configDelegate:self];
     [self.view addSubview:_xlTableView];
@@ -46,7 +46,7 @@
 }
 
 /**
- 用户自定义View：取代基类的initViewDisplay，子类继承后不要复写initViewDisplay
+ 用户自定义View：取代基类的xlInitViewDisplay，子类继承后不要复写xlInitViewDisplay
  */
 -(void)xlUserCustomizationView{
     // 子类继承

@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 父类方法不能覆写，否则会导致xlTableView不能初始化
 -(void)xlInitViewDisplay DEPRECATED_MSG_ATTRIBUTE("Please use [XLBaseTableViewController xlUserCustomizationView]");
 /**
- 用户自定义View：取代基类的initViewDisplay，子类继承后不要复写initViewDisplay
+ 用户自定义View：取代基类的xlInitViewDisplay，子类继承后不要复写xlInitViewDisplay
  */
 -(void)xlUserCustomizationView;
 

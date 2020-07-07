@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'XLComProject'
-  s.version          = '0.1.8'
+  s.version          = '0.1.9'
   s.summary          = 'iOS 工程通用基类库.'
 
 # This description is used to generate tags and improve search results.
