@@ -20,33 +20,31 @@
 
 @implementation UIView (XLSepView)
 #pragma mark - SepView
-static const char XLSepViewKey = '\0';
 -(void)setXlSepView:(UIView *)xlSepView{
     if (xlSepView != self.xlSepView) {
         // 删除旧的，添加新的
         [self.xlSepView removeFromSuperview];
         // 存储新的
-        objc_setAssociatedObject(self, &XLSepViewKey,
+        objc_setAssociatedObject(self, @selector(xlSepView),
                                  xlSepView, OBJC_ASSOCIATION_RETAIN);
     }
 }
 
 -(UIView *)xlSepView{
-    return objc_getAssociatedObject(self, &XLSepViewKey);
+    return objc_getAssociatedObject(self, @selector(xlSepView));
 }
 
 #pragma mark - Margin
-static const char XLSepViewMarginKey = '\0';
 -(void)setXlSepViewMargin:(CGFloat)xlSepViewMargin{
     if (xlSepViewMargin != self.xlSepViewMargin) {
         // 存储新的
-        objc_setAssociatedObject(self, &XLSepViewKey,
+        objc_setAssociatedObject(self, @selector(xlSepViewMargin),
                                  @(xlSepViewMargin), OBJC_ASSOCIATION_ASSIGN);
     }
 }
 
 -(CGFloat)xlSepViewMargin{
-    NSNumber *number = objc_getAssociatedObject(self, &XLSepViewMarginKey);
+    NSNumber *number = objc_getAssociatedObject(self, @selector(xlSepViewMargin));
     return [number floatValue];
 }
 @end
