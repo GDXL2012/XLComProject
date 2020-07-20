@@ -39,6 +39,10 @@
     return self;
 }
 
+-(void)setDelegate:(id<UITextViewDelegate>)delegate{
+    [super setDelegate:delegate];
+}
+
 -(void)layoutSubviews{
     [super layoutSubviews];
     CGPoint offset      = self.contentOffset;
@@ -54,10 +58,6 @@
         make.right.mas_equalTo(self).offset(-rOffset);
         make.top.mas_equalTo(self).offset(yOffset);
     }];
-}
-
--(void)setDelegate:(id<UITextViewDelegate>)delegate{
-    [super setDelegate:self];
 }
 
 -(UILabel *)placeHolderLabel{

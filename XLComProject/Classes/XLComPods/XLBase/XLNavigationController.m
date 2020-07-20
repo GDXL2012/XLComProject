@@ -44,11 +44,11 @@
 -(void)setNavgationBarShadowHidden:(BOOL)shadowHidden{
     UIImage *themeImage = [UIImage imageWithColor:XLThemeColor];
     if (shadowHidden) {
-        UIImage *image = [UIImage sepImageWithColor:XLComSepColor alpha:1.0f];
+        UIImage *image = [UIImage sepImageWithColor:XLThemeColor alpha:1.0f];
         [self.navigationBar setShadowImage:image];
         [self.navigationBar setBackgroundImage:themeImage forBarMetrics:UIBarMetricsDefault];
     } else {
-        UIImage *image = [UIImage sepImageWithColor:XLThemeColor alpha:1.0f];
+        UIImage *image = [UIImage sepImageWithColor:XLComSepColor alpha:1.0f];
         [self.navigationBar setShadowImage:image];
         [self.navigationBar setBackgroundImage:themeImage forBarMetrics:UIBarMetricsDefault];
     }

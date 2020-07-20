@@ -20,6 +20,7 @@
 #import "XLDeviceMacro.h"
 #import "XLSystemMacro.h"
 #import "UIView+XLConstraints.h"
+#import "UIViewController+XLPresent.h"
 #import "UIViewController+XLPreview.h"
 #import "UIViewController+XLToast.h"
 #import "UIViewController+XLTools.h"
