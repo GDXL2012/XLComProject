@@ -16,7 +16,7 @@
 @interface XLPresentDismissAnimation : NSObject <UIViewControllerAnimatedTransitioning>
 @end
 
-@interface XLViewControllerTransition : UIPercentDrivenInteractiveTransition <UINavigationControllerDelegate, UIViewControllerTransitioningDelegate>
+@interface XLViewControllerTransition : UIPercentDrivenInteractiveTransition <UIViewControllerTransitioningDelegate>
 @property (nonatomic, weak) UIViewController *viewController;
 @property (nonatomic, assign) BOOL isInteracting;
 @property (nonatomic, assign) BOOL shouldComplete;
@@ -55,9 +55,9 @@
     
     toVC.view.frame = CGRectOffset(finalFrameForVC, XLScreenWidth, 0);
     [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-        fromVC.view.alpha = 0.5;
+        fromVC.view.alpha = 0.5f;
         toVC.view.frame = finalFrameForVC;
-        fromVC.view.frame = CGRectOffset(fromVC.view.frame, -50, 0);
+        fromVC.view.frame = CGRectOffset(fromVC.view.frame, -XLScreenWidth / 2.0f, 0);
     } completion:^(BOOL finished) {
         [transitionContext completeTransition:YES];
     }];
@@ -89,16 +89,23 @@
     }
     
     CGRect finalFrame = CGRectOffset(initFrame, XLScreenWidth, 0);
+    CGRect toVCFrame = toVC.view.frame;
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromVC.view.frame = finalFrame;
-        toVC.view.alpha = 1.0;
-        toVC.view.frame = CGRectOffset(toVC.view.frame, 50, 0);
+        toVC.view.alpha = 1.0f;
+        toVC.view.frame = CGRectOffset(toVCFrame, XLScreenWidth / 2.0f, 0);
     } completion:^(BOOL finished) {
         if (fromVC.modalPresentationStyle == UIModalPresentationCustom) {
             [toVC endAppearanceTransition];
         }
-        BOOL complate = [transitionContext transitionWasCancelled];
-        [transitionContext completeTransition:(!complate)];
+        BOOL cancelled = [transitionContext transitionWasCancelled];
+        if (cancelled) {
+            /// 取消转场需要恢复View状态
+            fromVC.view.frame = initFrame;
+            toVC.view.alpha = 0.5f;
+            toVC.view.frame = toVCFrame;
+        }
+        [transitionContext completeTransition:(!cancelled)];
     }];
 }
 
@@ -121,20 +128,22 @@
 }
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    /// 非交互式动画
     return [[XLPresentAnimation alloc] init];
 }
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    /// 非交互式动画
     return [[XLPresentDismissAnimation alloc] init];
 }
 
 -(id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator{
+    /// 交互动画
     return (self.isInteracting ? self : nil);
 }
 
 #pragma mark - CMPercentDrivenInteractiveTransition
-- (void)panGestureHander:(UIScreenEdgePanGestureRecognizer *)gesture
-{
+- (void)panGestureHander:(UIScreenEdgePanGestureRecognizer *)gesture{
     switch (gesture.state) {
         case UIGestureRecognizerStateBegan: {
             _isInteracting = YES;
