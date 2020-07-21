@@ -57,7 +57,7 @@
     [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         fromVC.view.alpha = 0.5f;
         toVC.view.frame = finalFrameForVC;
-        fromVC.view.frame = CGRectOffset(fromVC.view.frame, -XLScreenWidth / 2.0f, 0);
+        fromVC.view.frame = CGRectOffset(fromVC.view.frame, -XLScreenWidth / 3.0f, 0);
     } completion:^(BOOL finished) {
         [transitionContext completeTransition:YES];
     }];
@@ -93,7 +93,7 @@
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromVC.view.frame = finalFrame;
         toVC.view.alpha = 1.0f;
-        toVC.view.frame = CGRectOffset(toVCFrame, XLScreenWidth / 2.0f, 0);
+        toVC.view.frame = CGRectOffset(toVCFrame, XLScreenWidth / 3.0f, 0);
     } completion:^(BOOL finished) {
         if (fromVC.modalPresentationStyle == UIModalPresentationCustom) {
             [toVC endAppearanceTransition];
