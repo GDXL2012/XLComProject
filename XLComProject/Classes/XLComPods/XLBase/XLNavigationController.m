@@ -18,6 +18,14 @@
 
 @implementation XLNavigationController
 
+-(instancetype)init{
+    self = [super init];
+    if (self) {
+        _showBarMetrics = YES;
+    }
+    return self;
+}
+
 - (void)setShowBarMetrics:(BOOL)showBarMetrics{
     _showBarMetrics = showBarMetrics;
     if (self.viewHasLoad) {

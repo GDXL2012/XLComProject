@@ -11,6 +11,7 @@
 #import "XLConfigManager.h"
 #import "XLMacroColor.h"
 #import "NSString+XLCategory.h"
+#import "XLMacroFont.h"
 
 @interface XLBaseViewController ()
 @end
@@ -63,12 +64,14 @@
         [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:buttonNormal];
         
         BOOL showBackTitle = [XLConfigManager xlConfigManager].adaptationConfig.showBackTitle;
-        if (!showBackTitle) {
+        if (!showBackTitle || [NSString isEmpty:self.previewTitle]) {
             // 设置没有返回按钮后面的文字
             UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
             self.navigationItem.backBarButtonItem = backItem;
-        } else if (![NSString isEmpty:self.previewTitle]){
+        } else {
             UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:self.previewTitle style:UIBarButtonItemStylePlain target:nil action:nil];
+            [backItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBarTitleFont, NSFontAttributeName,XLBarTitleColor,NSForegroundColorAttributeName,nil] forState:UIControlStateNormal];
+            [backItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBarTitleFont, NSFontAttributeName,[XLBarTitleColor colorWithAlphaComponent:0.5], NSForegroundColorAttributeName,nil] forState:UIControlStateHighlighted];
             self.navigationItem.backBarButtonItem = backItem;
         }
     }
