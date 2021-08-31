@@ -17,10 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param string 缩略图地址
 -(NSString *)originalRemotePathFromUrl:(NSString *)string;
 
-/// 加载SDK ImageView 图片:预览用
--(void)loadImageForSDImageView:(UIImageView *)imgView complete:(void(^)(UIImage *image , NSError *error))complete;
-/// 加载图片
--(void)loadImageForImageView:(UIImageView *)imgView withUrl:(NSString *)url complete:(void(^)(UIImage *image , NSError *error))complete;
+/// 给imgView加载远程图片:预览用
+-(void)loadImageForImageView:(UIImageView *)imgView withUrl:(NSString *)url
+                    complete:(void(^)(UIImage *image , NSError *error))complete;
 
 @end
 

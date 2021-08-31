@@ -19,6 +19,10 @@
 #import "XLRefreshTableView.h"
 #import "XLCollectionReusableView.h"
 #import "XLRefreshCollectionView.h"
+#import "UIView+Layout.h"
+#import "XLImageEditView.h"
+#import "XLImageMosaicTools.h"
+#import "XLAlertView.h"
 
 /// XLWidget
 #import "XLMoreMenuView.h"

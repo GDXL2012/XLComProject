@@ -92,11 +92,11 @@
 }
 
 -(void)setItemInfo:(XLPreviewItemInfo *)itemInfo{
-    if (_itemInfo != itemInfo) {
+//    if (_itemInfo != itemInfo) {
         _itemInfo = itemInfo;
         self.itemInfo.previewHasShow = NO;
         [self setPreviewHasShow:YES];
-    }
+//    }
 }
 
 /// 设置预览图片显示
@@ -106,11 +106,9 @@
         /// 设置预览图片显示
         self.itemInfo.previewHasShow = previewHasShow;
         if (self.itemInfo.previewItemType == XLPreviewItemImage) {
-            UIImage *image = (UIImage *)self.itemInfo.originalPreviewInfo;
-            self.previewImageView.image = image;
+            self.previewImageView.image = self.itemInfo.originalImage;
         } else if (self.itemInfo.previewItemType == XLPreviewItemImageView) {
-            UIImageView *imageView = (UIImageView *)self.itemInfo.originalPreviewInfo;
-            self.previewImageView.image = imageView.image;
+            self.previewImageView.image = self.itemInfo.originalImage;
         } else if (self.itemInfo.previewItemType == XLPreviewItemSDImageView) {
             [self showPreviewSDImageView];
         } else if (self.itemInfo.previewItemType == XLPreviewItemImageUrl) {
@@ -122,60 +120,64 @@
 
 -(void)showPreviewSDImageView{
     /// 预览图片初始化
-    UIImageView *originalImageView = (UIImageView *)self.itemInfo.originalPreviewInfo;
-    NSString *imgPath = [originalImageView.sd_imageURL absoluteString];
-    if (![NSString isEmpty:imgPath]) {
-        SDWebImageManager *manager = [SDWebImageManager sharedManager];
-        id<XLComConfigDelegate> delegate = [XLConfigManager xlConfigManager].comConfig.xlConfigDelegate;
-        NSString *original = imgPath;
-        if (delegate &&
-            [delegate respondsToSelector:@selector(originalRemotePathFromUrl:)]) {
-            original = [delegate originalRemotePathFromUrl:original];
-        }
-        
-        NSURL *url = [NSURL URLWithString:original];
-        XLWeakSelf
-        [manager diskImageExistsForURL:url completion:^(BOOL isInCache) {
-            XLStrongSelf
-            if (!isInCache) {
-                [strongSelf.indicatorView startAnimating];
-            }
-            [self.previewImageView sd_setImageWithURL:url completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                XLStrongSelf
-                [strongSelf.indicatorView stopAnimating];
-                if (error) { /// 图片加载失败
-                    UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFailImage;
-                    strongSelf.previewImageView.image = image;
-                } else {
-                    /// 加载成功，赋值原图片
-                    UIImageView *originalView = (UIImageView *)strongSelf.itemInfo.originalPreviewInfo;
-                    [originalView sd_setImageWithURL:url];
-                }
-            }];
-        }];
-    } else {
+    NSString *path = self.itemInfo.originalImagePath;
+    self.previewImageView.image = self.itemInfo.originalImage;
+    
+    if (![NSString isEmpty:path]) {
         id<XLComConfigDelegate> delegate = [XLConfigManager xlConfigManager].comConfig.xlConfigDelegate;
         if (delegate &&
-            [delegate respondsToSelector:@selector(loadImageForSDImageView:complete:)]) {
+            [delegate respondsToSelector:@selector(loadImageForImageView:withUrl:complete:)]) {
             XLWeakSelf
-            [delegate loadImageForSDImageView:originalImageView complete:^(UIImage * _Nonnull image, NSError * _Nonnull error) {
-                if (weakSelf && error == nil) {
+            [delegate loadImageForImageView:self.previewImageView withUrl:path complete:^(UIImage * _Nonnull image, NSError * _Nonnull error) {
+                         if (weakSelf && error == nil) {
                     if (error) {
-                        weakSelf.previewImageView.image = originalImageView.image;
+                        weakSelf.previewImageView.image = weakSelf.itemInfo.originalImage;
                     } else {
                         weakSelf.previewImageView.image = image;
                     }
                 }
             }];
         } else {
-            self.previewImageView.image = originalImageView.image;
+            NSString *original = nil;
+            if (delegate &&
+                [delegate respondsToSelector:@selector(originalRemotePathFromUrl:)]) {
+                original = [delegate originalRemotePathFromUrl:path];
+            }
+            if (original == nil) {
+                original = path;
+            }
+            NSURL *url = [NSURL URLWithString:original];
+            NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:url];
+            
+            XLWeakSelf
+            SDImageCache *imageCache = [SDImageCache sharedImageCache];
+            [imageCache diskImageExistsWithKey:key completion:^(BOOL isInCache) {
+                XLStrongSelf
+                if (!isInCache) {
+                    [strongSelf.indicatorView startAnimating];
+                }
+                [strongSelf.previewImageView sd_setImageWithURL:url completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                    XLStrongSelf
+                    [strongSelf.indicatorView stopAnimating];
+                    if (error) { /// 图片加载失败
+                        UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFailImage;
+                        strongSelf.previewImageView.image = image;
+                    } else {
+                        /// 加载成功，赋值原图片
+                        UIImageView *originalView = strongSelf.itemInfo.originalImage;
+                        [originalView sd_setImageWithURL:url];
+                    }
+                }];
+            }];
         }
+    } else {
+        self.previewImageView.image = self.itemInfo.originalImage;
     }
 }
 
 -(void)showPreviewImageUrl{
     /// 显示图片
-    NSString *urlString = (NSString *)self.itemInfo.originalPreviewInfo;
+    NSString *urlString = (NSString *)self.itemInfo.originalImagePath;
     id<XLComConfigDelegate> delegate = [XLConfigManager xlConfigManager].comConfig.xlConfigDelegate;
     if (delegate &&
         [delegate respondsToSelector:@selector(loadImageForImageView:withUrl:complete:)]) {

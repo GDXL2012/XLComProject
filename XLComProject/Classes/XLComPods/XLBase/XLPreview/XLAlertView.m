@@ -1,18 +1,19 @@
 //
-//  XLAlertSheetView.m
+//  XLAlertView.m
 //  XLComProject
 //
 //  Created by GDXL2012 on 2021/7/29.
 //
 
-#import "XLAlertSheetView.h"
+#import "XLAlertView.h"
 #import "XLTableView.h"
 #import "Masonry.h"
-#import "XLSystemMacro.h"
-#import "XLDeviceMacro.h"
+#import "XLAdaptation.h"
 #import "XLMacroColor.h"
 #import "XLTableViewCell.h"
+#import "XLCollectionView.h"
 #import "XLMacroFont.h"
+#import "XLMacroLayout.h"
 
 typedef void(^XLAlertActionHandler)(XLAlertAction *action);
 
@@ -23,22 +24,43 @@ typedef void(^XLAlertActionHandler)(XLAlertAction *action);
 @property (nonatomic, assign)   UIAlertActionStyle style;
 @end
 
-@interface XLAlertSheetView () <UITableViewDelegate, UITableViewDataSource>
+#pragma mark - XLAlertView
+@interface XLAlertView () <UIGestureRecognizerDelegate>
+
+@property (nonatomic, copy) NSString *xlTitle;
+@property (nonatomic, copy) NSString *xlMessage;
+@property (nonatomic, copy) UILabel  *xlTitleLabel;
+@property (nonatomic, copy) UILabel  *xlMessageLabel;
+
 @property (nonatomic, strong) NSMutableArray <XLAlertAction *>  *actionArray;
 @property (nonatomic, strong) XLAlertAction                     *cancelAction;
 
-@property (nonatomic, strong) UIView *whiteBgView;
-@property (nonatomic, strong) XLTableView *actionTableView;
+@property (nonatomic, strong) UIView            *whiteBgView;
+@property (nonatomic, strong) UIView            *sepView;
+
+@property (nonatomic, assign) UIAlertControllerStyle preferredStyle;
+
++(instancetype)alertWithTitle:(nullable NSString *)title message:(nullable NSString *)message;
 @end
 
-static CGFloat kXLAlertSheetItemHeight      = 55.0f;
-static CGFloat kXLAlertSheetCancelSpace     = 8.0f;
-static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
+static CGFloat kXLAlertTopSpace        = 25.0f;
+@implementation XLAlertView
 
-@implementation XLAlertSheetView
++ (instancetype)alertWithTitle:(nullable NSString *)title message:(nullable NSString *)message preferredStyle:(UIAlertControllerStyle)preferredStyle{
+    if (preferredStyle == UIAlertControllerStyleActionSheet) {
+        return [XLAlertSheetView alertWithTitle:title message:message];
+    } else {
+        return [XLAlertAlertView alertWithTitle:title message:message];
+    }
+}
+
++(instancetype)alertWithTitle:(NSString *)title message:(NSString *)message{
+    return nil;
+}
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
+        
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6f];
         
         _actionArray = [NSMutableArray array];
@@ -46,25 +68,54 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
         _whiteBgView = [[UIView alloc] init];
         _whiteBgView.backgroundColor = [UIColor whiteColor];
         _whiteBgView.layer.masksToBounds = YES;
-        _whiteBgView.layer.cornerRadius = kXLAlertSheetCornerRadius;
         [self addSubview:_whiteBgView];
         
-        _actionTableView = [[XLTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _actionTableView.delegate = self;
-        _actionTableView.bounces = NO;
-        _actionTableView.dataSource = self;
-        _actionTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        [self addSubview:_actionTableView];
+        [self.whiteBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+            if ([self isKindOfClass:[XLAlertSheetView class]]) {
+                make.left.mas_equalTo(self);
+                make.right.mas_equalTo(self);
+                make.bottom.mas_equalTo(self.mas_bottom);
+            } else {
+                if (XLMiniScreen) {
+                    make.left.mas_equalTo(self).offset(45.0f);
+                    make.right.mas_equalTo(self).offset(-45.0f);
+                } else {
+                    make.left.mas_equalTo(self).offset(65.0f);
+                    make.right.mas_equalTo(self).offset(-65.0f);
+                }
+                make.centerX.mas_equalTo(self);
+                make.centerY.mas_equalTo(self);
+            }
+        }];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(alertTapAction)];
+        tap.delegate = self;
         [self addGestureRecognizer:tap];
         self.userInteractionEnabled = YES;
     }
     return self;
 }
 
+#pragma mark - UIGestureRecognizerDelegate
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+      shouldReceiveTouch:(UITouch *)touch {
+    if ([NSStringFromClass([touch.view class]) isEqual:@"UITableViewCellContentView"]) {
+        return NO;
+    }
+    return YES;
+}
+
 -(void)alertTapAction{
     [self xlHidden];
+}
+
+-(void)xlShow{
+}
+
+-(void)xlHidden{
+    [self.actionArray removeAllObjects];
+    self.cancelAction = nil;
+    [self removeFromSuperview];
 }
 
 -(void)addAction:(XLAlertAction *)action{
@@ -75,10 +126,278 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
     }
 }
 
+-(void)setXlTitle:(NSString *)xlTitle{
+    _xlTitle = xlTitle;
+    if (xlTitle && xlTitle.length > 0) {
+        if (_xlTitleLabel == nil) {
+            _xlTitleLabel = [[UILabel alloc] init];
+            _xlTitleLabel.textAlignment = NSTextAlignmentCenter;
+            _xlTitleLabel.font = XLFont(16.0f);
+            _xlTitleLabel.textColor = XLTitleColor;
+            _xlTitleLabel.numberOfLines = 1;
+        }
+        _xlTitleLabel.text = xlTitle;
+        
+        [self addSubview:_xlTitleLabel];
+        
+        [self.xlTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.whiteBgView).offset(8.0f);
+            make.right.mas_equalTo(self.whiteBgView).offset(-8.0f);
+            make.top.mas_equalTo(self.whiteBgView).offset(kXLAlertTopSpace);
+        }];
+    }
+}
+
+-(void)setXlMessage:(NSString *)xlMessage{
+    _xlMessage = xlMessage;
+    if (xlMessage && xlMessage.length > 0) {
+        if (_xlMessageLabel == nil) {
+            _xlMessageLabel = [[UILabel alloc] init];
+            _xlMessageLabel.textAlignment = NSTextAlignmentCenter;
+            _xlMessageLabel.font = XLFont(15.0f);
+            _xlMessageLabel.textColor = XLTitleColor;
+            _xlMessageLabel.numberOfLines = 0;
+        }
+        _xlMessageLabel.text = xlMessage;
+        [self addSubview:_xlMessageLabel];
+        
+        [self.xlMessageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.whiteBgView).offset(8.0f);
+            make.right.mas_equalTo(self.whiteBgView).offset(-8.0f);
+            if (self.xlTitleLabel) {
+                make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(15.0f);
+            } else {
+                make.top.mas_equalTo(self.whiteBgView).offset(kXLAlertTopSpace);
+            }
+        }];
+    }
+}
+
+@end
+
+#pragma mark - XLAlertAlertView
+@interface XLAlertAlertView ()
+@property (nonatomic, strong) UILabel   *xlTitleLabel;
+@property (nonatomic, strong) UILabel   *xlMessageLabel;
+@property (nonatomic, strong) UIButton  *cancelButton;
+
+@property (nonatomic, strong) UIView    *sepView1;
+@end
+
+static CGFloat kXLAlertItemHeight      = 45.0f;
+static CGFloat kXLAlertCancelSpace     = 8.0f;
+static CGFloat kXLAlertCornerRadius    = 6.0f;
+@implementation XLAlertAlertView
+
++(instancetype)alertWithTitle:(nullable NSString *)title message:(nullable NSString *)message{
+    XLAlertAlertView *view = [[XLAlertAlertView alloc] initWithFrame:CGRectZero];
+    view.xlTitle = title;
+    view.xlMessage = message;
+    return view;
+}
+
+-(instancetype)initWithFrame:(CGRect)frame{
+    if (self = [super initWithFrame:frame]) {
+        self.whiteBgView.layer.cornerRadius = kXLAlertCornerRadius;
+        
+        self.sepView = [[UIView alloc] init];
+        self.sepView.backgroundColor = XLComSepColor;
+        [self addSubview:self.sepView];
+        
+        self.sepView1 = [[UIView alloc] init];
+        self.sepView1.backgroundColor = XLComSepColor;
+        [self addSubview:self.sepView1];
+    }
+    return self;
+}
+
+-(void)xlShow{
+    [self.sepView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.whiteBgView);
+        make.right.mas_equalTo(self.whiteBgView);
+        if (self.xlMessageLabel) {
+            make.top.mas_equalTo(self.xlMessageLabel.mas_bottom).offset(kXLAlertTopSpace);
+        } else {
+            make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(kXLAlertTopSpace);
+        }
+        make.height.mas_equalTo(XLCellSepHeight);
+    }];
+    
+    NSInteger itemCount = self.actionArray.count;
+    NSInteger totalCount = itemCount;
+    if (self.cancelAction) {
+        totalCount ++;
+    }
+    BOOL fullWidth = totalCount != 2;
+    BOOL addCancelButton = NO;
+    
+    UIButton *lastButton = nil;
+    if (self.cancelAction) { /// 取消
+        addCancelButton = YES;
+        self.cancelButton = [self cancelButtonWithTitle:self.cancelAction.title];
+        [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.whiteBgView);
+            if (self.xlMessageLabel) {
+                make.top.mas_equalTo(self.xlMessageLabel.mas_bottom).offset(kXLAlertTopSpace);
+            } else {
+                make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(kXLAlertTopSpace);
+            }
+            make.height.mas_equalTo(kXLAlertItemHeight);
+            if (fullWidth) {
+                make.width.mas_equalTo(self.whiteBgView.mas_width);
+            } else {
+                make.width.mas_equalTo(self.whiteBgView.mas_width).multipliedBy(0.5f);
+            }
+            if (totalCount == 1) {
+                make.bottom.mas_equalTo(self.whiteBgView);
+            }
+        }];
+        addCancelButton = YES;
+        
+        lastButton = self.cancelButton;
+    }
+    
+    for (NSInteger index = 0; index < itemCount; index ++) {
+        XLAlertAction *action = self.actionArray[index];
+        UIButton *button = [self otherButtonWithTitle:action.title];
+        [button mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(kXLAlertItemHeight);
+            make.right.mas_equalTo(self.whiteBgView);
+            if (fullWidth) {
+                make.left.mas_equalTo(self.whiteBgView);
+            } else {
+                make.width.mas_equalTo(self.whiteBgView.mas_width).multipliedBy(0.5f);
+            }
+            if (lastButton) {
+                if (fullWidth) {
+                    make.top.mas_equalTo(lastButton.mas_bottom);
+                } else {
+                    make.top.mas_equalTo(lastButton);
+                }
+            } else if (self.xlMessageLabel) {
+                make.top.mas_equalTo(self.xlMessageLabel.mas_bottom).offset(kXLAlertTopSpace);
+            } else {
+                make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(kXLAlertTopSpace);
+            }
+            if (index == itemCount - 1) {
+                make.bottom.mas_equalTo(self.whiteBgView);
+            }
+        }];
+        button.tag = index;
+    }
+    if (totalCount == 2) {
+        self.sepView1.hidden = NO;
+        [self.sepView1 mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.mas_equalTo(self.whiteBgView);
+            make.top.mas_equalTo(lastButton);
+            make.bottom.mas_equalTo(lastButton);
+            make.width.mas_equalTo(XLCellSepHeight);
+        }];
+    } else {
+        self.sepView1.hidden = YES;
+    }
+    
+    UIWindow *window = [[UIApplication sharedApplication].delegate window];
+    [window addSubview:self];
+    self.frame = window.bounds;
+    self.alpha = 0.0f;
+    
+    [UIView animateWithDuration:0.25f animations:^{
+        self.alpha = 1.0f;
+    }];
+}
+
+-(UIButton *)otherButtonWithTitle:(NSString *)title{
+    UIButton *button = [self buttonWithTitle:title whithColor:XLHexColor(@"#005B80")];
+    [button addTarget:self action:@selector(otherButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    return button;
+}
+
+-(UIButton *)cancelButtonWithTitle:(NSString *)title{
+    UIButton *btn = [self buttonWithTitle:title whithColor:XLTitleColor];
+    [btn addTarget:self action:@selector(cancelButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    return btn;
+}
+
+-(UIButton *)buttonWithTitle:(NSString *)title  whithColor:(UIColor *)color{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setTitle:title forState:UIControlStateNormal];
+    [button setTitleColor:color forState:UIControlStateNormal];
+    button.titleLabel.font = XLFont(15.0f);
+    [self addSubview:button];
+    return button;
+}
+
+-(void)otherButtonClick:(UIButton *)button{
+    NSInteger tag = button.tag;
+    XLAlertAction *action = self.actionArray[tag];
+    if (action.handler) {
+        action.handler(action);
+    }
+    [self xlHidden];
+}
+
+-(void)cancelButtonClick:(UIButton *)button{
+    if (self.cancelAction && self.cancelAction.handler) {
+        self.cancelAction.handler(self.cancelAction);
+    }
+    [self xlHidden];
+}
+
+@end
+
+#pragma mark - XLAlertSheetView
+@interface XLAlertSheetView () <UITableViewDelegate, UITableViewDataSource>
+
+@property (nonatomic, strong) XLTableView *actionTableView;
+@end
+
+static CGFloat kXLAlertSheetItemHeight      = 55.0f;
+static CGFloat kXLAlertSheetCancelSpace     = 8.0f;
+static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
+
+@implementation XLAlertSheetView
+
++(instancetype)alertWithTitle:(nullable NSString *)title message:(nullable NSString *)message{
+    XLAlertSheetView *view = [[XLAlertSheetView alloc] initWithFrame:CGRectZero];
+    view.xlTitle = title;
+    view.xlMessage = message;
+    return view;
+}
+
+-(instancetype)initWithFrame:(CGRect)frame{
+    if (self = [super initWithFrame:frame]) {
+        self.whiteBgView.layer.cornerRadius = kXLAlertSheetCornerRadius;
+        
+        _actionTableView = [[XLTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        _actionTableView.delegate = self;
+        _actionTableView.bounces = NO;
+        _actionTableView.dataSource = self;
+        _actionTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        [self addSubview:_actionTableView];
+        
+        [_actionTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.whiteBgView);
+            make.right.mas_equalTo(self.whiteBgView);
+            if (XLAvailableiOS11) {
+                make.bottom.mas_equalTo(self.mas_safeAreaLayoutGuideBottom);
+            } else {
+                make.bottom.mas_equalTo(self.mas_bottom);
+            }
+        }];
+    }
+    return self;
+}
+
 -(void)xlShow{
     [self.actionTableView reloadData];
     
     UIWindow *window = [[UIApplication sharedApplication].delegate window];
+    
+    [window addSubview:self];
+    self.frame = window.bounds;
+    
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
     
     NSInteger itemCount = self.actionArray.count;
     CGFloat contentHeight = kXLAlertSheetCornerRadius;
@@ -91,28 +410,34 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
         }
         contentHeight = contentHeight + kXLAlertSheetItemHeight;
     }
-    [window addSubview:self];
-    self.frame = window.bounds;
     
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    _actionTableView.frame = CGRectMake(0, screenSize.height, screenSize.width, contentHeight);
-    
-    CGFloat bgHeight = contentHeight + kXLAlertSheetCornerRadius + XLNavBottomHeight;
-    _whiteBgView.frame = CGRectMake(0, screenSize.height - kXLAlertSheetCornerRadius, screenSize.width,  contentHeight);
+    [_actionTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        if (self.xlMessageLabel) {
+            make.top.mas_equalTo(self.xlMessageLabel.mas_bottom).offset(12.0f);
+        } else if (self.xlTitleLabel){
+            make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(12.0f);
+        } else {
+            make.top.mas_equalTo(self.whiteBgView).offset(kXLAlertSheetCornerRadius);
+        }
+        if (XLAvailableiOS11) {
+            make.bottom.mas_equalTo(self.mas_safeAreaLayoutGuideBottom);
+        } else {
+            make.bottom.mas_equalTo(self.mas_bottom);
+        }
+        make.height.mas_equalTo(contentHeight);
+    }];
+//    _actionTableView.frame = CGRectMake(0, screenSize.height, screenSize.width, contentHeight);
+//
+//    CGFloat bgHeight = contentHeight + kXLAlertSheetCornerRadius + XLNavBottomHeight;
+//    self.whiteBgView.frame = CGRectMake(0, screenSize.height - kXLAlertSheetCornerRadius, screenSize.width,  contentHeight);
     self.alpha = 0.0f;
     
     [UIView animateWithDuration:0.25f animations:^{
         self.alpha = 1.0f;
         CGFloat datY = screenSize.height - contentHeight - XLNavBottomHeight;
-        self.actionTableView.frame = CGRectMake(0, datY , screenSize.width, contentHeight);
-        _whiteBgView.frame = CGRectMake(0, datY - kXLAlertSheetCornerRadius, screenSize.width, bgHeight);
+//        self.actionTableView.frame = CGRectMake(0, datY , screenSize.width, contentHeight);
+//        self.whiteBgView.frame = CGRectMake(0, datY - kXLAlertSheetCornerRadius, screenSize.width, bgHeight);
     }];
-}
-
--(void)xlHidden{
-    [self.actionArray removeAllObjects];
-    self.cancelAction = nil;
-    [self removeFromSuperview];
 }
 
 #pragma mark - UITableViewDelegate, UITableViewDataSource
@@ -172,6 +497,18 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
             make.centerY.mas_equalTo(cell.contentView);
         }];
         titleLabel.tag = 1001;
+        
+        if (indexPath.section == 0 && indexPath.row != self.actionArray.count - 1) {
+            UIView *xlSepView = [[UIView alloc] init];
+            xlSepView.backgroundColor = XLComSepColor;
+            [cell addSubview:xlSepView];
+            [xlSepView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(cell);
+                make.right.mas_equalTo(cell);
+                make.bottom.mas_equalTo(cell);
+                make.height.mas_equalTo(XLCellSepHeight);
+            }];
+        }
     }
     
     UILabel *tmpTitleLabel = [cell.contentView viewWithTag:1001];

@@ -9,6 +9,7 @@
 #import "XLApplicationTools.h"
 #import "NSString+XLCategory.h"
 #import "XLSystemMacro.h"
+#import "XLAlertView.h"
 
 @implementation XLApplicationTools
 
@@ -81,10 +82,10 @@
         msgVC.messageComposeDelegate = delegate;
         [controller presentViewController:msgVC animated:YES completion:nil];
     } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示信息" message:@"该设备暂无法发送短信" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *setting = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+        XLAlertView *alert = [XLAlertView alertWithTitle:@"提示信息" message:@"该设备暂无法发送短信" preferredStyle:UIAlertControllerStyleAlert];
+        XLAlertAction *setting = [XLAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
         [alert addAction:setting];
-        [controller presentViewController:alert animated:YES completion:nil];
+        [alert xlShow];
     }
 }
 

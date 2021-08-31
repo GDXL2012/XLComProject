@@ -18,9 +18,23 @@
 #import "XLSystemMacro.h"
 #import "UIView+XLAdditions.h"
 #import "NSObject+XLCategory.h"
+#import "XLMacroLayout.h"
+#import "XLImageEditView.h"
+#import "XLFileTools.h"
+#import "XLMacroFont.h"
+#import "XLAdaptation.h"
+#import <SDWebImage/UIView+WebCache.h>
+#import "XLAlertView.h"
+
+typedef NS_ENUM(NSInteger, XLPreviewOPButtonTag) {
+    XLPreviewOPButtonTagMore,
+    XLPreviewOPButtonTagDel,
+    XLPreviewOPButtonTagEdit,
+    XLPreviewOPButtonTagDownload
+};
 
 /// 管理类：
-@interface XLImagePreviewManager : NSObject <UICollectionViewDelegate, UICollectionViewDataSource, UIScrollViewDelegate>
+@interface XLImagePreviewManager : NSObject <UICollectionViewDelegate, UICollectionViewDataSource, UIScrollViewDelegate, XLImageEditViewDelegate>
 @property (nonatomic, strong) NSMutableArray    *previewInfoArray; // 预览信息列表
 
 /// 图片预览开始及结束时的黑色背景，仿微信效果
@@ -29,8 +43,11 @@
 @property (nonatomic, strong) UIImageView       *transitionImgView;
 @property (nonatomic, strong) UICollectionView  *xlCollectionView;  /// 预览展示
 
+@property (nonatomic, strong) UILabel           *xlCountLabel;      /// 计数
 @property (nonatomic, strong) UIView            *bottomOpBgView;
 @property (nonatomic, strong) UIButton          *xlMoreButton;      /// 更多按钮
+@property (nonatomic, strong) UIButton          *xlEditButton;      /// 编辑按钮
+@property (nonatomic, strong) UIButton          *xlDeleteButton;    /// 删除按钮
 @property (nonatomic, strong) UIButton          *xlDowloadButton;   /// 下载按钮
 
 /// 可见区域View：用于图片预览销毁时判断动画执行，多张图片时有效，且为预览参数为ImageView类型
@@ -43,6 +60,8 @@
 
 @property (nonatomic, weak) id<XLImagePreviewProtocol> xlDelegate;
 @property (nonatomic, weak) id<XLImagePreviewDataSource> xlDataSource;
+
+@property (nonatomic, assign) XLImagePreviewOpItems currentPreviewOpItems; /// 当前预览状态
 
 @end
 
@@ -62,6 +81,103 @@ static XLImagePreviewManager *previewManager;
     if (previewManager) {
         [previewManager hiddenPreview:nil];
     }
+}
+
+-(UIButton *)xlMoreButton{
+    if (_xlMoreButton == nil) {
+        _xlMoreButton = [self createOpButtonWithImgName:@"nav_more_hor_icon" title:nil];
+        _xlEditButton.tag = XLPreviewOPButtonTagMore;
+    }
+    return _xlMoreButton;
+}
+
+-(UIButton *)xlDeleteButton{
+    if (_xlDeleteButton == nil) {
+        _xlDeleteButton = [self createOpButtonWithImgName:@"nav_more_hor_icon" title:nil];
+        _xlDeleteButton.tag = XLPreviewOPButtonTagDel;
+    }
+    return _xlDeleteButton;
+}
+
+-(UIButton *)xlEditButton{
+    if (_xlEditButton == nil) {
+        _xlEditButton = [self createOpButtonWithImgName:@"nav_more_hor_icon" title:nil];
+        _xlEditButton.tag = XLPreviewOPButtonTagEdit;
+    }
+    return _xlEditButton;
+}
+
+-(UIButton *)xlDowloadButton{
+    if (_xlDowloadButton == nil) {
+        _xlDowloadButton = [self createOpButtonWithImgName:@"nav_more_hor_icon" title:nil];
+        _xlDowloadButton.tag = XLPreviewOPButtonTagDownload;
+        [self.xlDowloadButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.bottomOpBgView.mas_left).offset(XLHMinSpace);
+            make.centerY.mas_equalTo(self.bottomOpBgView);
+        }];
+    }
+    return _xlDowloadButton;
+}
+
+-(void)setXLMoreButtonHidden:(BOOL)hidden{
+    self.xlMoreButton.hidden = hidden;
+    if (!hidden) {
+        [self.xlMoreButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.right.mas_equalTo(self.bottomOpBgView).offset(-XLHMargin);
+            make.size.mas_equalTo(CGSizeMake(40.0f, 40.0f));
+            make.centerY.mas_equalTo(self.bottomOpBgView);
+        }];
+    }
+}
+
+-(void)setXLDeleteButtonHidden:(BOOL)hidden{
+    self.xlDeleteButton.hidden = hidden;
+    if (!hidden) {
+        [self.xlDeleteButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            if (_xlMoreButton && !_xlMoreButton.hidden) {
+                make.right.mas_equalTo(self.xlMoreButton.mas_left).offset(-XLHMinSpace);
+            } else {
+                make.right.mas_equalTo(self.bottomOpBgView).offset(-XLHMargin);
+            }
+            make.size.mas_equalTo(CGSizeMake(40.0f, 40.0f));
+            make.centerY.mas_equalTo(self.bottomOpBgView);
+        }];
+    }
+}
+
+-(void)setXLEditButtonHidden:(BOOL)hidden{
+    self.xlEditButton.hidden = hidden;
+    if (!hidden) {
+        [self.xlEditButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            if (_xlDeleteButton && !_xlDeleteButton.hidden) {
+                make.right.mas_equalTo(self.xlDeleteButton.mas_left).offset(-XLHMinSpace);
+            } else if(_xlMoreButton && !_xlMoreButton.hidden){
+                make.right.mas_equalTo(self.xlMoreButton.mas_left).offset(-XLHMinSpace);
+            } else {
+                make.right.mas_equalTo(self.bottomOpBgView).offset(-XLHMargin);
+            }
+            make.size.mas_equalTo(CGSizeMake(40.0f, 40.0f));
+            make.centerY.mas_equalTo(self.bottomOpBgView);
+        }];
+    }
+}
+
+-(void)setXLDowloadButtonHidden:(BOOL)hidden{
+    self.xlDowloadButton.hidden = hidden;
+}
+
+-(UIButton *)createOpButtonWithImgName:(NSString *)imgName title:(NSString *)title{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button addTarget:self action:@selector(bottomButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    if (![NSString isEmpty:imgName]) {
+        UIImage *iconImg = [UIImage imageNamed:imgName];
+        [button setImage:iconImg forState:UIControlStateNormal];
+    }
+    if (![NSString isEmpty:title]) {
+        [button setTitle:title forState:UIControlStateNormal];
+    }
+    [self.bottomOpBgView addSubview:button];
+    return button;
 }
 
 -(void)dealloc{
@@ -100,19 +216,9 @@ static XLImagePreviewManager *previewManager;
         _bottomOpBgView.backgroundColor = [UIColor clearColor];
         _bottomOpBgView.hidden = YES;
         
-        _xlMoreButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *iconImg = [UIImage imageNamed:@"nav_more_hor_icon"];
-        [_xlMoreButton addTarget:self action:@selector(moreMenuButtonClick) forControlEvents:UIControlEventTouchUpInside];
-        [_xlMoreButton setImage:iconImg forState:UIControlStateNormal];
-        [_bottomOpBgView addSubview:self.xlMoreButton];
-        [self.xlMoreButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.mas_equalTo(self.bottomOpBgView);
-            make.left.mas_equalTo(self.bottomOpBgView);
-            make.top.mas_equalTo(self.bottomOpBgView);
-            make.bottom.mas_equalTo(self.bottomOpBgView);
-            make.width.mas_equalTo(40.0f);
-            make.height.mas_equalTo(40.0f);
-        }];
+        _xlCountLabel = [[UILabel alloc] init];
+        _xlCountLabel.font = XLFont(14.0f);
+        _xlCountLabel.textColor = [UIColor whiteColor];
     }
     return self;
 }
@@ -128,38 +234,115 @@ static XLImagePreviewManager *previewManager;
 /// @param gesture <#gesture description#>
 -(void)longPressGesture:(UIGestureRecognizer *)gesture{
     if (gesture.state == UIGestureRecognizerStateBegan) {
-        [self moreMenuForPreviewAtIndex:self.currentIndex];
-    }
-}
-
--(void)moreMenuButtonClick{
-    [self moreMenuForPreviewAtIndex:self.currentIndex];
-}
-
--(void)dowloadMenuButtonClick{
-    [self dowloadForPreviewAtIndex:self.currentIndex];
-}
-/// 预览图片更多操作事件回调
--(void)moreMenuForPreviewAtIndex:(NSInteger)index{
-    if (self.xlDelegate &&
-        [self.xlDelegate respondsToSelector:@selector(needShowMoreButtonAtIndex:)]) {
-        if ([self.xlDelegate needShowMoreButtonAtIndex:self.currentIndex]) {
-            if([self.xlDelegate respondsToSelector:@selector(moreMenuForPreviewAtIndex:)]){
-                [self.xlDelegate moreMenuForPreviewAtIndex:self.currentIndex];
+        if (self.xlDelegate &&
+            [self.xlDelegate respondsToSelector:@selector(showLongPressOperationAtIndex:)]) {
+            if (![self.xlDelegate showLongPressOperationAtIndex:self.currentIndex]) {
+                return;
             }
+        }
+        if([self.xlDelegate respondsToSelector:@selector(longPressOperationClickAtIndex:)]){
+            [self.xlDelegate longPressOperationClickAtIndex:self.currentIndex];
         }
     }
 }
+
+-(void)bottomButtonClick:(UIButton *)button{
+    if (button.tag == XLPreviewOPButtonTagMore) {
+        [self moreMenuForPreviewAtIndex:self.currentIndex];
+    } else if (button.tag == XLPreviewOPButtonTagDel){
+        [self deleteMenuForPreviewAtIndex:self.currentIndex];
+    } else if (button.tag == XLPreviewOPButtonTagEdit){
+        [self editMenuForPreviewAtIndex:self.currentIndex];
+    } else if (button.tag == XLPreviewOPButtonTagDownload){
+        [self dowloadForPreviewAtIndex:self.currentIndex];
+    }
+}
+
 /// 预览图片更多操作事件回调
 -(void)dowloadForPreviewAtIndex:(NSInteger)index{
     if (self.xlDelegate &&
-        [self.xlDelegate respondsToSelector:@selector(needShowMoreButtonAtIndex:)]) {
-        if ([self.xlDelegate needShowMoreButtonAtIndex:self.currentIndex]) {
-            if([self.xlDelegate respondsToSelector:@selector(dowloadForPreviewAtIndex:)]){
-                [self.xlDelegate dowloadForPreviewAtIndex:self.currentIndex];
-            }
+        [self.xlDelegate respondsToSelector:@selector(dowloadOperationClickAtIndex:)]) {
+        if([self.xlDelegate respondsToSelector:@selector(dowloadOperationClickAtIndex:)]){
+            [self.xlDelegate dowloadOperationClickAtIndex:index];
         }
     }
+}
+  
+-(void)editMenuForPreviewAtIndex:(NSInteger)index{
+    /// 编辑按钮
+    if (self.xlDelegate &&
+        [self.xlDelegate respondsToSelector:@selector(imageForEditAtIndex:)]) {
+        UIImage *image = [self.xlDelegate imageForEditAtIndex:self.currentIndex];
+        if (image) {
+            UIWindow *window = [UIApplication sharedApplication].delegate.window;
+            [XLImageEditView showImageEditView:image inView:window delegate:self];
+        }
+    }
+}
+
+-(void)deleteMenuForPreviewAtIndex:(NSInteger)index{
+    if (self.xlDelegate &&
+        [self.xlDelegate respondsToSelector:@selector(deleteTipsInfo:)]) {
+        NSString *tips = [self.xlDelegate deleteTipsInfo:index];
+        [self deletePreviewImageWithTips:tips atIndex:index];
+    } else {
+        [self deleteItemForPreviewAtIndex:index];
+    }
+}
+
+/// 更多按钮点击
+-(void)moreMenuForPreviewAtIndex:(NSInteger)index{
+    if (self.xlDelegate &&
+        [self.xlDelegate respondsToSelector:@selector(moreOperationClickAtIndex:)]) {
+        if([self.xlDelegate respondsToSelector:@selector(moreOperationClickAtIndex:)]){
+            [self.xlDelegate moreOperationClickAtIndex:index];
+        }
+    }
+}
+
+-(void)deleteItemForPreviewAtIndex:(NSInteger)index{
+    /// 删除按钮
+    if (self.xlDelegate &&
+        [self.xlDelegate respondsToSelector:@selector(deleteOperationClickAtIndex:)]) {
+        [self.xlDelegate deleteOperationClickAtIndex:self.currentIndex];
+        [self.previewInfoArray removeObjectAtIndex:self.currentIndex];
+        if (self.previewInfoArray.count == 0) {
+            [self previewDisappearForDefault];
+        } else {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.currentIndex inSection:0];
+            [self.xlCollectionView deleteItemsAtIndexPaths:@[indexPath]];
+        }
+    }
+}
+
+-(void)deletePreviewImageWithTips:(NSString *)tips atIndex:(NSInteger)index{
+    XLAlertView *alert = [XLAlertView alertWithTitle:nil message:tips preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    XLAlertAction *action = [XLAlertAction actionWithTitle:XLNSLocalized(@"确定") style:UIAlertActionStyleDefault handler:^(XLAlertAction * _Nonnull action) {
+        [self deleteItemForPreviewAtIndex:index];
+    }];
+    [alert addAction:action];
+    
+    action = [XLAlertAction actionWithTitle:XLNSLocalized(@"取消") style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:action];
+    [alert xlShow];
+}
+
+#pragma mark - XLImageEditViewDelegate <NSObject>
+-(void)imageEditViewComplete:(UIImage *)editImage{
+    if (self.xlDelegate &&
+        [self.xlDelegate respondsToSelector:@selector(editCompleteForPreviewAtIndex:image:)]) {
+        [self.xlDelegate editCompleteForPreviewAtIndex:self.currentIndex image:editImage];
+        XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.currentIndex];
+        
+        info.originalImage = editImage;
+        info.previewItemType = XLPreviewItemImage;
+        
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.currentIndex inSection:0];
+        [self.xlCollectionView reloadItemsAtIndexPaths:@[indexPath]];
+    }
+}
+-(void)imageEditViewCancel{
 }
 
 #pragma mark - SetPreview Info
@@ -260,11 +443,16 @@ static XLImagePreviewManager *previewManager;
     _previewItemType = XLPreviewItemSDImageView;
     for (NSInteger index = 0; index < count; index ++) {
         XLPreviewItemInfo *itemInfo = [[XLPreviewItemInfo alloc] init];
-        UIImageView *imageView = [self.xlDataSource visablePreviewImageForAtIndex:index];
+        UIImageView *imageView = [self.xlDataSource visablePreviewImageAtIndex:index];
         if (imageView) {
-            [itemInfo setPreviewSDImageView:imageView atIndex:index];
+            NSString *path = [self.xlDataSource visablePreviewImagePathAtIndex:index];
+            if([NSString isEmpty:path]){
+                [itemInfo setPreviewImageView:imageView path:nil atIndex:index];
+            } else {
+                [itemInfo setPreviewSDImageView:imageView path:path atIndex:index];
+            }
         } else {
-            NSObject *object = [self.xlDataSource invisablePreviewImageForAtIndex:index];
+            NSObject *object = [self.xlDataSource invisablePreviewImageAtIndex:index];
             if ([object isKindOfClass:[NSString class]]) {
                 [itemInfo setInvisablePreviewImageUrl:(NSString *)object atVisiableView:self.visibleView atIndex:index];
             } else {
@@ -287,10 +475,11 @@ static XLImagePreviewManager *previewManager;
         XLPreviewItemInfo *itemInfo = [[XLPreviewItemInfo alloc] init];
         if (itemType == XLPreviewItemSDImageView) {
             UIImageView *imageView = [imageArrayCopy objectAtIndex:index];
-            [itemInfo setPreviewSDImageView:imageView atIndex:index];
+            NSString *path = imageView.sd_imageURL.absoluteString;
+            [itemInfo setPreviewSDImageView:imageView path:path atIndex:index];
         } else if (itemType == XLPreviewItemImageView){
             UIImageView *imageView = [imageArrayCopy objectAtIndex:index];
-            [itemInfo setPreviewImageView:imageView atIndex:index];
+            [itemInfo setPreviewImageView:imageView path:nil atIndex:index];
         } else if (itemType == XLPreviewItemImageUrl){
             NSString *imageUrl = [imageArrayCopy objectAtIndex:index];
             [itemInfo setPreviewImageUrl:imageUrl atIndex:index];
@@ -338,6 +527,8 @@ static XLImagePreviewManager *previewManager;
         } else {
             make.bottom.mas_equalTo(window.mas_bottom).offset(-15.0f);
         }
+        make.left.mas_equalTo(window);
+        make.height.mas_equalTo(40.0f);
     }];
     
     [self.xlCollectionView reloadData];
@@ -347,17 +538,26 @@ static XLImagePreviewManager *previewManager;
     } else {
         self.xlCollectionView.hidden = NO;
     }
+    
+    [window addSubview:self.xlCountLabel];
+    [self.xlCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.mas_equalTo(window);
+        if (XLAvailableiOS11) {
+            make.top.mas_equalTo(window.mas_safeTop).offset(15.0f);
+        } else {
+            make.top.mas_equalTo(window.mas_top).offset(15.0f);
+        }
+    }];
 }
 
 /// 显示预览开始动画
 /// @param view <#view description#>
 -(void)showAnimateInView:(UIView *)view{
     XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.selelctIndex];
-    UIImageView *originalView = info.originalPreviewInfo;
     
     [view addSubview:self.backgroundView];
-    self.transitionImgView.image = originalView.image;
-    self.transitionImgView.contentMode = originalView.contentMode;
+    self.transitionImgView.image = info.originalImage;
+    self.transitionImgView.contentMode = info.contentMode;
     self.transitionImgView.frame = info.originalFrame;
     [view addSubview:self.transitionImgView];
     [UIView animateWithDuration:0.35f animations:^{
@@ -365,6 +565,7 @@ static XLImagePreviewManager *previewManager;
     } completion:^(BOOL finished) {
         [self.xlCollectionView.superview bringSubviewToFront:self.xlCollectionView];
         [self.bottomOpBgView.superview bringSubviewToFront:self.bottomOpBgView];
+        [self.xlCountLabel.superview bringSubviewToFront:self.xlCountLabel];
         self.xlCollectionView.hidden = NO;
         self.transitionImgView.hidden = YES;
     }];
@@ -378,6 +579,8 @@ static XLImagePreviewManager *previewManager;
     self.bottomOpBgView.hidden = YES;
     [self.bottomOpBgView removeFromSuperview];
     self.bottomOpBgView = nil;
+    [self.xlCountLabel removeFromSuperview];
+    self.xlCountLabel = nil;
 }
 
 /// 移除背景
@@ -388,6 +591,11 @@ static XLImagePreviewManager *previewManager;
     self.transitionImgView = nil;
     [self.bottomOpBgView removeFromSuperview];
     self.bottomOpBgView = nil;
+    
+    if (self.xlDelegate &&
+        [self.xlDelegate respondsToSelector:@selector(imagePreviewCanceled)]) {
+        [self.xlDelegate imagePreviewCanceled];
+    }
 }
 
 /// 释放预览信息
@@ -439,6 +647,7 @@ static XLImagePreviewManager *previewManager;
     /// 1.设置预览图片
     XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.selelctIndex];
     
+    /// 当前预览可见cell：实际上只有一个
     XLImagePreviewCell *cell = [self.xlCollectionView visibleCells].lastObject;
     UIImageView *previewView = cell.previewView.previewImageView;
     
@@ -453,7 +662,6 @@ static XLImagePreviewManager *previewManager;
     self.transitionImgView.hidden = NO;
     [UIView animateWithDuration:0.35f animations:^{
         self.transitionImgView.center = center;
-//        self.transitionImgView.transform = CGAffineTransformIdentity;
         self.transitionImgView.frame = info.originalFrame;
         self.transitionImgView.clipsToBounds = YES;
     } completion:^(BOOL finished) {
@@ -469,11 +677,13 @@ static XLImagePreviewManager *previewManager;
     /// 两张图片控件的父类分支有重叠，则会导致动画结束后resetPreviewZPosition操作结果错误
     [self recoveryPreviewInfo];
     
+    /// 当前预览可见cell：实际上只有一个
+    XLImagePreviewCell *cell = [self.xlCollectionView visibleCells].lastObject;
+    UIImageView *previewView = cell.previewView.previewImageView;
+    self.transitionImgView.image = previewView.image;
+    
     /// 2.设置当前预览图片放大处理
     XLPreviewItemInfo *currentInfo = [self.previewInfoArray objectAtIndex:self.currentIndex];
-    UIImageView *imageView = currentInfo.originalPreviewInfo;
-    self.transitionImgView.image = imageView.image;
-//    self.transitionImgView.frame = currentInfo.originalFrame;
     [self enlargeOriginalView:currentInfo inView:nil];
     
     /// 当前预览View销毁
@@ -483,7 +693,6 @@ static XLImagePreviewManager *previewManager;
         CGRect currentFrame = currentInfo.originalFrame;
         CGPoint currentCenter = CGPointMake(currentFrame.origin.x + currentFrame.size.width / 2, currentFrame.origin.y + currentFrame.size.height / 2);
         self.transitionImgView.center = currentCenter;
-//        self.transitionImgView.transform = CGAffineTransformIdentity;
         self.transitionImgView.frame = currentInfo.originalFrame;
         self.transitionImgView.clipsToBounds = YES;
     } completion:^(BOOL finished) {
@@ -504,7 +713,6 @@ static XLImagePreviewManager *previewManager;
     self.transitionImgView.hidden = NO;
     [UIView animateWithDuration:0.3f animations:^{
         self.transitionImgView.center = center;
-//        self.transitionImgView.transform = CGAffineTransformIdentity;
         self.transitionImgView.frame = oldFrame;
         self.transitionImgView.clipsToBounds = YES;
     } completion:^(BOOL finished) {
@@ -549,8 +757,6 @@ static XLImagePreviewManager *previewManager;
         
         widht = iamgeSize.width * xScale;
         height = iamgeSize.height * yScale;
-        
-//      self.transitionImgView.layer.transform = CATransform3DMakeScale(xScale, yScale, 1);
     }
     
     
@@ -575,7 +781,8 @@ static XLImagePreviewManager *previewManager;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     XLImagePreviewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"XLImagePreviewCell" forIndexPath:indexPath];
     
-    XLPreviewItemInfo *itemInfo = [self.previewInfoArray objectAtIndex:indexPath.row];
+    NSInteger index = indexPath.row;
+    XLPreviewItemInfo *itemInfo = [self.previewInfoArray objectAtIndex:index];
     cell.itemInfo = itemInfo;
     return cell;
 }
@@ -583,13 +790,38 @@ static XLImagePreviewManager *previewManager;
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     [(XLImagePreviewCell *)cell recoverPreviewView];
     _currentIndex = indexPath.row;
+    
+    self.xlCountLabel.text = [NSString stringWithFormat:@"%ld/%ld", (long)indexPath.row + 1, (long)self.previewInfoArray.count];
+    
     if(self.xlDelegate &&
-       [self.xlDelegate respondsToSelector:@selector(needShowMoreButtonAtIndex:)]){
-        if ([self.xlDelegate needShowMoreButtonAtIndex:indexPath.row]) {
-            self.bottomOpBgView.hidden = NO;
-        } else {
-            self.bottomOpBgView.hidden = YES;
+       [self.xlDelegate respondsToSelector:@selector(operationItemsForPreviewImageAtIndex:)]){
+        XLImagePreviewOpItems opItems = [self.xlDelegate operationItemsForPreviewImageAtIndex:indexPath.row];
+        if (self.currentPreviewOpItems != opItems){
+            if (opItems == XLImagePreviewOpNone) {
+                self.bottomOpBgView.hidden = YES;
+            } else {
+                self.bottomOpBgView.hidden = NO;
+                [self setXLMoreButtonHidden:!(opItems & XLImagePreviewOpEdit)];
+                [self setXLDeleteButtonHidden:!(opItems & XLImagePreviewOpEdit)];
+                [self setXLEditButtonHidden:!(opItems & XLImagePreviewOpEdit)];
+                
+                if (opItems & XLImagePreviewOpDowload != self.currentPreviewOpItems & XLImagePreviewOpDowload) {
+                    /// 不相同
+                    [self setXLDowloadButtonHidden:!(opItems & XLImagePreviewOpDowload)];
+                }
+                if (opItems & XLImagePreviewOpDowload) {
+                    if(self.xlDelegate &&
+                       [self.xlDelegate respondsToSelector:@selector(orignialSizeOfRemoteImageAtIndexPath:)]){
+                        CGFloat size = [self.xlDelegate orignialSizeOfRemoteImageAtIndexPath:indexPath.row];
+                        NSString *sizeString = [XLFileTools fileSizeFormatWithLength:size];
+                        NSString *title = [NSString stringWithFormat:@"查看原图%@", sizeString];
+                        [self.xlDowloadButton setTitle:title forState:UIControlStateNormal];
+                    }
+                }
+            }
+            self.currentPreviewOpItems = opItems;
         }
+        
     }
 }
 

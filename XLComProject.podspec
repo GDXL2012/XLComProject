@@ -42,7 +42,6 @@ DES OF 【iOS 工程通用基类库.】
   # s.dependency 'AFNetworking', '~> 2.3'
   s.dependency 'RegexKitLite'
   s.dependency 'SDWebImage'
-  s.dependency 'SDWebImage/GIF'
   s.dependency 'MBProgressHUD'
   s.dependency 'Masonry'
   s.dependency 'MJRefresh'

@@ -1,5 +1,5 @@
 //
-//  XLAlertSheetView.h
+//  XLAlertView.h
 //  XLComProject
 //
 //  Created by GDXL2012 on 2021/7/29.
@@ -19,11 +19,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface XLAlertSheetView : UIView
+/// 不可独立使用
+@interface XLAlertView : UIView
+
++ (instancetype)alertWithTitle:(nullable NSString *)title message:(nullable NSString *)message preferredStyle:(UIAlertControllerStyle)preferredStyle;
 
 -(void)addAction:(XLAlertAction *)action;
 
 -(void)xlShow;
 @end
+
+@interface XLAlertSheetView : XLAlertView
+
+@end
+
+@interface XLAlertAlertView : XLAlertView
+
+@end
+
+
 
 NS_ASSUME_NONNULL_END

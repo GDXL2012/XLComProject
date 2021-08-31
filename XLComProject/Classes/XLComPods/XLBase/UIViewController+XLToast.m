@@ -74,10 +74,10 @@
 }
 
 #pragma mark - 显示弹框
--(void)showAlertMsg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel{
+-(void)showAlertMsg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel{
     [self showAlertTitle:nil msg:msg actions:array cancel:cancel style:UIAlertControllerStyleAlert];
 }
--(void)showAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel{
+-(void)showAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel{
     [self showAlertTitle:title msg:msg actions:array cancel:cancel style:UIAlertControllerStyleAlert];
 }
 
@@ -97,10 +97,10 @@
 }
 
 #pragma mark - 显示ActionSheet弹框
--(void)showActionSheetMsg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel{
+-(void)showActionSheetMsg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel{
     [self showAlertTitle:nil msg:msg actions:array cancel:cancel style:UIAlertControllerStyleActionSheet];
 }
--(void)showActionSheetTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel{
+-(void)showActionSheetTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel{
     [self showAlertTitle:title msg:msg actions:array cancel:cancel style:UIAlertControllerStyleActionSheet];
 }
 
@@ -120,7 +120,125 @@
 }
 
 #pragma mark - 弹窗
--(void)showAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel style:(UIAlertControllerStyle)style{
+-(void)showAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel style:(UIAlertControllerStyle)style{
+    XLAlertView *alert = nil;
+    alert = [XLAlertView alertWithTitle:title message:msg preferredStyle:style];
+    NSInteger count = array.count;
+    for (NSInteger index = 0; index < count; index ++) {
+        XLAlertAction *action = array[index];
+        [alert addAction:action];
+    }
+    if (cancel) {
+        [alert addAction:cancel];
+    }
+    [alert xlShow];
+}
+
+-(void)showAlertTitle:(NSString *)title msg:(NSString *)msg actionTitles:(NSArray<NSString *> *)titlesArray cancel:(NSString *)cancel style:(UIAlertControllerStyle)style{
+    XLAlertView *alert = nil;
+    alert = [XLAlertView alertWithTitle:title message:msg preferredStyle:style];
+    NSInteger count = titlesArray.count;
+    for (NSInteger index = 0; index < count; index ++) {
+        NSString *actionTitle = titlesArray[index];
+        XLAlertAction *action = nil;
+        action = [XLAlertAction actionWithTitle:actionTitle style:UIAlertActionStyleDefault handler:^(XLAlertAction * _Nonnull action) {
+            [self alertViewClickAtIndex:index style:style];
+        }];
+        [alert addAction:action];
+    }
+    if (![NSString isEmpty:cancel]) {
+        XLAlertAction *action = nil;
+        action = [XLAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:^(XLAlertAction * _Nonnull action) {
+            [self alertViewCancelClickForStyle:style];
+        }];
+        [alert addAction:action];
+    }
+    [alert xlShow];
+}
+
+// 点击事件
+-(void)alertViewClickAtIndex:(NSInteger)index style:(UIAlertControllerStyle)style{
+    if (style == UIAlertControllerStyleActionSheet) {
+        [self actionSheetViewClickAtIndex:index];
+    } else {
+        [self alertViewClickAtIndex:index];
+    }
+}
+-(void)alertViewCancelClickForStyle:(UIAlertControllerStyle)style{
+    if (style == UIAlertControllerStyleActionSheet) {
+        [self actionSheetViewCancelClick];
+    } else {
+        [self alertViewCancelClick];
+    }
+}
+
+#pragma mark - UIAlertAction
+-(XLAlertAction *)actionWithTitle:(NSString *)title handler:(void (^)(XLAlertAction *action))handler{
+    XLAlertAction *action = nil;
+    action = [XLAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:handler];
+    return action;
+}
+
+-(XLAlertAction *)cancelActionWithTitle:(NSString *)title{
+    XLAlertAction *action = nil;
+    action = [XLAlertAction actionWithTitle:title style:UIAlertActionStyleCancel handler:nil];
+    return action;
+}
+
+-(XLAlertAction *)cancelActionWithTitle:(NSString *)title handler:(void (^)(XLAlertAction *action))handler{
+    XLAlertAction *action = nil;
+    action = [XLAlertAction actionWithTitle:title style:UIAlertActionStyleCancel handler:handler];
+    return action;
+}
+
+#pragma mark - 显示弹框
+-(void)showSysAlertMsg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel{
+    [self showSysAlertTitle:nil msg:msg actions:array cancel:cancel style:UIAlertControllerStyleAlert];
+}
+-(void)showSysAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel{
+    [self showSysAlertTitle:title msg:msg actions:array cancel:cancel style:UIAlertControllerStyleAlert];
+}
+
+-(void)showSysAlertMsg:(NSString *)msg actionTitles:(NSArray<NSString *> *)titlesArray cancel:(NSString *)cancel{
+    [self showAlertTitle:nil msg:msg actionTitles:titlesArray cancel:cancel style:UIAlertControllerStyleAlert];
+}
+-(void)showSysAlertTitle:(NSString *)title msg:(NSString *)msg actionTitles:(NSArray<NSString *> *)titlesArray cancel:(NSString *)cancel{
+    [self showSysAlertTitle:title msg:msg actionTitles:titlesArray cancel:cancel style:UIAlertControllerStyleAlert];
+}
+
+// 点击事件:子类覆盖
+-(void)alertSysViewClickAtIndex:(NSInteger)index{
+    
+}
+-(void)alertSysViewCancelClick{
+    
+}
+
+#pragma mark - 显示ActionSheet弹框
+-(void)showSysActionSheetMsg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel{
+    [self showAlertTitle:nil msg:msg actions:array cancel:cancel style:UIAlertControllerStyleActionSheet];
+}
+-(void)showSysActionSheetTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel{
+    [self showAlertTitle:title msg:msg actions:array cancel:cancel style:UIAlertControllerStyleActionSheet];
+}
+
+-(void)showSysActionSheetMsg:(NSString *)msg actionTitles:(NSArray<NSString *> *)titlesArray cancel:(NSString *)cancel{
+    [self showAlertTitle:nil msg:msg actionTitles:titlesArray cancel:cancel style:UIAlertControllerStyleActionSheet];
+}
+-(void)showSysActionSheetTitle:(NSString *)title msg:(NSString *)msg actionTitles:(NSArray<NSString *> *)titlesArray cancel:(NSString *)cancel{
+    [self showAlertTitle:title msg:msg actionTitles:titlesArray cancel:cancel style:UIAlertControllerStyleActionSheet];
+}
+
+// 点击事件
+-(void)actionSysSheetViewClickAtIndex:(NSInteger)index{
+    
+}
+-(void)actionSysSheetViewCancelClick{
+    
+}
+
+#pragma mark - 弹窗
+-(void)showSysAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<UIAlertAction *> *)array cancel:(UIAlertAction *)cancel style:(UIAlertControllerStyle)style{
     UIAlertController *alert = nil;
     alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:style];
     NSInteger count = array.count;
@@ -138,7 +256,7 @@
     [topVC presentViewController:alert animated:YES completion:nil];
 }
 
--(void)showAlertTitle:(NSString *)title msg:(NSString *)msg actionTitles:(NSArray<NSString *> *)titlesArray cancel:(NSString *)cancel style:(UIAlertControllerStyle)style{
+-(void)showSysAlertTitle:(NSString *)title msg:(NSString *)msg actionTitles:(NSArray<NSString *> *)titlesArray cancel:(NSString *)cancel style:(UIAlertControllerStyle)style{
     UIAlertController *alert = nil;
     alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:style];
     NSInteger count = titlesArray.count;
@@ -165,14 +283,14 @@
 }
 
 // 点击事件
--(void)alertViewClickAtIndex:(NSInteger)index style:(UIAlertControllerStyle)style{
+-(void)alertSysViewClickAtIndex:(NSInteger)index style:(UIAlertControllerStyle)style{
     if (style == UIAlertControllerStyleActionSheet) {
         [self actionSheetViewClickAtIndex:index];
     } else {
         [self alertViewClickAtIndex:index];
     }
 }
--(void)alertViewCancelClickForStyle:(UIAlertControllerStyle)style{
+-(void)alertSysViewCancelClickForStyle:(UIAlertControllerStyle)style{
     if (style == UIAlertControllerStyleActionSheet) {
         [self actionSheetViewCancelClick];
     } else {
@@ -181,19 +299,19 @@
 }
 
 #pragma mark - UIAlertAction
--(UIAlertAction *)actionWithTitle:(NSString *)title handler:(void (^)(UIAlertAction *action))handler{
+-(UIAlertAction *)sysActionWithTitle:(NSString *)title handler:(void (^)(UIAlertAction *action))handler{
     UIAlertAction *action = nil;
     action = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:handler];
     return action;
 }
 
--(UIAlertAction *)cancelActionWithTitle:(NSString *)title{
+-(UIAlertAction *)sysCancelActionWithTitle:(NSString *)title{
     UIAlertAction *action = nil;
     action = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleCancel handler:nil];
     return action;
 }
 
--(UIAlertAction *)cancelActionWithTitle:(NSString *)title handler:(void (^)(UIAlertAction *action))handler{
+-(UIAlertAction *)sysCancelActionWithTitle:(NSString *)title handler:(void (^)(UIAlertAction *action))handler{
     UIAlertAction *action = nil;
     action = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleCancel handler:handler];
     return action;

@@ -17,43 +17,47 @@
 
 -(void)setPreviewImage:(UIImage *)previewImage atIndex:(NSInteger)index{
     _showIndex = index;
-    _originalPreviewInfo = previewImage;
+    _originalImage = previewImage;
     _previewItemType = XLPreviewItemImage;
     [self initPreviewFrameForImage];
 }
 
 -(void)setInvisablePreviewImage:(UIImage *)previewImage atVisiableView:(UIView *)visiableview atIndex:(NSInteger)index{
     _showIndex = index;
-    _originalPreviewInfo = previewImage;
+    _originalImage = previewImage;
     _previewItemType = XLPreviewItemImage;
     [self initInvisablePreviewFrameForImage:visiableview];
 }
 
 -(void)setPreviewImageUrl:(NSString *)imageUrl atIndex:(NSInteger)index{
     _showIndex = index;
-    _originalPreviewInfo = imageUrl;
+    _originalImagePath = imageUrl;
     _previewItemType = XLPreviewItemImageUrl;
     [self initPreviewFrameForImage];
 }
 -(void)setInvisablePreviewImageUrl:(NSString *)imageUrl atVisiableView:(UIView *)visiableview atIndex:(NSInteger)index{
     _showIndex = index;
-    _originalPreviewInfo = imageUrl;
+    _originalImagePath = imageUrl;
     _previewItemType = XLPreviewItemImageUrl;
     [self initInvisablePreviewFrameForImage:visiableview];
 }
 
--(void)setPreviewImageView:(UIImageView *)previewImageView atIndex:(NSInteger)index{
+-(void)setPreviewImageView:(UIImageView *)previewImageView
+                      path:(NSString *)path
+                   atIndex:(NSInteger)index{
     _showIndex = index;
-    _originalPreviewInfo = previewImageView;
     _previewItemType = XLPreviewItemImageView;
-    [self initPreviewInfoForImageView];
+    self.originalImagePath = path;
+    [self initPreviewInfoForImageView:previewImageView];
 }
 
--(void)setPreviewSDImageView:(UIImageView *)previewImageView atIndex:(NSInteger)index{
+-(void)setPreviewSDImageView:(UIImageView *)previewImageView
+                        path:(NSString *)path
+                     atIndex:(NSInteger)index{
     _showIndex = index;
-    _originalPreviewInfo = previewImageView;
     _previewItemType = XLPreviewItemSDImageView;
-    [self initPreviewInfoForImageView];
+    self.originalImagePath = path;
+    [self initPreviewInfoForImageView:previewImageView];
 }
 
 -(void)initInvisablePreviewFrameForImage:(UIView *)visableView{
@@ -77,15 +81,16 @@
 }
 
 //// ImageView 预览初始化
--(void)initPreviewInfoForImageView{
+-(void)initPreviewInfoForImageView:(UIImageView *)imageView{
     /// 计算原图位置
-    UIImageView *originalImageView = (UIImageView *)self.originalPreviewInfo;
+    self.originalImage = imageView.image;
+    self.contentMode = imageView.contentMode;
     UIWindow *window = [UIApplication sharedApplication].delegate.window;
-    UIView *superView = originalImageView.superview;
-    CGRect newRect = [window convertRect:originalImageView.frame fromView:superView];
+    UIView *superView = imageView.superview;
+    CGRect newRect = [window convertRect:imageView.frame fromView:superView];
     self.originalFrame = newRect;
-    if (originalImageView.image) {
-        self.imageSize = originalImageView.image.size;
+    if (imageView.image) {
+        self.imageSize = imageView.image.size;
     } else {
         self.imageSize = newRect.size;
     }

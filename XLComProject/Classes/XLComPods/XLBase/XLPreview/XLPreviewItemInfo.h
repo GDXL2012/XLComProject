@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, XLPreviewItemType) {
     XLPreviewItemImage,
     XLPreviewItemImageView,
-    XLPreviewItemSDImageView,
+    XLPreviewItemSDImageView,   /// 远程图片
     XLPreviewItemImageUrl
 };
 
@@ -21,7 +21,11 @@ typedef NS_ENUM(NSInteger, XLPreviewItemType) {
 @interface XLPreviewItemInfo : NSObject
 
 /// 预览内容：Image/ImageView/Url
-@property (nonatomic, strong) id                originalPreviewInfo;
+@property (nonatomic, strong) UIImage   *originalImage;         /// 原图
+@property (nonatomic, strong) NSString  *originalImagePath;     /// 原图路径
+/// 图片显示模式
+@property (nonatomic, assign) UIViewContentMode contentMode;
+
 /// 预览类型
 @property (nonatomic, assign) XLPreviewItemType previewItemType;
 /// 原图位置：用于预览取消
@@ -41,8 +45,10 @@ typedef NS_ENUM(NSInteger, XLPreviewItemType) {
 -(void)setInvisablePreviewImageUrl:(NSString *)imageUrl
                     atVisiableView:(UIView *)visiableview atIndex:(NSInteger)index;
 -(void)setPreviewImageView:(UIImageView *)previewImageView
+                      path:(NSString *)path
                    atIndex:(NSInteger)index;
 -(void)setPreviewSDImageView:(UIImageView *)previewImageView
+                        path:(NSString *)path
                      atIndex:(NSInteger)index;
 @end
 
