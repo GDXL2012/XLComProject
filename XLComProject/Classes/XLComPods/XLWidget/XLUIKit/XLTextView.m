@@ -16,7 +16,6 @@
 @interface XLTextView () <UITextViewDelegate>
 
 @property (nonatomic, strong) UILabel   *placeHolderLabel;
-@property (nonatomic, assign) CGFloat   textViewHeight;   // 缓存高度
 @end
 
 @implementation XLTextView
@@ -25,7 +24,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         [super setDelegate:self];
-        _textViewHeight = 0.0f;
     }
     return self;
 }
@@ -34,7 +32,6 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         [super setDelegate:self];
-        _textViewHeight = 0.0f;
     }
     return self;
 }
@@ -55,7 +52,7 @@
     CGFloat yOffset = offset.y + inset1.top + inset2.top;
     [_placeHolderLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self).offset(xOffset);
-        make.right.mas_equalTo(self).offset(-rOffset);
+        make.width.mas_equalTo(self.mas_width).offset(- rOffset - xOffset);
         make.top.mas_equalTo(self).offset(yOffset);
     }];
 }
@@ -64,6 +61,7 @@
     if (!_placeHolderLabel) {
         _placeHolderLabel = [[UILabel alloc] init];
         _placeHolderLabel.backgroundColor = [UIColor clearColor];
+        _placeHolderLabel.numberOfLines = 0;
         _placeHolderLabel.textColor = XLHolderColor;
         _placeHolderLabel.font = XLGFont(17.0f);
         _placeHolderLabel.userInteractionEnabled = NO;
@@ -101,6 +99,15 @@
     }
 }
 
+-(void)setAttributedText:(NSAttributedString *)attributedText{
+    [super setAttributedText:attributedText];
+    if (!attributedText || attributedText.length == 0) {
+        self.placeHolderLabel.hidden = NO;
+    } else {
+        self.placeHolderLabel.hidden = YES;
+    }
+}
+
 -(void)setTextContainerInset:(UIEdgeInsets)textContainerInset{
     [super setTextContainerInset:textContainerInset];
 }
@@ -115,7 +122,7 @@
  */
 -(CGFloat)getMinHeightForView{
     NSString *inputString = self.text;
-    if ([NSString isEmpty:inputString]) {
+    if ([NSString isEmptyString:inputString]) {
         return 0;
     } else {
         CGSize size = [self sizeThatFits:CGSizeMake(self.frame.size.width, FLT_MAX)];
@@ -177,11 +184,9 @@
     }
     
     CGFloat datHeight = 0;
+    CGFloat textViewHeight = self.frame.size.height;
     CGFloat height = [self getMinHeightForView];
-    if (self.textViewHeight > 0) {
-        datHeight = height - self.textViewHeight;
-    }
-    self.textViewHeight = height;
+    datHeight = height - textViewHeight;
     if (fabs(datHeight) > 0.01) {
         if(self.xlDelegate && [self.xlDelegate respondsToSelector:@selector(textView:heightChange:)]){
             [self.xlDelegate textView:self heightChange:self.frame.size.height + datHeight];

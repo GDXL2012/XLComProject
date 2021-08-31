@@ -14,8 +14,11 @@
 #import "XLTableView.h"
 #import "XLTableReusableView.h"
 #import "XLTableViewCell.h"
+#import "XLCollectionViewCell.h"
 #import "XLTableReusableView.h"
 #import "XLRefreshTableView.h"
+#import "XLCollectionReusableView.h"
+#import "XLRefreshCollectionView.h"
 
 /// XLWidget
 #import "XLMoreMenuView.h"

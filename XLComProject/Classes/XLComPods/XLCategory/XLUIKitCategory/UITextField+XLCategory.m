@@ -9,6 +9,8 @@
 #import "UITextField+XLCategory.h"
 #import "NSObject+XLCategory.h"
 #import "NSString+XLCategory.h"
+#import "XLMacroFont.h"
+#import "XLMacroColor.h"
 
 @implementation UITextField (XLCategory)
 
@@ -40,43 +42,71 @@
     self.attributedPlaceholder = attrString;
 }
 
-//- (CGRect)leftViewRectForBounds:(CGRect)bounds {
-//    CGRect leftRect = [super leftViewRectForBounds:bounds];
-//    leftRect.origin.x += 8; //右边偏8
-//    return leftRect;
-//}
-//
-////UITextField 文字与输入框的距离
-//- (CGRect)textRectForBounds:(CGRect)bounds{
-//    if (!self.leftView && !self.rightView) {
-//        return [super editingRectForBounds:bounds];
-//    } else {
-//        CGFloat leftDat = 10;
-//        CGFloat rightDat = 10;
-//        if (self.leftView) {
-//            leftDat = 20 + 8 * 2;
-//        }
-//        if (self.clearButtonMode == UITextFieldViewModeWhileEditing) {
-//            rightDat = 20 + 8 * 2;
-//        }
-//        return CGRectMake(leftDat, 0, bounds.size.width - leftDat - rightDat, bounds.size.height);
-//    }
-//}
-//
-////控制编辑文本的位置
-//- (CGRect)editingRectForBounds:(CGRect)bounds{
-//    if (!self.leftView && !self.rightView) {
-//        return [super editingRectForBounds:bounds];
-//    } else {
-//        CGFloat leftDat = 10;
-//        CGFloat rightDat = 10;
-//        if (self.leftView) {
-//            leftDat = 20 + 8 * 2;
-//        }
-//        if (self.clearButtonMode == UITextFieldViewModeWhileEditing) {
-//            rightDat = 20;
-//        }
-//        return CGRectMake(leftDat, 0, bounds.size.width - leftDat - rightDat, bounds.size.height);
-//    }
-//}
+#pragma mark - 常规字体
+-(void)xlThemFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:XLThemeColor];
+}
+-(void)xlTitleFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:XLTitleColor];
+}
+-(void)xlSubTitleFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:XLSubTitleColor];
+}
+-(void)xlDetailFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:XLDetailColor];
+}
+-(void)xlTipsFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:XLTipsColor];
+}
+-(void)xlWarningFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:XLWarningColor];
+}
+-(void)xlPlaceholderFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:XLHolderColor];
+}
+-(void)xlOhterFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:XLOtherColor];
+}
+-(void)xlWhiteFont:(CGFloat)fontSize{
+    [self xlTextFont:fontSize color:[UIColor whiteColor]];
+}
+
+-(void)xlTextFont:(CGFloat)fontSize color:(UIColor *)color{
+    self.font = XLFont(fontSize);
+    self.textColor = color;
+}
+
+#pragma mark -  加粗
+-(void)xlBThemFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:XLThemeColor];
+}
+-(void)xlBTitleFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:XLTitleColor];
+}
+-(void)xlBSubTitleFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:XLSubTitleColor];
+}
+-(void)xlBDetailFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:XLDetailColor];
+}
+-(void)xlBTipsFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:XLTipsColor];
+}
+-(void)xlBWarningFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:XLWarningColor];
+}
+-(void)xlBPlaceholderFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:XLHolderColor];
+}
+-(void)xlBOhterFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:XLOtherColor];
+}
+-(void)xlBWhiteFont:(CGFloat)fontSize{
+    [self xlTextBFont:fontSize color:[UIColor whiteColor]];
+}
+
+-(void)xlTextBFont:(CGFloat)fontSize color:(UIColor *)color{
+    self.font = XLBFont(fontSize);
+    self.textColor = color;
+}
 @end

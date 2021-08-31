@@ -85,6 +85,20 @@
     return [XLComCheckTools predicateString:string regex:regex];
 }
 
+/// 整形判断(整形返回yes ,否则为no)
++(BOOL)isPureInt:(NSString *)string{
+    NSScanner* scan = [NSScanner scannerWithString:string];
+    int val;
+    return [scan scanInt:&val] && [scan isAtEnd];
+}
+
+/// 浮点形判断(整形/浮点型等数字均会返回YES,其他为NO):
++(BOOL)isPureFloat:(NSString *)string{
+    NSScanner* scan = [NSScanner scannerWithString:string];
+    float val;
+    return [scan scanFloat:&val] && [scan isAtEnd];
+}
+
 /**
  校验账号是否合法
  
@@ -110,7 +124,7 @@
  @return YES 账号验证通过  NO 账号校验不通过
  */
 +(BOOL)checkAccount:(NSString *)account{
-    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexAccount];
+    NSString *regex = [XLComCheckTools regexStringWithType:XLPredicateRegexAccount];
     return [XLComCheckTools predicateString:account regex:regex];
 }
 
@@ -139,7 +153,7 @@
  @return YES 格式正确 NO 格式错误
  */
 +(BOOL)isPasswordFormat:(NSString *)password{
-    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexPassword];
+    NSString *regex = [XLComCheckTools regexStringWithType:XLPredicateRegexPassword];
     return [XLComCheckTools predicateString:password regex:regex];
 }
 
@@ -155,7 +169,7 @@
     if (mobile.length != 11) {
         return NO;
     }
-    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexMobile];
+    NSString *regex = [XLComCheckTools regexStringWithType:XLPredicateRegexMobile];
     return [XLComCheckTools predicateString:mobile regex:regex];
 }
 
@@ -167,7 +181,7 @@
  */
 +(BOOL)isTelephone:(NSString *)phone{
     //验证输入的固话中不带"-"与带"-"符号
-    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexTel];
+    NSString *regex = [XLComCheckTools regexStringWithType:XLPredicateRegexTel];
     return [XLComCheckTools predicateString:phone regex:regex];
 }
 
@@ -179,11 +193,11 @@
  */
 +(BOOL)isPhoneNumber:(NSString *)phone{
     //验证输入的固话中不带"-"与带"-"符号
-    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexMobile];
+    NSString *regex = [XLComCheckTools regexStringWithType:XLPredicateRegexMobile];
     if ([XLComCheckTools predicateString:phone regex:regex]) {
         return YES;
     } else {
-        regex = [XLComCheckTools regexKeyForType:XLPredicateRegexTel];
+        regex = [XLComCheckTools regexStringWithType:XLPredicateRegexTel];
         return [XLComCheckTools predicateString:phone regex:regex];
     }
 }
@@ -195,7 +209,7 @@
  @return YES 邮箱 NO 非邮箱
  */
 +(BOOL)isEmailString:(NSString *)email{
-    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexEmail];
+    NSString *regex = [XLComCheckTools regexStringWithType:XLPredicateRegexEmail];
     return [XLComCheckTools predicateString:email regex:regex];
 }
 
@@ -206,7 +220,7 @@
  @return YES 身份证 NO 非身份证
  */
 +(BOOL)isIdentityCard:(NSString *)card{
-    NSString *regex = [XLComCheckTools regexKeyForType:XLPredicateRegexIdCard];
+    NSString *regex = [XLComCheckTools regexStringWithType:XLPredicateRegexIdCard];
     return [XLComCheckTools predicateString:card regex:regex];
 }
 @end

@@ -36,7 +36,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self xlUserCustomizationView];
 }
 
 /**
@@ -47,14 +46,16 @@
     [_xlRefreshTableView configDelegate:self];
     [self.view addSubview:self.xlRefreshTableView];
     [self.xlRefreshTableView setEstimatedEnable:NO];
-    [self xlConfigEmptyHeadFooterView];
+    [self xlConfigHeadFooterView];
+    
+    [self xlUserCustomizationView];
     [self xlMakeTableViewConstraints];
 }
 
 /**
  配置Empty HeadFooter View
  */
--(void)xlConfigEmptyHeadFooterView{
+-(void)xlConfigHeadFooterView{
     CGRect minRect = CGRectMake(0, 0, XLScreenWidth, CGFLOAT_MIN);
     self.xlRefreshTableView.tableHeaderView = [[UIView alloc] initWithFrame:minRect];
     self.xlRefreshTableView.tableFooterView = [[UIView alloc] initWithFrame:minRect];

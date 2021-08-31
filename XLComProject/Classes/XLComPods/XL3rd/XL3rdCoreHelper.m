@@ -7,7 +7,6 @@
 //
 
 #import "XL3rdCoreHelper.h"
-#import <UIKit/UIKit.h>
 #import "UIScrollView+XLMJRefresh.h"
 #import "IQKeyboardManager.h"
 #import "MBProgressHUD.h"

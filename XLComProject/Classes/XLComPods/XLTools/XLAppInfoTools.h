@@ -32,6 +32,12 @@ NS_ASSUME_NONNULL_BEGIN
  @return App构建版本
  */
 +(NSString *)appBuildVersion;
+
+/// 设备唯一标识符:相对唯一
++(NSString *)deviceUUID;
+
+/// 系统版本
++(NSString *)systemString;
 @end
 
 NS_ASSUME_NONNULL_END

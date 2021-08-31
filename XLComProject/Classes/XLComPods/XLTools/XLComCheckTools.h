@@ -40,6 +40,10 @@ typedef NS_ENUM(NSInteger, XLPredicateRegexType){
  @return <#return value description#>
  */
 +(BOOL)isNumber:(NSString *)string;
+/// 整形
++(BOOL)isPureInt:(NSString *)string;
+/// 浮点型
++(BOOL)isPureFloat:(NSString *)string;
 
 /**
  校验账号是否合法

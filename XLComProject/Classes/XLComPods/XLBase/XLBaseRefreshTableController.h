@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  配置Empty HeadFooter View
  */
--(void)xlConfigEmptyHeadFooterView;
+-(void)xlConfigHeadFooterView;
 
 /// 子类实现后可设置TableView控件位置
 -(void)xlMakeTableViewConstraints;

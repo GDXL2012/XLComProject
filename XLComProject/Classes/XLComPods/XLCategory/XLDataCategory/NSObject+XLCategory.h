@@ -12,13 +12,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSObject (XLCategory)
 /**
- 方法替换
+ 方法交换换
  @param cls  需要替换方法的类
  @param original 需要被替换的方法
  @param newSel 新方法
  @param classMethod yes 类方法
  */
 +(void)exchangeClassImplementations:(Class)cls originalSel:(SEL)original newSel:(SEL)newSel forClassMethod:(BOOL)classMethod;
+
++(void)replaceClassImplementations:(Class)cls originalSel:(SEL)original newSel:(SEL)newSel forClassMethod:(BOOL)classMethod;
 @end
 
 NS_ASSUME_NONNULL_END

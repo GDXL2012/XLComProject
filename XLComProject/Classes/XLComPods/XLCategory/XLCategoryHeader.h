@@ -24,4 +24,8 @@
 #import "UIFont+XLCategory.h"
 #import "UIImage+XLCategory.h"
 #import "UIView+XLCategory.h"
+#import "UILabel+XLCategory.h"
+#import "UITextField+XLCategory.h"
+#import "UITextView+XLCategory.h"
+#import "UIButton+XLCategory.h"
 #endif /* XLCategoryHeader_h */

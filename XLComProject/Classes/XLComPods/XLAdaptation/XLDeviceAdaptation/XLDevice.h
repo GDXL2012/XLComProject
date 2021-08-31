@@ -13,6 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface XLDevice : NSObject
 +(instancetype)xlDevice;
+/// 尺寸比例
+-(CGFloat)xlScale;
+-(CGFloat)xlNativeScale;
 
 /// 屏幕尺寸
 -(CGRect)xlScreenBounds;

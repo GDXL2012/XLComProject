@@ -144,7 +144,7 @@
                 XLStrongSelf
                 [strongSelf.indicatorView stopAnimating];
                 if (error) { /// 图片加载失败
-                    UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFaileImage;
+                    UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFailImage;
                     strongSelf.previewImageView.image = image;
                 } else {
                     /// 加载成功，赋值原图片
@@ -154,24 +154,53 @@
             }];
         }];
     } else {
-        self.previewImageView.image = originalImageView.image;
+        id<XLComConfigDelegate> delegate = [XLConfigManager xlConfigManager].comConfig.xlConfigDelegate;
+        if (delegate &&
+            [delegate respondsToSelector:@selector(loadImageForSDImageView:complete:)]) {
+            XLWeakSelf
+            [delegate loadImageForSDImageView:originalImageView complete:^(UIImage * _Nonnull image, NSError * _Nonnull error) {
+                if (weakSelf && error == nil) {
+                    if (error) {
+                        weakSelf.previewImageView.image = originalImageView.image;
+                    } else {
+                        weakSelf.previewImageView.image = image;
+                    }
+                }
+            }];
+        } else {
+            self.previewImageView.image = originalImageView.image;
+        }
     }
 }
 
 -(void)showPreviewImageUrl{
     /// 显示图片
     NSString *urlString = (NSString *)self.itemInfo.originalPreviewInfo;
-    NSURL *url = [NSURL URLWithString:urlString];
-    XLWeakSelf
-    [self.indicatorView startAnimating];
-    [self.previewImageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-        XLStrongSelf
-        [strongSelf.indicatorView stopAnimating];
-        if (error) { /// 图片加载失败
-            UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFaileImage;
-            strongSelf.previewImageView.image = image;
-        }
-    }];
+    id<XLComConfigDelegate> delegate = [XLConfigManager xlConfigManager].comConfig.xlConfigDelegate;
+    if (delegate &&
+        [delegate respondsToSelector:@selector(loadImageForImageView:withUrl:complete:)]) {
+        XLWeakSelf
+        [delegate loadImageForImageView:self.previewImageView withUrl:urlString complete:^(UIImage * _Nonnull image, NSError * _Nonnull error) {
+            XLStrongSelf
+            [strongSelf.indicatorView stopAnimating];
+            if (error) { /// 图片加载失败
+                UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFailImage;
+                strongSelf.previewImageView.image = image;
+            }
+        }];
+    } else {
+        NSURL *url = [NSURL URLWithString:urlString];
+        XLWeakSelf
+        [self.indicatorView startAnimating];
+        [self.previewImageView sd_setImageWithURL:url completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            XLStrongSelf
+            [strongSelf.indicatorView stopAnimating];
+            if (error) { /// 图片加载失败
+                UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFailImage;
+                strongSelf.previewImageView.image = image;
+            }
+        }];
+    }
 }
 
 #pragma mark - recoverPreviewView

@@ -18,6 +18,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 -(void)setCornerRadius:(CGFloat)radius;
 
+/// 设置圆角、边框
+/// @param radius <#radius description#>
+/// @param border <#border description#>
+-(void)setCornerRadius:(CGFloat)radius withBorder:(BOOL)border;
+
 /**
  设置部分圆角(绝对布局，View 已设置大小)
  

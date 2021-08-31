@@ -10,11 +10,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol XLImagePreviewProtocol <NSObject>
+@protocol XLImagePreviewDataSource <NSObject>
+@optional
+/// 预览图片数
+-(NSInteger)countOfPreviewImage;
+-(UIImageView *)visablePreviewImageForAtIndex:(NSInteger)atIndex;
+-(NSObject *)invisablePreviewImageForAtIndex:(NSInteger)atIndex;
 
-/// 预览图片长按事件回调
-/// @param index <#index description#>
--(void)previewLongPressAtIndex:(NSInteger)index;
+@end
+
+@protocol XLImagePreviewProtocol <NSObject>
+@optional
+/// 预览图片更多操作事件回调
+-(void)moreMenuForPreviewAtIndex:(NSInteger)index;
+/// 预览图片下载操作事件回调
+-(void)dowloadForPreviewAtIndex:(NSInteger)index;
+/// 是否显示更多、下载按钮
+-(BOOL)needShowMoreButtonAtIndex:(NSInteger)index;
 
 @end
 
@@ -98,6 +110,12 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)previewSDImageViewArray:(NSArray *)imageViewArray
                  atSelectIndex:(NSInteger)selectIndex
                    visibleView:(UIView *)visibleView;
+
+/// 图片预览
+/// @param atIndex <#atIndex description#>
+/// @param dataSource <#dataSource description#>
+-(void)previewImageViewAtIndex:(NSInteger)atIndex
+                      delegate:(id<XLImagePreviewDataSource>)dataSource;
 @end
 
 NS_ASSUME_NONNULL_END

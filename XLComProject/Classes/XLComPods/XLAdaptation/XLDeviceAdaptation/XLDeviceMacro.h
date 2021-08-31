@@ -10,10 +10,22 @@
 #define XLDeviceMacro_h
 #import "XLDevice.h"
 
+#define XLScreenScale       [[XLDevice xlDevice] xlScale]
+#define XLScreenNativeScale [[XLDevice xlDevice] xlNativeScale]
+
+// 屏幕物理尺寸
+#define XLScreenNativeBounds      [[XLDevice xlDevice] xlScreenNativeBounds]
+// 屏幕物理大小
+#define XLScreenNativeSize        [[XLDevice xlDevice] xlScreenNativeSize]
+// 屏幕物理宽度
+#define XLScreenNativeWidth       [[XLDevice xlDevice] xlScreenNativeWidth]
+// 屏幕物理高度
+#define XLScreenNativeHeight      [[XLDevice xlDevice] xlScreenNativeHeight]
+
 // 屏幕尺寸
 #define XLScreenBounds      [[XLDevice xlDevice] xlScreenBounds]
 // 屏幕大小
-#define XLScreenSize        [[XLDevice xlDevice] xlScreenHeight]
+#define XLScreenSize        [[XLDevice xlDevice] xlScreenSize]
 // 屏幕宽度
 #define XLScreenWidth       [[XLDevice xlDevice] xlScreenWidth]
 // 屏幕高度

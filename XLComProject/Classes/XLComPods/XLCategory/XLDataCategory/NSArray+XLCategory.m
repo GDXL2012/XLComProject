@@ -33,7 +33,8 @@
     if ([NSString isEmpty:jsonString]) {
         return nil;
     }
-    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *resetJsonStr = [jsonString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSData *jsonData = [resetJsonStr dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error = nil;
     NSArray *array = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
     if(error) {

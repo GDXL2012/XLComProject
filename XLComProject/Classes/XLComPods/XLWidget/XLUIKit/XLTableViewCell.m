@@ -53,7 +53,7 @@
  @param bindingData <#bindingData description#>
  @return <#return value description#>
  */
-+(CGFloat)hieghForBindingData:(id)bindingData{
++(CGFloat)heighForBindingData:(nullable id)bindingData{
     return 48.0f;
 }
 

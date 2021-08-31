@@ -14,10 +14,10 @@
 
 @implementation XLFileTools
 //文件的写入
-+ (BOOL)writeToFile:(NSString *)filePath data:(NSData *)data error:(NSError *)error{
++ (BOOL)writeToFile:(NSString *)filePath data:(NSData *)data error:(NSError **)error{
     /// 把NSData对象写入到文件中
     /// NSDataWritingAtomicb表示对象会先将数据写入临时文件，成功后再移动至指定文件
-    BOOL written = [data writeToFile:filePath options:NSDataWritingAtomic error:&error];
+    BOOL written = [data writeToFile:filePath options:NSDataWritingAtomic error:error];
     
     if (!written) {
         return NO;
@@ -32,7 +32,7 @@
  @param error 错误返回
  @return YES 删除成功 NO 删除失败
  */
-+ (BOOL)deleteFile:(NSString *)filePath error:(NSError *)error{
++ (BOOL)deleteFile:(NSString *)filePath error:(NSError * _Nullable)error{
     BOOL res=[XLFileManager removeItemAtPath:filePath error:&error];
     if (res) {
         return res;

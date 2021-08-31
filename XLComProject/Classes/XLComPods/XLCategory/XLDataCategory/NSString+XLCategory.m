@@ -143,14 +143,18 @@
 
 /** 数字转字符串 */
 +(NSString *)stringWithInt:(int)value{
-    return [NSString stringWithFormat:@"%ld", (long)value];
+    NSDecimalNumber *number = [NSDecimalNumber numberWithInt:value];
+    return number.stringValue;
 }
 +(NSString *)stringWithLong:(long)value{
-    return [NSString stringWithFormat:@"%ld", value];
+    NSDecimalNumber *number = [NSDecimalNumber numberWithLong:value];
+    return number.stringValue;
 }
 +(NSString *)stringWithFloat:(float)value{
-    return [NSString stringWithFormat:@"%f", value];
+    NSDecimalNumber *number = [NSDecimalNumber numberWithFloat:value];
+    return number.stringValue;
 }
+
 +(NSString *)stringWithFloat:(float)value decimal:(long)decimal{
     NSString *format = @"%f";
     if (decimal == 0) {
@@ -169,9 +173,8 @@
 
 +(NSString *)stringWithDouble:(double)value{
     // 避免显示无意义的0
-    NSString *dStr      = [NSString stringWithFormat:@"%f", value];
-    NSDecimalNumber *dn = [NSDecimalNumber decimalNumberWithString:dStr];
-    return [dn stringValue];
+    NSDecimalNumber *number = [NSDecimalNumber numberWithDouble:value];
+    return number.stringValue;
 }
 
 +(NSString *)stringWithDouble:(double)value decimal:(long)decimal{
@@ -192,10 +195,12 @@
 }
 
 +(NSString *)stringWithInterger:(NSInteger)value{
-    return [NSString stringWithFormat:@"%ld", (long)value];
+    NSDecimalNumber *number = [NSDecimalNumber numberWithInteger:value];
+    return number.stringValue;
 }
 +(NSString *)stringWithLongLong:(long long)value{
-    return [NSString stringWithFormat:@"%lld", value];
+    NSDecimalNumber *number = [NSDecimalNumber numberWithLongLong:value];
+    return number.stringValue;
 }
 
 // Base64互转

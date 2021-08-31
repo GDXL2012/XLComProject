@@ -94,6 +94,17 @@ NSString *const XLDFYYYYMMDDHHMMSS_ZH1    = @"yyyy年MM月dd日 HH:mm:ss";
     }
 }
 
+/// <#Description#>
+/// @param date <#date description#>
+/// @param toFormat <#toFormat description#>
++(NSString *)formatDate:(NSDate *)date toFormat:(NSString *)toFormat{
+    if (date == nil) {
+        return @"";
+    }
+    NSDateFormatter *fmt = [NSDateFormatter dateFormatterWithFormat:toFormat];
+    return [fmt stringFromDate:date];
+}
+
 /**
  通用时间格式化
  

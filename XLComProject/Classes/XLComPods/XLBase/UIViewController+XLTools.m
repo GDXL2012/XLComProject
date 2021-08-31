@@ -10,9 +10,48 @@
 #import "XLBarButtonItem.h"
 #import "XLBaseViewController.h"
 #import "NSString+XLCategory.h"
+#import "XLConfigManager.h"
+#import "XLMacroFont.h"
+#import "XLMacroColor.h"
 
 @implementation UIViewController (XLTools)
 #pragma mark - NavigationItem InitMethod
+
+/**
+ 设置返回按钮
+ 
+ @param action 返回按钮事件
+ */
+-(void)setLeftBarButtonWithAction:(SEL)action{
+    NSString *backImg = [XLConfigManager xlConfigManager].adaptationConfig.backImageName;
+    UIImage *image = [UIImage imageNamed:backImg];
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(action)];
+    self.navigationItem.leftBarButtonItem = backItem;
+}
+
+/**
+ 设置导航栏左侧按钮
+ 
+ @param title 标题
+ @param action 返回按钮事件
+ */
+-(void)setLeftBarButtonWithTitle:(NSString *)title action:(SEL)action{
+    [self setLeftBarButtonWithTitle:title color:XLBarTitleColor action:action];
+}
+
+/**
+ 设置导航栏左侧按钮
+ 
+ @param title 标题
+ @param color 标题颜色
+ @param action 返回按钮事件
+ */
+-(void)setLeftBarButtonWithTitle:(NSString *)title color:(UIColor *)color action:(SEL)action{
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:action];
+    [backItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBFont(17.0f), NSFontAttributeName,color,NSForegroundColorAttributeName,nil] forState:UIControlStateNormal];
+    [backItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBFont(17.0f), NSFontAttributeName,color,NSForegroundColorAttributeName,nil] forState:UIControlStateHighlighted];
+    self.navigationItem.leftBarButtonItem = backItem;
+}
 
 /**
  设置右侧按钮
@@ -155,7 +194,7 @@
 /**
  销毁当前控制器
  */
--(void)popViewController {
+-(void)xlPopViewController {
     if (self.presentingViewController){
         if(self.navigationController &&
            self.navigationController.childViewControllers.count > 1){
@@ -169,37 +208,57 @@
 }
 
 /**
+ 销毁当前控制器
+ */
+-(void)xlPopViewControllerAnimated:(BOOL)animated{
+    if (self.presentingViewController){
+        if(self.navigationController &&
+           self.navigationController.childViewControllers.count > 1){
+            [self.navigationController popViewControllerAnimated:animated];
+        } else {
+            [self dismissViewControllerAnimated:animated completion:nil];
+        }
+    } else {
+        [self.navigationController popViewControllerAnimated:animated];
+    }
+}
+
+/**
  弹出控制器
  
  @param viewController 本弹出控制器
  */
--(void)pushViewController:(UIViewController *)viewController {
+-(void)xlPushViewController:(UIViewController *)viewController {
     viewController.hidesBottomBarWhenPushed = YES;
     [self setPreviewTitleForController:viewController];
     [self.navigationController pushViewController:viewController animated:YES];
+    viewController = nil;
 }
 
--(void)pushViewControllerWithName:(NSString *)controllerName{
+-(void)xlPushViewControllerWithName:(NSString *)controllerName{
     UIViewController * controller = nil;
     controller =[[NSClassFromString(controllerName) alloc] init];
     [self setPreviewTitleForController:controller];
-    [self pushViewController:controller];
+    [self xlPushViewController:controller];
+    controller = nil;
 }
 
 /**
  * default：hidesBottomBarWhenPushed = NO
  */
--(void)pushViewControllerWithOutBottomBarHides:(UIViewController *)viewController{
+-(void)xlPushViewControllerWithOutBottomBarHides:(UIViewController *)viewController{
     viewController.hidesBottomBarWhenPushed = NO;
     [self setPreviewTitleForController:viewController];
     [self.navigationController pushViewController:viewController animated:YES];
+    viewController = nil;
 }
 
--(void)pushViewControllerNameWithOutBottomBarHides:(NSString *)controllerName{
+-(void)xlPushViewControllerNameWithOutBottomBarHides:(NSString *)controllerName{
     UIViewController * controller = nil;
     controller =[[NSClassFromString(controllerName) alloc] init];
     [self setPreviewTitleForController:controller];
-    [self pushViewControllerWithOutBottomBarHides:controller];
+    [self xlPushViewControllerWithOutBottomBarHides:controller];
+    controller = nil;
 }
 
 -(void)setPreviewTitleForController:(UIViewController *)controller{

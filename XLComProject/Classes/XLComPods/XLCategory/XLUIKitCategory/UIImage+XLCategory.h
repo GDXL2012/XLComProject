@@ -11,6 +11,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UIImage (XLCategory)
+
++ (CGSize)sizeWithImageOriginSize:(CGSize)originSize
+                          minSize:(CGSize)imageMinSize
+                          maxSize:(CGSize)imageMaxSiz;
+
 /**
  重新绘制图片
  
@@ -72,6 +77,24 @@ NS_ASSUME_NONNULL_BEGIN
  @return 截图
  */
 +(UIImage *)image:(UIImage *)image fillSize:(CGSize)viewsize;
+
+/**
+ 截取图片的一部分
+ 
+ @param image 原图
+ @param CGSize 截图大小
+ @return 截图
+ */
++(UIImage *)image:(UIImage *)image toSize:(CGSize)toSize;
+
+/**
+ 截取图片的一部分:比使用drawinrect速度更快
+ 
+ @param image 原图
+ @param toRatio 截图比例
+ @return 截图
+ */
++(UIImage *)image:(UIImage *)image toRatio:(CGFloat)toRatio;
 
 /**
  截取图片的一部分
@@ -163,6 +186,9 @@ NS_ASSUME_NONNULL_BEGIN
  图片二值化：将图片黑白处理
  */
 -(UIImage *)covertToGrayScale;
+
+/// 修正图片转向
++ (UIImage *)fixOrientationForImage:(UIImage *)aImage;
 @end
 
 NS_ASSUME_NONNULL_END

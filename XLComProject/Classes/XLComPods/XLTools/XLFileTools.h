@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param error 错误返回
  @return YES 写入成功 NO 写入失败
  */
-+ (BOOL)writeToFile:(NSString *)filePath data:(NSData *)data error:(NSError *)error;
++ (BOOL)writeToFile:(NSString *)filePath data:(NSData *)data error:(NSError **)error;
 
 /**
  删除文件
@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param error 错误返回
  @return YES 删除成功 NO 删除失败
  */
-+ (BOOL)deleteFile:(NSString *)filePath error:(NSError *)error;
++ (BOOL)deleteFile:(NSString *)filePath error:(NSError * _Nullable)error;
 
 /**
  获取文件大小

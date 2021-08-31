@@ -26,6 +26,7 @@ typedef NS_ENUM(NSInteger, XLPreviewItemType) {
 @property (nonatomic, assign) XLPreviewItemType previewItemType;
 /// 原图位置：用于预览取消
 @property (nonatomic, assign) CGRect            originalFrame;      /// 原位置
+@property (nonatomic, assign) CGSize            imageSize;          /// 图片大小
 @property (nonatomic, assign) CGRect            previewFrame;       /// 预览位置
 @property (nonatomic, assign) NSInteger         showIndex;          /// 显示位置：默认0
 
@@ -33,8 +34,12 @@ typedef NS_ENUM(NSInteger, XLPreviewItemType) {
 
 -(void)setPreviewImage:(UIImage *)previewImage
                atIndex:(NSInteger)index;
+-(void)setInvisablePreviewImage:(UIImage *)previewImage
+                 atVisiableView:(UIView *)visiableview atIndex:(NSInteger)index;
 -(void)setPreviewImageUrl:(NSString *)imageUrl
                   atIndex:(NSInteger)index;
+-(void)setInvisablePreviewImageUrl:(NSString *)imageUrl
+                    atVisiableView:(UIView *)visiableview atIndex:(NSInteger)index;
 -(void)setPreviewImageView:(UIImageView *)previewImageView
                    atIndex:(NSInteger)index;
 -(void)setPreviewSDImageView:(UIImageView *)previewImageView
