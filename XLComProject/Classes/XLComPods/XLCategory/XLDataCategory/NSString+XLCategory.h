@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return <#return value description#>
  */
-+(NSString *)moUUID;
++(NSString *)xlUUID;
 
 /**
  是否为空字符串：不过滤空格

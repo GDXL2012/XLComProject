@@ -13,7 +13,7 @@
 #import "XLComMacro.h"
 
 @interface XLColorConfig ()
-#ifdef XLAvailableiOS13
+#ifdef __IPHONE_13_0
 /// iOS 13适配动态颜色
 /// 主题色：默认@"#FFFFFF"
 @property (nonatomic, strong) UIColor *xlThemeColorDark;

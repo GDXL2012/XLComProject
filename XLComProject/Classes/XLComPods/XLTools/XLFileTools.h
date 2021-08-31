@@ -38,6 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (long long)fileSizeAtPath:(NSString*)filePath;
 
+/// 文件大小描述格式
++(NSString *)fileSizeFormatWithLength:(CGFloat)length;
+
 /**
  获取媒体文件时长：语音/视频
 
