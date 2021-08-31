@@ -181,4 +181,12 @@
         [self showUnclosedSeparator];
     }
 }
+
+/// 添加点击手势
+-(UITapGestureRecognizer *)addTapGestureTarget:(nullable id)target action:(nullable SEL)action{
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:target action:action];
+    [self addGestureRecognizer:tap];
+    self.userInteractionEnabled = YES;
+    return tap;
+}
 @end

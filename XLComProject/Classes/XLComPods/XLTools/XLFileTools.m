@@ -12,6 +12,10 @@
 #import "XLComMacro.h"
 #import "NSString+XLCategory.h"
 
+static CGFloat CMFileSizeUnitTransformKB = 1024.0f;
+static CGFloat CMFileSizeUnitTransformM  = 1024.0f * 1024.0f;
+static CGFloat CMFileSizeUnitTransformG  = 1024.0f * 1024.0f * 1024.0f;
+
 @implementation XLFileTools
 //文件的写入
 + (BOOL)writeToFile:(NSString *)filePath data:(NSData *)data error:(NSError **)error{
@@ -53,6 +57,30 @@
         return [[XLFileManager attributesOfItemAtPath:filePath error:nil] fileSize];
     }
     return 0;
+}
+
+/// 文件大小描述格式
++(NSString *)fileSizeFormatWithLength:(CGFloat)length{
+    NSString *formatString = nil;
+    NSString *unit = @"B";
+    if (length < CMFileSizeUnitTransformKB) {
+        formatString = [NSString stringWithFormat:@"%fB", length];
+    } else if (length < CMFileSizeUnitTransformM){
+        length = length / CMFileSizeUnitTransformKB;
+        formatString = [NSString stringWithFloat:length decimal:2];
+        unit = @"KB";
+    } else if (length < CMFileSizeUnitTransformG){
+        length = length / CMFileSizeUnitTransformM;
+        formatString = [NSString stringWithFloat:length decimal:2];
+        unit = @"M";
+    } else {
+        length = length / CMFileSizeUnitTransformG;
+        formatString = [NSString stringWithFloat:length decimal:2];
+        unit = @"G";
+    }
+    
+    formatString = [NSString stringWithFormat:@"%@%@", formatString, unit];
+    return formatString;
 }
 
 /**

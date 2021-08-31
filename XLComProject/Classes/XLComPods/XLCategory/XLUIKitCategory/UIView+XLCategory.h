@@ -18,10 +18,18 @@ NS_ASSUME_NONNULL_BEGIN
  */
 -(void)setCornerRadius:(CGFloat)radius;
 
-/// 设置圆角、边框
+/// 设置圆角、边框、边框默认颜色为分割线颜色
 /// @param radius <#radius description#>
 /// @param border <#border description#>
 -(void)setCornerRadius:(CGFloat)radius withBorder:(BOOL)border;
+
+/// 设置圆角、边框
+/// @param radius <#radius description#>
+/// @param border <#border description#>
+/// @param borderColor <#borderColor description#>
+-(void)setCornerRadius:(CGFloat)radius
+            withBorder:(BOOL)border
+           borderColor:(UIColor *)borderColor;
 
 /**
  设置部分圆角(绝对布局，View 已设置大小)
@@ -69,6 +77,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 设置分割显示/隐藏
 /// @param hidden <#hidden description#>
 -(void)setSeparatorHidden:(BOOL)hidden;
+
+/// 添加点击手势
+-(UITapGestureRecognizer *)addTapGestureTarget:(nullable id)target
+                                        action:(nullable SEL)action;
 @end
 
 NS_ASSUME_NONNULL_END

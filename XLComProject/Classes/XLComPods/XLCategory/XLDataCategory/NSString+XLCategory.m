@@ -60,7 +60,7 @@
  
  @return <#return value description#>
  */
-+(NSString *)moUUID{
++(NSString *)xlUUID{
     CFUUIDRef uuidRef = CFUUIDCreate(kCFAllocatorDefault);
     CFStringRef uuidStringRef = CFUUIDCreateString(kCFAllocatorDefault, uuidRef);
     NSString *uniqueId = (__bridge NSString *)(uuidStringRef);
