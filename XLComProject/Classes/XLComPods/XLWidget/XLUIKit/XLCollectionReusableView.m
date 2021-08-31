@@ -24,20 +24,28 @@ NSString *const XLCollectionReusableFooterID = @"XLCollectionReusableFooterID";
 -(void)setReusableType:(XLCollectionReusableType)reusableType{
     _reusableType = reusableType;
     if(reusableType != XLCollectionReusableEmpty){
-        [self.xlLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        [self.xlTitleLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self).offset(XLHMargin);
             if (reusableType == XLCollectionReusableTitleBottom) {
-                make.bottom.mas_equalTo(self).offset(-4.0f);
+                make.bottom.mas_equalTo(self).offset(-9.0f);
+            } else if(reusableType == XLCollectionReusableTitleTop){
+                make.top.mas_equalTo(self).offset(9.0f);
             } else {
                 make.centerY.mas_equalTo(self);
             }
         }];
+    } else {
+        if (_xlTitleLabel) {
+            [_xlTitleLabel removeFromSuperview];
+            _xlTitleLabel = nil;
+        }
     }
 }
 
 -(UILabel *)xlTitleLabel{
     if (!_xlTitleLabel) {
         _xlTitleLabel = [[UILabel alloc] init];
-        _xlTitleLabel.font = XLGFont(15.0f);
+        _xlTitleLabel.font = XLGFont(14.0f);
         _xlTitleLabel.textColor = XLHolderColor;
         [self addSubview:_xlTitleLabel];
         [_xlTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -48,8 +56,17 @@ NSString *const XLCollectionReusableFooterID = @"XLCollectionReusableFooterID";
     return _xlTitleLabel;
 }
 
+-(UILabel *)xlLabel{
+    return self.xlTitleLabel;
+}
+
 -(void)setXlTitle:(NSString *)xlTitle{
     _xlTitle = xlTitle;
     self.xlTitleLabel.text = xlTitle;
+}
+
+-(void)setXlAttributedTitle:(NSAttributedString *)xlAttributedTitle{
+    _xlAttributedTitle = xlAttributedTitle;
+    self.xlTitleLabel.attributedText = xlAttributedTitle;
 }
 @end

@@ -40,12 +40,16 @@ CGFloat        const toastMargin        = 10.0f;
     hud.label.text = nil;
     hud.detailsLabel.text = toast;
     hud.margin = toastMargin;
+    CGPoint offset = hud.offset;
+    offset.y = -XLNavTopHeight;
+    hud.offset = offset;
     hud.minShowTime = toastMinShowTime;
     hud.removeFromSuperViewOnHide = YES;
     hud.userInteractionEnabled = NO;
     hud.detailsLabel.font = XLFont(toastTextFontSize);
     [hud hideAnimated:YES afterDelay:toastShowTime];
     hud.bezelView.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
+    hud.bezelView.blurEffectStyle = UIBlurEffectStyleDark;
     UIColor *whiteColor = [UIColor whiteColor];
     hud.detailsLabel.textColor = whiteColor;
     hud.label.textColor = whiteColor;
@@ -76,6 +80,7 @@ CGFloat        const toastMargin        = 10.0f;
  @param view <#view description#>
  */
 +(void)waitInfo:(NSString *)tips inView:(UIView *)view{
+    [UIActivityIndicatorView appearanceWhenContainedIn:[MBProgressHUD class], nil].color = [UIColor whiteColor];
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
     hud.mode = MBProgressHUDModeIndeterminate;
     if (![NSString isEmpty:tips]) {
@@ -83,11 +88,12 @@ CGFloat        const toastMargin        = 10.0f;
     }
     hud.margin = toastMargin;
     CGPoint offset = hud.offset;
-    offset.y = -XLNavTopHeight;
+//    offset.y = -XLNavTopHeight;
     hud.offset = offset;
     hud.minShowTime = toastMinShowTime;
     hud.removeFromSuperViewOnHide = YES;
-    hud.bezelView.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
+    hud.bezelView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    hud.bezelView.blurEffectStyle = UIBlurEffectStyleDark;
     UIColor *whiteColor = [UIColor whiteColor];
     hud.detailsLabel.textColor = whiteColor;
     hud.label.textColor = whiteColor;

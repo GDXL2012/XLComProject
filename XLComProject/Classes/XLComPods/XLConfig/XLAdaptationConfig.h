@@ -20,8 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// iOS 13 UIStatusBarStyleDarkContent
 @property (nonatomic, assign) UIStatusBarStyle preferredStatusBarStyle;
 
-@property (nonatomic, copy)   NSString *backImageName;  /// 返回按钮图标
-@property (nonatomic, assign) BOOL     showBackTitle;   /// default NO
+@property (nonatomic, copy)   NSString *backImageName;      /// 返回按钮图标
+@property (nonatomic, copy)   NSString *shadowImageName;    /// 导航栏分割线
+@property (nonatomic, assign) BOOL     showBackTitle;       /// default NO
 @end
 
 NS_ASSUME_NONNULL_END

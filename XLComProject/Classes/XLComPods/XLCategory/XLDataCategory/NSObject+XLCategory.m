@@ -35,4 +35,24 @@
     }
     method_exchangeImplementations(originalMethod, newMethod);
 }
+
++(void)replaceClassImplementations:(Class)cls originalSel:(SEL)original newSel:(SEL)newSel forClassMethod:(BOOL)classMethod{
+    Method originalMethod = nil;
+    Method newMethod = nil;
+    
+    if (classMethod) {
+        originalMethod = class_getClassMethod(cls, original);
+        newMethod = class_getClassMethod(cls, newSel);
+    } else {
+        originalMethod = class_getInstanceMethod(cls, original);
+        newMethod = class_getInstanceMethod(cls, newSel);
+    }
+    
+    if (!originalMethod) {
+        NSLog(@"Error: originalMethod 为空, 是否拼写错误? %@", originalMethod);
+        return;
+    }
+    class_replaceMethod(cls, original, method_getImplementation(newSel),
+    method_getTypeEncoding(newSel));
+}
 @end

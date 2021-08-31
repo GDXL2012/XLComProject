@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param textView 文本描述
  @param height 高度
  */
--(void)textView:(XLTextView *)textView heightChange:(CGFloat) height;
+-(void)textView:(XLTextView *)textView heightChange:(CGFloat)height;
 @end
 
 @interface XLTextView : UITextView

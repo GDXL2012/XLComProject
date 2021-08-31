@@ -126,7 +126,8 @@
     if (self.xlDelegate) {
         BOOL loadMore = [self.xlDelegate isSetupLoadmoreModule:self];
         if (loadMore) {
-            MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(xlLoadMoreData)];
+//            MJRefreshAutoNormalFooter *footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(xlLoadMoreData)];
+            MJRefreshBackNormalFooter *footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(xlLoadMoreData)];
             self.mj_footer = footer;
         } else {
             self.mj_footer = nil;

@@ -173,8 +173,11 @@
 /// @param lightColor <#lightColor description#>
 /// @param darkColor <#darkColor description#>
 + (instancetype)dynamicColor:(UIColor *)lightColor dark:(UIColor *)darkColor  API_AVAILABLE(ios(13.0), tvos(13.0)) API_UNAVAILABLE(watchos){
-    if (darkColor == nil || lightColor == nil) {
+    if (darkColor == nil) {
         return lightColor;
+    }
+    if (lightColor) {
+        return darkColor;
     }
     UIColor *dyColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
         if (traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {

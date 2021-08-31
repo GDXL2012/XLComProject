@@ -45,13 +45,15 @@
  @param message 等待框提示语
  */
 -(void)showWaitingMessage:(NSString *)message{
-    [self hideWaitingMessage];
+    NSLog(@"___%s___", __FUNCTION__);
+    [self hiddenWaitingMessage];
     [XLProgressHUDHelper waitInfo:message inView:self.view];
 }
 /**
  隐藏指定view中的等待框
  */
--(void)hideWaitingMessage {
+-(void)hiddenWaitingMessage {
+    NSLog(@"___%s___", __FUNCTION__);
     [XLProgressHUDHelper hidenHubFromView:self.view];
 }
 
@@ -67,7 +69,7 @@
 /**
  从window中移除等待框
  */
--(void)hideWaitingMessageInWindow{
+-(void)hiddenWaitingMessageInWindow{
     [XLProgressHUDHelper hideHud];
 }
 

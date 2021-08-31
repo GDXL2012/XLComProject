@@ -44,4 +44,18 @@
 +(NSDictionary *)infoDictionary{
     return [[NSBundle mainBundle] infoDictionary];;
 }
+
+/// 设备唯一标识符:相对唯一
++(NSString *)deviceUUID{
+    NSUUID *uuid = [[UIDevice currentDevice] identifierForVendor];
+    NSString *strIDFV = [uuid UUIDString];
+    uuid = nil;
+    return strIDFV;
+}
+
+/// 系统版本
++(NSString *)systemString{
+    NSString *version= [UIDevice currentDevice].systemVersion;
+    return [NSString stringWithFormat:@"iOS %@", version];
+}
 @end

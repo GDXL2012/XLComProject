@@ -11,6 +11,10 @@
 #import <CoreGraphics/CoreGraphics.h>
 
 @interface XLDevice ()
+/// 分辨率
+@property (nonatomic, assign) CGFloat   xlScale;
+@property (nonatomic, assign) CGFloat   xlNativeScale;
+ 
 /// 屏幕物理尺寸
 @property (nonatomic, assign) CGRect    xlScreenNativeBounds;
 @property (nonatomic, assign) CGSize    xlScreenNativeSize;
@@ -61,14 +65,16 @@ static XLDevice  *shareInstance;
 -(instancetype)init{
     self = [super init];
     if (self) {
+        _xlScale                = [UIScreen mainScreen].scale;
+        _xlNativeScale          = [UIScreen mainScreen].nativeScale;
+        
         _xlScreenNativeBounds   = [UIScreen mainScreen].nativeBounds;
         _xlScreenNativeSize     = _xlScreenNativeBounds.size;
         _xlScreenNativeWidth    = _xlScreenNativeSize.width;
         _xlScreenNativeHeight   = _xlScreenNativeSize.height;
         
-        CGFloat nativeScale     = [UIScreen mainScreen].nativeScale;
-        _xlScreenWidth          = _xlScreenNativeWidth / nativeScale;
-        _xlScreenHeight         = _xlScreenNativeHeight / nativeScale;
+        _xlScreenWidth          = _xlScreenNativeWidth / _xlNativeScale;
+        _xlScreenHeight         = _xlScreenNativeHeight / _xlNativeScale;
         
         _xlScreenBounds      = CGRectMake(0, 0, _xlScreenWidth, _xlScreenHeight);
         _xlScreenSize        = _xlScreenBounds.size;
@@ -77,11 +83,11 @@ static XLDevice  *shareInstance;
         
         _xlIsiPad       = (idiom == UIUserInterfaceIdiomPad);
         _xlIsiPhone     = (idiom == UIUserInterfaceIdiomPhone);
-        _xlIsRetina     = (nativeScale >= 2.0);
+        _xlIsRetina     = (_xlNativeScale >= 2.0);
 
         if (_xlIsiPhone) {
             /// 小屏幕
-            _xlMiniScreen    = _xlScreenNativeHeight <= 568.0;
+            _xlMiniScreen    = _xlScreenHeight <= 568.0;
             /// 手机型号
             _xliPhone4       = _xlScreenHeight < 568.0;
             _xliPhone5       = [self xlCGSizeEqualToSize:CGSizeMake(640, 1136)];

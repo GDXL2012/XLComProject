@@ -23,6 +23,19 @@ typedef NS_ENUM(NSInteger, XLMediaOperateType){
 
 /// 媒体选择工具类
 @interface XLMediaOperateTools : NSObject
+
+/// 校验拍摄权限
+/// @param permissionGranted <#permissionGranted description#>
++ (void)xlCheckTakeVideoAuthorization:(void(^)(BOOL granted))permissionGranted;
+/// 校验录音权限
+/// @param permissionGranted <#permissionGranted description#>
++ (void)xlCheckAudioAuthorization:(void(^)(BOOL granted))permissionGranted;
+/// 校验相机拍照
+/// @param permissionGranted <#permissionGranted description#>
++ (void)xlCheckTakePhotoAuthorization:(void(^)(BOOL granted))permissionGranted;
+/** 校验是否有相册权限 */
++ (void)xlCheckAlbumAuthorization:(void(^)(BOOL granted))permissionGranted;
+
 /**
  选择照片
  

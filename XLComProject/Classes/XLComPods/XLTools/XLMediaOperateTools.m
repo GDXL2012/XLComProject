@@ -19,6 +19,82 @@
 #import "XLMacroFont.h"
 
 @implementation XLMediaOperateTools
+
+/// 校验拍摄权限
+/// @param permissionGranted <#permissionGranted description#>
++ (void)xlCheckTakeVideoAuthorization:(void(^)(BOOL granted))permissionGranted{
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL videoGranted) {
+        if (videoGranted) {
+            //麦克风权限
+            [XLMediaOperateTools xlCheckAudioAuthorization:^(BOOL granted) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (permissionGranted){
+                        permissionGranted(granted);
+                    }
+                });
+            }];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showCameraAuthorization];
+                if (permissionGranted){
+                    permissionGranted(NO);
+                }
+            });
+        }
+    }];
+}
+
+/// 校验录音权限
+/// @param permissionGranted <#permissionGranted description#>
++ (void)xlCheckAudioAuthorization:(void(^)(BOOL granted))permissionGranted{
+    //麦克风权限
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL audioGranted) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!audioGranted) {
+                [XLMediaOperateTools showMicrophoneAuthorization];
+            }
+            if (permissionGranted){
+                permissionGranted(audioGranted);
+            }
+        });
+    }];
+}
+
+/// 校验相机拍照
+/// @param permissionGranted <#permissionGranted description#>
++ (void)xlCheckTakePhotoAuthorization:(void(^)(BOOL granted))permissionGranted{
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL videoGranted) {
+        //麦克风权限
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!videoGranted) {
+                [self showCameraAuthorization];
+            }
+            if (permissionGranted){
+                permissionGranted(videoGranted);
+            }
+        });
+    }];
+}
+
+/** 校验是否有相册权限 */
++ (void)xlCheckAlbumAuthorization:(void(^)(BOOL granted))permissionGranted {
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (status == PHAuthorizationStatusRestricted) {
+                // 这是系统级别的限制（比如家长控制），用户也无法修改这个授权状态
+                [self showMediaRestricted];
+            } else if (status == PHAuthorizationStatusDenied) { // 拒绝访问
+                [XLMediaOperateTools showPhotoAuthorization];
+            } else if (status == PHAuthorizationStatusAuthorized) { // 已授权
+            } else { // 用户未选择受权
+                [self showPhotoAuthorization];
+            }
+            if (permissionGranted){
+                permissionGranted(status == PHAuthorizationStatusAuthorized);
+            }
+        });
+    }];
+}
 /**
  选择照片
  
@@ -33,6 +109,7 @@
     pickerVC.editing        = allowsEditing;
     pickerVC.delegate       = delegate;
     pickerVC.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    pickerVC.modalPresentationStyle = [XLConfigManager xlConfigManager].adaptationConfig.modalPresentationStyle;
     [viewController presentViewController:pickerVC animated:YES completion:nil];
 }
 
@@ -52,6 +129,7 @@
     NSString *mediaType     = ( NSString *)kUTTypeMovie;
     NSArray *mediaTypes     = [NSArray arrayWithObjects:mediaType,nil];
     [pickerVC setMediaTypes:mediaTypes];
+    pickerVC.modalPresentationStyle = [XLConfigManager xlConfigManager].adaptationConfig.modalPresentationStyle;
     [viewController presentViewController:pickerVC animated:YES completion:nil];
 }
 
@@ -63,6 +141,7 @@
     // 导航栏背景色黑色
     [pickerVC.navigationBar setBarTintColor:XLThemeColor];
     NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor whiteColor], NSFontAttributeName:XLBarTitleFont};
+    pickerVC.modalPresentationStyle = [XLConfigManager xlConfigManager].adaptationConfig.modalPresentationStyle;
     [pickerVC.navigationBar setTitleTextAttributes:attributes];
     return pickerVC;
 }
@@ -95,49 +174,18 @@
                         delegate:(id <XLMediaOperateDelegate>) delegate{
     //拍照仅仅涉及相机权限
     if (type == XLMediaOperateTypePhoto) {
-        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL videoGranted) {
-            if (videoGranted) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [XLMediaOperateTools privateTakePhotoFromViewController:viewController imgMode:type duration:duration allowsEditing:allowsEditing delegate:delegate];
-                });
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [XLMediaOperateTools showCameraAuthorization];
-                });
+        [XLMediaOperateTools xlCheckTakePhotoAuthorization:^(BOOL granted) {
+            if (granted) {
+                [XLMediaOperateTools privateTakePhotoFromViewController:viewController imgMode:type duration:duration allowsEditing:allowsEditing delegate:delegate];
             }
         }];
     } else { //摄像涉及的权限
         //相机权限
-        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL videoGranted) {
-            if (videoGranted) {
-                //麦克风权限
-                [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL audioGranted) {
-                    if (audioGranted) {
-                        //相片权限
-                        // 判断当前的授权状态
-                        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-                            if (status == PHAuthorizationStatusRestricted) {
-                                // 这是系统级别的限制（比如家长控制），用户也无法修改这个授权状态
-                                [XLProgressHUDHelper toast:@"由于系统原因，无法保存图片！"];
-                            } else if (status == PHAuthorizationStatusDenied) { // 拒绝访问
-                                [XLMediaOperateTools showPhotoAuthorization];
-                            } else if (status == PHAuthorizationStatusAuthorized) { // 已授权
-                                [XLMediaOperateTools privateTakePhotoFromViewController:viewController imgMode:type duration:duration allowsEditing:allowsEditing delegate:delegate];
-                            } else { // 用户未选择受权
-                                [XLProgressHUDHelper toast:@"请在设置->隐私->照片权限中开启访问权限。"];
-                            }
-                        }];
-                    } else {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [XLMediaOperateTools showMicrophoneAuthorization];
-                        });
-                    }
+        [XLMediaOperateTools xlCheckTakeVideoAuthorization:^(BOOL granted) {
+            if (granted) {
+                [XLMediaOperateTools xlCheckAlbumAuthorization:^(BOOL granted) {
+                    [XLMediaOperateTools privateTakePhotoFromViewController:viewController imgMode:type duration:duration allowsEditing:allowsEditing delegate:delegate];
                 }];
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSString *toast = [NSString stringWithFormat:@"请在隐私设置中开启%@的相机权限", [XLAppInfoTools appName]];
-                    [XLProgressHUDHelper toast:toast];
-                });
             }
         }];
     }
@@ -186,18 +234,22 @@
         
         pickerVC.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
         pickerVC.showsCameraControls = YES;
-//        viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        pickerVC.modalPresentationStyle = [XLConfigManager xlConfigManager].adaptationConfig.modalPresentationStyle;
         [viewController presentViewController:pickerVC animated:YES completion:nil];
     } else {
         [XLProgressHUDHelper toast:@"设备不支持拍照功能"];
     }
 }
 
++(void)showMediaRestricted{
+    [XLProgressHUDHelper toast:@"由于系统原因，无法保存图片！"];
+}
+
 /**
  显示相机权限提醒
  */
 +(void)showCameraAuthorization{
-    NSString *toast = [NSString stringWithFormat:@"%@没有访问相机的权限，无法进行拍照。请在设置->隐私->相机权限中开启访问权限。", [XLAppInfoTools appName]];
+    NSString *toast = [NSString stringWithFormat:@"%@没有访问相机的权限。请在设置->隐私->相机权限中开启访问权限。", [XLAppInfoTools appName]];
     [XLProgressHUDHelper toast:toast];
 }
 
@@ -205,7 +257,7 @@
  显示相册权限提醒
  */
 +(void)showPhotoAuthorization{
-    NSString *toast = [NSString stringWithFormat:@"%@没有访问照片的权限，无法进行拍摄。请在设置->隐私->照片权限中开启访问权限。", [XLAppInfoTools appName]];
+    NSString *toast = [NSString stringWithFormat:@"%@没有访问相册的权限。请在设置->隐私->照片权限中开启访问权限。", [XLAppInfoTools appName]];
     [XLProgressHUDHelper toast:toast];
 }
 

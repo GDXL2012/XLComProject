@@ -13,7 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, XLCollectionReusableType) {
     XLCollectionReusableEmpty  = 0,       // 空白
     XLCollectionReusableTitleCenter,      // 标题居中
-    XLCollectionReusableTitleBottom       // 标题底部对齐
+    XLCollectionReusableTitleBottom,      // 标题底部对齐
+    XLCollectionReusableTitleTop          // 标题顶部对齐
 };
 
 extern NSString *const XLCollectionReusableHeadID;
@@ -27,7 +28,7 @@ extern NSString *const XLCollectionReusableFooterID;
 @property (nonatomic, strong) NSAttributedString  *xlAttributedTitle;
 @property (nonatomic, copy)   UIFont              *xlFont;
 
-@property (nonatomic, readonly) UILabel         *xlLabel; // 标题
+@property (nonatomic, readonly) UILabel           *xlLabel; // 标题
 
 @end
 

@@ -9,8 +9,56 @@
 #import "UIImage+XLCategory.h"
 #import <AVFoundation/AVFoundation.h>
 #import "XLMacroLayout.h"
+#import "XLDeviceMacro.h"
 
 @implementation UIImage (XLCategory)
+
++ (CGSize)sizeWithImageOriginSize:(CGSize)originSize
+                          minSize:(CGSize)imageMinSize
+                          maxSize:(CGSize)imageMaxSiz{
+    CGSize size;
+    NSInteger imageWidth = originSize.width ,imageHeight = originSize.height;
+    NSInteger imageMinWidth = imageMinSize.width, imageMinHeight = imageMinSize.height;
+    NSInteger imageMaxWidth = imageMaxSiz.width,  imageMaxHeight = imageMaxSiz.height;
+    if (imageWidth > imageHeight) //宽图
+    {
+        size.height = imageMinHeight;  //高度取最小高度
+        size.width = imageWidth * imageMinHeight / imageHeight;
+        if (size.width > imageMaxWidth)
+        {
+            size.width = imageMaxWidth;
+        }
+    }
+    else if(imageWidth < imageHeight)//高图
+    {
+        size.width = imageMinWidth;
+        size.height = imageHeight *imageMinWidth / imageWidth;
+        if (size.height > imageMaxHeight)
+        {
+            size.height = imageMaxHeight;
+        }
+    }
+    else//方图
+    {
+        if (imageWidth > imageMaxWidth)
+        {
+            size.width = imageMaxWidth;
+            size.height = imageMaxHeight;
+        }
+        else if(imageWidth > imageMinWidth)
+        {
+            size.width = imageWidth;
+            size.height = imageHeight;
+        }
+        else
+        {
+            size.width = imageMinWidth;
+            size.height = imageMinHeight;
+        }
+    }
+    return size;
+}
+
 /**
  重新绘制图片
  
@@ -168,20 +216,49 @@
  @return 截图
  */
 +(UIImage *)image:(UIImage *)image fillSize:(CGSize)viewsize{
+    CGFloat scale = viewsize.width / viewsize.height;
+    return [UIImage image:image aspectRatio:scale];
+}
+
+/**
+ 截取图片的一部分:比使用drawinrect速度更快
+ 
+ @param image 原图
+ @param CGSize 截图大小
+ @return 截图
+ */
++(UIImage *)image:(UIImage *)image toSize:(CGSize)toSize{
+    CGFloat scale = toSize.width / toSize.height;
+    return [UIImage image:image toRatio:scale];
+}
+
+/**
+ 截取图片的一部分:比使用drawinrect速度更快
+ 
+ @param image 原图
+ @param toRatio 截图比例
+ @return 截图
+ */
++(UIImage *)image:(UIImage *)image toRatio:(CGFloat)toRatio{
     CGSize size = image.size;
-    CGFloat scalex = viewsize.width / size.width;
-    CGFloat scaley = viewsize.height / size.height;
-    CGFloat scale = MAX(scalex, scaley);
-    UIGraphicsBeginImageContext(viewsize);
-    CGFloat width = size.width * scale;
-    CGFloat height = size.height * scale;
-    float dwidth = ((viewsize.width - width) / 2.0f);
-    float dheight = ((viewsize.height - height) / 2.0f);
-    CGRect rect = CGRectMake(dwidth, dheight, size.width * scale, size.height * scale);
-    [image drawInRect:rect];
-    UIImage *newimg = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newimg;
+    float imgAspectRatio = size.width / size.height;
+    CGFloat width = size.width;
+    CGFloat height = size.height;
+    if (imgAspectRatio > toRatio) {
+        // 宽需要剪切
+        width = height * toRatio;
+    } else {
+        // 高度需要剪切
+        height = width * toRatio;
+    }
+    
+    float datX = ((size.width - width) / 2.0f);
+    float datY = ((size.height - height) / 2.0f);
+    CGRect rect = CGRectMake(datX, datY, width, height);
+    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
+    UIImage *cropped = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    return cropped;
 }
 
 /**
@@ -192,14 +269,6 @@
  @return 截图
  */
 +(UIImage *)image:(UIImage *)image toRect:(CGRect)rect{
-    rect.origin.y = rect.origin.y + 64;
-    if (image.imageOrientation != UIImageOrientationUp){
-        // 矫正图片方向
-        UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
-        [image drawInRect:(CGRect){0, 0, image.size}];
-        image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-    }
     CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
     UIImage *cropped = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
@@ -223,9 +292,11 @@
         width = height * aspectRatio;
     } else {
         // 高度需要剪切
-        height = width / aspectRatio;
+        height = width * aspectRatio;
     }
     UIGraphicsBeginImageContext(CGSizeMake(width, height));
+//    CGFloat scale = [UIScreen mainScreen].scale;
+//    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, scale);
     float dwidth = ((width - size.width) / 2.0f);
     float dheight = ((height - size.height) / 2.0f);
     CGRect rect = CGRectMake(dwidth, dheight, size.width, size.height);
@@ -264,7 +335,7 @@
  @return 纯色图片
  */
 + (UIImage *)sepImageWithColor:(UIColor *)color alpha:(CGFloat)alpha{
-    return [UIImage imageWithColor:color size:CGSizeMake(1.0f, XLCellSepHeight) alpha:alpha];
+    return [UIImage imageWithColor:color size:CGSizeMake(XLScreenWidth, XLCellSepHeight) alpha:alpha];
 }
 
 /**
@@ -288,7 +359,9 @@
  */
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size alpha:(CGFloat)alpha{
     CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);
-    UIGraphicsBeginImageContext(rect.size);
+//    UIGraphicsBeginImageContext(rect.size);
+    CGFloat scale = [UIScreen mainScreen].scale;
+    UIGraphicsBeginImageContextWithOptions(size, NO, scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(context, [color CGColor]);
     CGContextSetAlpha(context, alpha);
@@ -424,6 +497,84 @@
     CGImageRelease(image);
     
     return resultUIImage;
+}
+
+/// 修正图片转向
++ (UIImage *)fixOrientationForImage:(UIImage *)aImage{
+    // No-op if the orientation is already correct
+    if (aImage.imageOrientation == UIImageOrientationUp){
+        return aImage;
+    }
+    
+    // We need to calculate the proper transformation to make the image upright.
+    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationDown:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformRotate(transform, M_PI_2);
+            break;
+            
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, -M_PI_2);
+            break;
+        default:
+            break;
+    }
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationUpMirrored:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+            
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+        default:
+            break;
+    }
+    
+    // Now we draw the underlying CGImage into a new context, applying the transform
+    // calculated above.
+    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,
+                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,
+                                             CGImageGetColorSpace(aImage.CGImage),
+                                             CGImageGetBitmapInfo(aImage.CGImage));
+    CGContextConcatCTM(ctx, transform);
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            // Grr...
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);
+            break;
+            
+        default:
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);
+            break;
+    }
+    
+    // And now we just create a new UIImage from the drawing context
+    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
+    UIImage *img = [UIImage imageWithCGImage:cgimg];
+    CGContextRelease(ctx);
+    CGImageRelease(cgimg);
+    return img;
 }
 
 @end

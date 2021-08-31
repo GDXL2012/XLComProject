@@ -58,7 +58,32 @@
  */
 -(void)setCornerRadius:(CGFloat)radius{
     self.layer.cornerRadius = radius;
-    self.layer.masksToBounds = YES;
+    if (radius > 0) {
+        self.layer.masksToBounds = YES;
+    } else {
+        self.layer.masksToBounds = NO;
+    }
+}
+
+/// 设置圆角、边框
+/// @param radius <#radius description#>
+/// @param border <#border description#>
+-(void)setCornerRadius:(CGFloat)radius withBorder:(BOOL)border{
+    [self setCornerRadius:radius withBorder:border borderColor:XLComSepColor];
+}
+
+/// 设置圆角、边框
+/// @param radius <#radius description#>
+/// @param border <#border description#>
+/// @param borderColor <#borderColor description#>
+-(void)setCornerRadius:(CGFloat)radius
+            withBorder:(BOOL)border
+           borderColor:(UIColor *)borderColor{
+    [self setCornerRadius:radius];
+    if (border) {
+        self.layer.borderWidth = XLBorderSepWidth;
+        self.layer.borderColor = borderColor.CGColor;
+    }
 }
 
 /**
@@ -125,7 +150,7 @@
         /// 当存在AccessoryView，因为可能会显示异常
         [self addSubview:self.xlSepView];
         [self.xlSepView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self).offset(XLHMargin);
+            make.left.mas_equalTo(self).offset(margin);
             make.right.mas_equalTo(self);
             make.bottom.mas_equalTo(self);
             make.height.mas_equalTo(XLCellSepHeight);

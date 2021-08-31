@@ -12,10 +12,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol XLComConfigDelegate <NSObject>
-
+@optional
 /// 获取原图地址：如不实现，则取string地址
 /// @param string 缩略图地址
 -(NSString *)originalRemotePathFromUrl:(NSString *)string;
+
+/// 加载SDK ImageView 图片:预览用
+-(void)loadImageForSDImageView:(UIImageView *)imgView complete:(void(^)(UIImage *image , NSError *error))complete;
+/// 加载图片
+-(void)loadImageForImageView:(UIImageView *)imgView withUrl:(NSString *)url complete:(void(^)(UIImage *image , NSError *error))complete;
 
 @end
 
@@ -24,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<XLComConfigDelegate> xlConfigDelegate;
 
 /// 加载失败图片显示：默认nil
-@property (nonatomic, strong) UIImage  *loadingFaileImage;
+@property (nonatomic, strong) UIImage  *loadingFailImage;
 @end
 
 NS_ASSUME_NONNULL_END

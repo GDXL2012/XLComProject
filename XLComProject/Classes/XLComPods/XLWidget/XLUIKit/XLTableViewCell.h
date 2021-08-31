@@ -60,7 +60,7 @@ typedef NS_ENUM(NSInteger, XLCellSelectType){
  @param bindingData <#bindingData description#>
  @return <#return value description#>
  */
-+(CGFloat)hieghForBindingData:(id)bindingData;
++(CGFloat)heighForBindingData:(nullable id)bindingData;
 
 /// 初始化cell
 -(instancetype)initWithXLStyle:(XLTableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier;

@@ -33,7 +33,8 @@
 
 -(void)configCustomPresentTransition{
     XLViewControllerTransition *transition = [[XLViewControllerTransition alloc] initWithController:self];
-    objc_setAssociatedObject(self, @selector(presentTransition), transition, OBJC_ASSOCIATION_RETAIN);
+    /// 添加绑定是为了让transition不被销毁
+    objc_setAssociatedObject(self, @selector(presentTransition), transition, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     self.transitioningDelegate = transition;
     self.modalPresentationStyle = UIModalPresentationCustom;
 }

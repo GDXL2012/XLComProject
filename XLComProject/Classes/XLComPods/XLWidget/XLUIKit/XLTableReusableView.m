@@ -50,7 +50,7 @@ NSString *const XLTableReusableFooterID = @"XLTableReusableFooterID";
         [_xlLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(self.contentView).offset(XLHMargin);
             if (type == XLTableReusableTitleBottom) {
-                make.bottom.mas_equalTo(self.contentView).offset(-4.0f);
+                make.bottom.mas_equalTo(self.contentView).offset(-9.0f);
             } else {
                 make.centerY.mas_equalTo(self.contentView);
             }

@@ -23,7 +23,7 @@
 
 /// 导航栏颜色：默认"#030303"
 #define  XLBarTitleColor    [XLConfigManager xlConfigManager].colorConfig.xlBarTitleColor
-/// 导航栏颜色：xlBarTitleColor
+/// 导航栏按钮颜色：默认同xlBarTitleColor
 #define  XLBarItemColor     [XLConfigManager xlConfigManager].colorConfig.xlBarItemColor
 
 /// 背景颜色：默认"#F6F6F6"

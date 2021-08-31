@@ -13,6 +13,7 @@
 #import "UIViewController+XLTools.h"
 #import "XLBaseRefreshTableController.h"
 #import "XLBaseTableViewController.h"
+#import "XLBaseCollectionViewController.h"
 #import "XLLoginBaseViewController.h"
 #import "XLNavigationController.h"
 

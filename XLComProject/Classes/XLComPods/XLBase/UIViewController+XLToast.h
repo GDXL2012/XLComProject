@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  隐藏指定view中的等待框
  */
--(void)hideWaitingMessage;
+-(void)hiddenWaitingMessage;
 
 /**
  在当前window中显示等待框
@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  从window中移除等待框
  */
--(void)hideWaitingMessageInWindow;
+-(void)hiddenWaitingMessageInWindow;
 
 #pragma mark - 显示Alert弹框
 -(void)showAlertMsg:(nullable NSString *)msg actions:(nullable NSArray<UIAlertAction *> *)array cancel:(nullable UIAlertAction *)cancel;

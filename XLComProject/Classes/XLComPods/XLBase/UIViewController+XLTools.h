@@ -12,6 +12,30 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIViewController (XLTools)
 
 /**
+ 设置返回按钮
+ 
+ @param action 返回按钮事件
+ */
+-(void)setLeftBarButtonWithAction:(SEL)action;
+
+/**
+ 设置导航栏左侧按钮
+ 
+ @param title 标题
+ @param action 返回按钮事件
+ */
+-(void)setLeftBarButtonWithTitle:(NSString *)title action:(SEL)action;
+
+/**
+ 设置导航栏左侧按钮
+ 
+ @param title 标题
+ @param color 标题颜色
+ @param action 返回按钮事件
+ */
+-(void)setLeftBarButtonWithTitle:(NSString *)title color:(UIColor *)color action:(SEL)action;
+
+/**
  设置右侧按钮
  
  @param action 右侧按钮事件
@@ -68,21 +92,25 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  销毁当前控制器
  */
--(void)popViewController;
+-(void)xlPopViewController;
+/**
+ 销毁当前控制器
+ */
+-(void)xlPopViewControllerAnimated:(BOOL)animated;
 
 /**
  弹出控制器
  
  @param viewController 弹出控制器
  */
--(void)pushViewController:(UIViewController *)viewController;
--(void)pushViewControllerWithName:(NSString *)controllerName;
+-(void)xlPushViewController:(UIViewController *)viewController;
+-(void)xlPushViewControllerWithName:(NSString *)controllerName;
 
 /**
  * default：hidesBottomBarWhenPushed = NO
  */
--(void)pushViewControllerWithOutBottomBarHides:(UIViewController *)viewController;
--(void)pushViewControllerNameWithOutBottomBarHides:(NSString *)controllerName;
+-(void)xlPushViewControllerWithOutBottomBarHides:(UIViewController *)viewController;
+-(void)xlPushViewControllerNameWithOutBottomBarHides:(NSString *)controllerName;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -65,6 +65,15 @@ extern NSString *const XLDFYYYYMMDDHHMMSS_ZH1;
 /**
  通用时间格式化
  
+ @param date 时间Date
+ @param format 传入的时间字符串格式
+ @return 默认规则格式化后的时间描述字符串
+ */
++(NSString *)formatDate:(NSDate *)date toFormat:(NSString *)toFormat;
+
+/**
+ 通用时间格式化
+ 
  @param dateString 时间字符串
  @param format 传入的时间字符串格式
  @return 默认规则格式化后的时间描述字符串(带有时分)
