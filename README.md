@@ -149,7 +149,7 @@ pod 'XLComProject'
 
 ## Author
 
-GDXL2012, liyijun_1989@163.com
+GDXL2012
 
 ## License
 
