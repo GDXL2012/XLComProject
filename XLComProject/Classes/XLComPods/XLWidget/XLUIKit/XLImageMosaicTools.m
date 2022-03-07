@@ -24,8 +24,6 @@
 @property (nonatomic, strong) UIColor *xlStrokeColor;
 @property (nonatomic, assign) CGFloat xlStrokeWidth;
 
-@property (nonatomic, assign) CGSize originalSize;
-
 
 @property (nonatomic, assign) NSUInteger    minimumNumberOfTouches;
 @property (nonatomic, assign) BOOL          delaysTouchesBegan;
@@ -40,7 +38,6 @@
     self = [super init];
     if (self) {
         _xlMosaicImgView = imageView;
-        _originalSize = imageView.frame.size;
         _xlDosaicContentImgView = [[UIImageView alloc] init];
         _xlDosaicContentImgView.backgroundColor = [UIColor clearColor];
         [imageView addSubview:_xlDosaicContentImgView];
@@ -227,11 +224,12 @@
 -(UIImage *)xlmosaicImage{
     if (self.xlMosaicPathArray.count > 0) {
         if(!_xlMosaicImage){
+            CGSize originalSize = self.xlMosaicImgView.frame.size;
             CGFloat scale = [UIScreen mainScreen].scale;
-            UIGraphicsBeginImageContextWithOptions(self.originalSize, NO, scale);
+            UIGraphicsBeginImageContextWithOptions(originalSize, NO, scale);
 //            [self.xlMosaicImgView.image drawAtPoint:CGPointZero];
-            [self.xlMosaicImgView.image drawInRect:CGRectMake(0, 0, self.originalSize.width, self.originalSize.height)];
-            [self.xlDosaicContentImgView.image drawInRect:CGRectMake(0, 0, self.originalSize.width, self.originalSize.height)];
+            [self.xlMosaicImgView.image drawInRect:CGRectMake(0, 0, originalSize.width, originalSize.height)];
+            [self.xlDosaicContentImgView.image drawInRect:CGRectMake(0, 0, originalSize.width, originalSize.height)];
             _xlMosaicImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
         }
