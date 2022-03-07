@@ -60,6 +60,26 @@
     }
 }
 
+-(id)lastObject{
+    [self compact];
+    NSInteger count = self.pointerArray.count;
+    if(count > 0){
+        return [self objectAtIndex:count - 1];
+    } else {
+        return nil;
+    }
+}
+
+-(id)firstObject{
+    [self compact];
+    NSInteger count = self.pointerArray.count;
+    if(count > 0){
+        return [self objectAtIndex:0];
+    } else {
+        return nil;
+    }
+}
+
 - (void)removeObjectAtIndex:(NSUInteger)index{
     [self.pointerArray removePointerAtIndex:index];
 }

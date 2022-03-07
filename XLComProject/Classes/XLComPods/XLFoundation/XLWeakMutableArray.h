@@ -46,6 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return 对象
  */
 - (id)objectAtIndex:(NSUInteger)index;
+- (id)lastObject;
+- (id)firstObject;
 @end
 
 NS_ASSUME_NONNULL_END
