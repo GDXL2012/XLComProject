@@ -67,6 +67,8 @@ typedef NS_OPTIONS(NSInteger, XLImagePreviewOpItems) {
 /// @param delegate <#delegate description#>
 -(void)addPreivewDelegate:(id<XLImagePreviewProtocol>)delegate;
 
+/// 删除预览图片
+-(void)deletePreviewImageAtIndex:(NSInteger)index;
 /// 取消图片预览
 -(void)cancelImagePreview;
 
