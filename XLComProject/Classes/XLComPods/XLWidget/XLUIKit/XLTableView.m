@@ -19,6 +19,10 @@
     self = [super initWithFrame:frame style:style];
     if (self) {
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
+        if (@available(iOS 15.0, *)) {
+            /// 间隔过大问题修改
+            self.sectionHeaderTopPadding = 0;
+        }
     }
     return self;
 }
