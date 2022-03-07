@@ -129,7 +129,7 @@
             [delegate respondsToSelector:@selector(loadImageForImageView:withUrl:complete:)]) {
             XLWeakSelf
             [delegate loadImageForImageView:self.previewImageView withUrl:path complete:^(UIImage * _Nonnull image, NSError * _Nonnull error) {
-                         if (weakSelf && error == nil) {
+                if (weakSelf && error == nil) {
                     if (error) {
                         weakSelf.previewImageView.image = weakSelf.itemInfo.originalImage;
                     } else {
@@ -186,8 +186,8 @@
             XLStrongSelf
             [strongSelf.indicatorView stopAnimating];
             if (error) { /// 图片加载失败
-                UIImage *image = [XLConfigManager xlConfigManager].comConfig.loadingFailImage;
-                strongSelf.previewImageView.image = image;
+                UIImage *errorImage = [XLConfigManager xlConfigManager].comConfig.loadingFailImage;
+                strongSelf.previewImageView.image = errorImage;
             }
         }];
     } else {
