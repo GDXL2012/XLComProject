@@ -30,7 +30,7 @@
 }
 
 #pragma mark - 常规字体
--(void)xlThemFont:(CGFloat)fontSize{
+-(void)xlThemeFont:(CGFloat)fontSize{
     [self xlTextFont:fontSize color:XLThemeColor];
 }
 -(void)xlTitleFont:(CGFloat)fontSize{
@@ -64,7 +64,7 @@
 }
 
 #pragma mark -  加粗
--(void)xlBThemFont:(CGFloat)fontSize{
+-(void)xlBThemeFont:(CGFloat)fontSize{
     [self xlTextBFont:fontSize color:XLThemeColor];
 }
 -(void)xlBTitleFont:(CGFloat)fontSize{

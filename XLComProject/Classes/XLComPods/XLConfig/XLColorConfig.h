@@ -15,7 +15,7 @@
 /// 适配iOS 13 适配深色模式：使用该方法color与darkColor请不要使用动态颜色
 /// @param color <#color description#>
 /// @param darkColor <#darkColor description#>
--(void)setXlThemColor:(UIColor *)color dark:(UIColor *)darkColor;
+-(void)setXlThemeColor:(UIColor *)color dark:(UIColor *)darkColor;
 
 /// 导航栏标题颜色：xlBarTitleColor "#030303"
 @property (nonatomic, strong) UIColor *xlBarTitleColor;

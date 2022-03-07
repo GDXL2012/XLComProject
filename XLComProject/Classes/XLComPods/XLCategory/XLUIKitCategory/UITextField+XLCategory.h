@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)setPlaceholder:(NSString *)placeholder color:(UIColor *)color;
 
 #pragma mark - 常规字体
--(void)xlThemFont:(CGFloat)fontSize;        /// 主题色字体配置
+-(void)xlThemeFont:(CGFloat)fontSize;        /// 主题色字体配置
 -(void)xlTitleFont:(CGFloat)fontSize;       /// 标题字体
 -(void)xlSubTitleFont:(CGFloat)fontSize;    /// 副标题字体
 -(void)xlDetailFont:(CGFloat)fontSize;      /// 详情字体
@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)xlWhiteFont:(CGFloat)fontSize;       /// 白色字体
 
 #pragma mark -  加粗
--(void)xlBThemFont:(CGFloat)fontSize;        /// 主题色字体配置
+-(void)xlBThemeFont:(CGFloat)fontSize;        /// 主题色字体配置
 -(void)xlBTitleFont:(CGFloat)fontSize;       /// 标题字体
 -(void)xlBSubTitleFont:(CGFloat)fontSize;    /// 副标题字体
 -(void)xlBDetailFont:(CGFloat)fontSize;      /// 详情字体

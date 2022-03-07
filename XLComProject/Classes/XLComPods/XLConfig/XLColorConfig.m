@@ -114,7 +114,7 @@
 
 -(void)defaultConfig{
     UIColor *color = [UIColor colorWithHexString:@"#FFFFFF"];
-    [self setXlThemColor:color dark:color];
+    [self setXlThemeColor:color dark:color];
     /// 导航栏颜色：默认"#030303"
     color = [UIColor colorWithHexString:@"#030303"];
     [self setXlBarTitleColor:color dark:color];
@@ -187,7 +187,7 @@
 /// 适配iOS 13 深色模式
 /// @param color <#color description#>
 /// @param darkColor <#darkColor description#>
--(void)setXlThemColor:(UIColor *)color dark:(UIColor *)darkColor{
+-(void)setXlThemeColor:(UIColor *)color dark:(UIColor *)darkColor{
     _xlThemeColor = color;
     if (XLAvailableiOS13) {
         _xlThemeColorDark = darkColor;
