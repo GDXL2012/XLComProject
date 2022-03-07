@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  window上移除等待框
  */
-+(void)hideHud;
++(void)hideHUD;
 
 /**
  view上显示等待框
@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param view <#view description#>
  */
-+(void)hidenHubFromView:(UIView *)view;
++(void)hideHUBFromView:(UIView *)view;
 @end
 
 NS_ASSUME_NONNULL_END

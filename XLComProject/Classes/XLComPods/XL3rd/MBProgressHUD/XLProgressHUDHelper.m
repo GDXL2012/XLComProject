@@ -68,9 +68,9 @@ CGFloat        const toastMargin        = 10.0f;
 /**
  window上移除等待框
  */
-+(void)hideHud{
++(void)hideHUD{
     UIWindow *window = [[UIApplication sharedApplication].delegate window];
-    [XLProgressHUDHelper hidenHubFromView:window];
+    [XLProgressHUDHelper hideHUBFromView:window];
 }
 
 /**
@@ -104,7 +104,7 @@ CGFloat        const toastMargin        = 10.0f;
  
  @param view <#view description#>
  */
-+(void)hidenHubFromView:(UIView *)view{
++(void)hideHUBFromView:(UIView *)view{
     [MBProgressHUD hideHUDForView:view animated:NO];
 }
 @end
