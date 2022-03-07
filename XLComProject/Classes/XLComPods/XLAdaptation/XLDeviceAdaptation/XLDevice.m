@@ -111,7 +111,17 @@ static XLDevice  *shareInstance;
             _xliPhoneXsMax      = [self xlCGSizeEqualToSize:CGSizeMake(1242, 2688)];
             
             /// 刘海屏
-            _xlBangsScreen      = (_xliPhoneXR || _xliPhoneX || _xliPhoneXsMax);
+            if (@available(iOS 11.0, *)) {
+                UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+                // 获取底部安全区域高度，iPhone X 竖屏下为 34.0，横屏下为 21.0，其他类型设备都为 0
+                CGFloat bottomSafeInset = window.safeAreaInsets.bottom;
+                
+                if (bottomSafeInset == 34.0f || bottomSafeInset == 21.0f) {
+                    _xlBangsScreen = YES;
+                }
+            } else {
+                _xlBangsScreen = NO;
+            }
         } else {
             /// 小屏幕
             _xlMiniScreen = _xliPhone4 = _xliPhone5 = _xliPhone5s = _xliPhone6 = _xliPhone6p = _xliPhoneXR = _xliPhoneX = _xliPhoneXsMax = _xlBangsScreen = NO;

@@ -23,7 +23,7 @@
 #define XLScreenNativeHeight      [[XLDevice xlDevice] xlScreenNativeHeight]
 
 // 屏幕尺寸
-#define XLScreenBounds      [[XLDevice xlDevice] xlScreenBounds]
+#define XLScreenBounds      [UIScreen mainScreen].bounds
 // 屏幕大小
 #define XLScreenSize        [[XLDevice xlDevice] xlScreenSize]
 // 屏幕宽度
