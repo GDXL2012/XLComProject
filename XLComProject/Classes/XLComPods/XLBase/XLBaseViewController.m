@@ -107,8 +107,18 @@
         if (![NSString isEmpty:backImgStr]) {
             // 替换系统自带的返回按钮
             UIImage *buttonNormal = [[UIImage imageNamed:backImgStr] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            [self.navigationController.navigationBar setBackIndicatorImage:buttonNormal];
-            [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:buttonNormal];
+            if (@available(iOS 15.0, *)) {
+                UINavigationBarAppearance *appearance = self.navigationController.navigationBar.scrollEdgeAppearance;
+                if (appearance == nil) {
+                    appearance = [[UINavigationBarAppearance alloc] init];
+                }
+                [appearance setBackIndicatorImage:buttonNormal transitionMaskImage:buttonNormal];
+                [[UINavigationBar appearance] setScrollEdgeAppearance:appearance];
+                [[UINavigationBar appearance] setStandardAppearance:appearance];
+            } else {
+                [self.navigationController.navigationBar setBackIndicatorImage:buttonNormal];
+                [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:buttonNormal];
+            }
         }
         
         BOOL showBackTitle = [XLConfigManager xlConfigManager].adaptationConfig.showBackTitle;

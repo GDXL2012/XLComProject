@@ -66,15 +66,31 @@
 /// 设置导航栏分割线显示状态
 /// @param shadowHidden shadowHidden description
 -(void)setNavgationBarShadowHidden:(BOOL)shadowHidden{
-    UIImage *themeImage = [UIImage imageWithColor:XLThemeColor];
-    if (shadowHidden) {
-        UIImage *image = [UIImage sepImageWithColor:XLThemeColor alpha:1.0f];
-        [self.navigationBar setShadowImage:image];
-        [self.navigationBar setBackgroundImage:themeImage forBarMetrics:UIBarMetricsDefault];
+    if (@available(iOS 15.0, *)) {
+        UINavigationBarAppearance *barApp = self.navigationBar.scrollEdgeAppearance;
+        if (barApp == nil) {
+            barApp = [UINavigationBarAppearance new];
+        }
+        if (shadowHidden) {
+            barApp.shadowColor = nil;
+            barApp.backgroundColor = XLThemeColor;
+        } else {
+            barApp.shadowColor = XLComSepColor;
+            barApp.backgroundColor = XLThemeColor;
+        }
+        self.navigationBar.scrollEdgeAppearance = barApp;
+        self.navigationBar.standardAppearance = barApp;
     } else {
-        UIImage *image = [UIImage sepImageWithColor:XLComSepColor alpha:1.0f];
-        [self.navigationBar setShadowImage:image];
-        [self.navigationBar setBackgroundImage:themeImage forBarMetrics:UIBarMetricsDefault];
+        UIImage *themeImage = [UIImage imageWithColor:XLThemeColor];
+        if (shadowHidden) {
+            UIImage *image = [UIImage sepImageWithColor:XLThemeColor alpha:1.0f];
+            [self.navigationBar setShadowImage:image];
+            [self.navigationBar setBackgroundImage:themeImage forBarMetrics:UIBarMetricsDefault];
+        } else {
+            UIImage *image = [UIImage sepImageWithColor:XLComSepColor alpha:1.0f];
+            [self.navigationBar setShadowImage:image];
+            [self.navigationBar setBackgroundImage:themeImage forBarMetrics:UIBarMetricsDefault];
+        }
     }
 }
 
@@ -83,15 +99,25 @@
  */
 -(void)configNavigationBarStyle {
     [self setNavgationBarShadowHidden:!self.showBarMetrics];
-    
+    if (@available(iOS 15.0, *)) {
+        UINavigationBarAppearance *barApp = self.navigationBar.scrollEdgeAppearance;
+        if (barApp == nil) {
+            barApp = [UINavigationBarAppearance new];
+        }
+        barApp.titleTextAttributes = @{NSForegroundColorAttributeName:XLBarTitleColor, NSFontAttributeName : XLBarTitleFont};
+        self.navigationBar.scrollEdgeAppearance = barApp;
+        self.navigationBar.standardAppearance = barApp;
+    } else {
+        // 导航栏图标颜色
+        [self.navigationBar setTintColor:XLBarTitleColor];
+        // 导航栏背景色
+        [self.navigationBar setBarTintColor:XLThemeColor];
+        
+        // 标题颜色字体大小
+        self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:XLBarTitleColor, NSFontAttributeName : XLBarTitleFont};
+    }
     // 此处代码移动到了基类中 因为会影响调用的系统界面标题颜色（比如发短信）
     self.navigationBar.translucent = self.navigationBarTranslucent;
-    // 导航栏图标颜色
-    [self.navigationBar setTintColor:XLBarTitleColor];
-    // 导航栏背景色
-    [self.navigationBar setBarTintColor:XLThemeColor];
-    // 标题颜色字体大小
-    self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:XLBarTitleColor, NSFontAttributeName : XLBarTitleFont};
     
     /// 导航栏左右Item字体大小、颜色
     [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBarItemFont, NSFontAttributeName,XLBarItemColor,NSForegroundColorAttributeName,nil] forState:UIControlStateNormal];
