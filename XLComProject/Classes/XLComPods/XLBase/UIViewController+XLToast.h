@@ -58,6 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - 显示Alert弹框
 -(void)showAlertMsg:(nullable NSString *)msg actions:(nullable NSArray<XLAlertAction *> *)array cancel:(nullable XLAlertAction *)cancel;
+-(void)showLeftAlertTitle:(nullable NSString *)title msg:(nullable NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(nullable XLAlertAction *)cancel;
 -(void)showAlertTitle:(nullable NSString *)title msg:(nullable NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(nullable XLAlertAction *)cancel;
 
 -(void)showAlertMsg:(nullable NSString *)msg actionTitles:(nullable NSArray<NSString *> *)titlesArray cancel:(nullable NSString *)cancel;

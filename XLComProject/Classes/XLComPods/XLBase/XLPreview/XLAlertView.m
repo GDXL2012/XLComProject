@@ -64,6 +64,7 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6f];
         
         _actionArray = [NSMutableArray array];
+        _messageTextAlignment = NSTextAlignmentCenter;
         
         _whiteBgView = [[UIView alloc] init];
         _whiteBgView.backgroundColor = [UIColor whiteColor];
@@ -77,23 +78,32 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
                 make.bottom.mas_equalTo(self.mas_bottom);
             } else {
                 if (XLMiniScreen) {
-                    make.left.mas_equalTo(self).offset(45.0f);
-                    make.right.mas_equalTo(self).offset(-45.0f);
+                    make.left.mas_equalTo(self).offset(35.0f);
+                    make.right.mas_equalTo(self).offset(-35.0f);
                 } else {
-                    make.left.mas_equalTo(self).offset(65.0f);
-                    make.right.mas_equalTo(self).offset(-65.0f);
+                    make.left.mas_equalTo(self).offset(55.0f);
+                    make.right.mas_equalTo(self).offset(-55.0f);
                 }
                 make.centerX.mas_equalTo(self);
                 make.centerY.mas_equalTo(self);
             }
         }];
+        if([self isKindOfClass:[XLAlertSheetView class]]){
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(alertTapAction)];
+            tap.delegate = self;
+            [self addGestureRecognizer:tap];
+            self.userInteractionEnabled = YES;
+        }
         
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(alertTapAction)];
-        tap.delegate = self;
-        [self addGestureRecognizer:tap];
-        self.userInteractionEnabled = YES;
     }
     return self;
+}
+
+- (void)setMessageTextAlignment:(NSTextAlignment)messageTextAlignment{
+    _messageTextAlignment = messageTextAlignment;
+    if (_xlMessageLabel) {
+        _xlMessageLabel.textAlignment = messageTextAlignment;
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate
@@ -141,8 +151,8 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
         [self addSubview:_xlTitleLabel];
         
         [self.xlTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self.whiteBgView).offset(8.0f);
-            make.right.mas_equalTo(self.whiteBgView).offset(-8.0f);
+            make.left.mas_equalTo(self.whiteBgView).offset(15.0f);
+            make.right.mas_equalTo(self.whiteBgView).offset(-15.0f);
             make.top.mas_equalTo(self.whiteBgView).offset(kXLAlertTopSpace);
         }];
     }
@@ -153,7 +163,7 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
     if (xlMessage && xlMessage.length > 0) {
         if (_xlMessageLabel == nil) {
             _xlMessageLabel = [[UILabel alloc] init];
-            _xlMessageLabel.textAlignment = NSTextAlignmentCenter;
+            _xlMessageLabel.textAlignment = self.messageTextAlignment;
             _xlMessageLabel.font = XLFont(15.0f);
             _xlMessageLabel.textColor = XLTitleColor;
             _xlMessageLabel.numberOfLines = 0;
@@ -162,8 +172,8 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
         [self addSubview:_xlMessageLabel];
         
         [self.xlMessageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self.whiteBgView).offset(8.0f);
-            make.right.mas_equalTo(self.whiteBgView).offset(-8.0f);
+            make.left.mas_equalTo(self.whiteBgView).offset(15.0f);
+            make.right.mas_equalTo(self.whiteBgView).offset(-15.0f);
             if (self.xlTitleLabel) {
                 make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(15.0f);
             } else {
@@ -184,7 +194,7 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
 @property (nonatomic, strong) UIView    *sepView1;
 @end
 
-static CGFloat kXLAlertItemHeight      = 45.0f;
+static CGFloat kXLAlertItemHeight      = 48.0f;
 static CGFloat kXLAlertCancelSpace     = 8.0f;
 static CGFloat kXLAlertCornerRadius    = 6.0f;
 @implementation XLAlertAlertView
@@ -419,11 +429,6 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
         } else {
             make.top.mas_equalTo(self.whiteBgView).offset(kXLAlertSheetCornerRadius);
         }
-        if (XLAvailableiOS11) {
-            make.bottom.mas_equalTo(self.mas_safeAreaLayoutGuideBottom);
-        } else {
-            make.bottom.mas_equalTo(self.mas_bottom);
-        }
         make.height.mas_equalTo(contentHeight);
     }];
 //    _actionTableView.frame = CGRectMake(0, screenSize.height, screenSize.width, contentHeight);
@@ -509,6 +514,7 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
                 make.height.mas_equalTo(XLCellSepHeight);
             }];
         }
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     UILabel *tmpTitleLabel = [cell.contentView viewWithTag:1001];

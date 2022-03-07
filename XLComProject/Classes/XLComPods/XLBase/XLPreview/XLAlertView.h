@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 不可独立使用
 @interface XLAlertView : UIView
 
+@property (nonatomic, assign) NSTextAlignment messageTextAlignment;
+
 + (instancetype)alertWithTitle:(nullable NSString *)title message:(nullable NSString *)message preferredStyle:(UIAlertControllerStyle)preferredStyle;
 
 -(void)addAction:(XLAlertAction *)action;
@@ -30,7 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface XLAlertSheetView : XLAlertView
-
 @end
 
 @interface XLAlertAlertView : XLAlertView

@@ -54,7 +54,7 @@
  */
 -(void)hiddenWaitingMessage {
     NSLog(@"___%s___", __FUNCTION__);
-    [XLProgressHUDHelper hidenHubFromView:self.view];
+    [XLProgressHUDHelper hideHUBFromView:self.view];
 }
 
 /**
@@ -70,12 +70,15 @@
  从window中移除等待框
  */
 -(void)hiddenWaitingMessageInWindow{
-    [XLProgressHUDHelper hideHud];
+    [XLProgressHUDHelper hideHUD];
 }
 
 #pragma mark - 显示弹框
 -(void)showAlertMsg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel{
     [self showAlertTitle:nil msg:msg actions:array cancel:cancel style:UIAlertControllerStyleAlert];
+}
+-(void)showLeftAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel{
+    [self showLeftAlertTitle:title msg:msg actions:array cancel:cancel style:UIAlertControllerStyleAlert];
 }
 -(void)showAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel{
     [self showAlertTitle:title msg:msg actions:array cancel:cancel style:UIAlertControllerStyleAlert];
@@ -120,6 +123,21 @@
 }
 
 #pragma mark - 弹窗
+-(void)showLeftAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel style:(UIAlertControllerStyle)style{
+    XLAlertView *alert = nil;
+    alert = [XLAlertView alertWithTitle:title message:msg preferredStyle:style];
+    NSInteger count = array.count;
+    for (NSInteger index = 0; index < count; index ++) {
+        XLAlertAction *action = array[index];
+        [alert addAction:action];
+    }
+    if (cancel) {
+        [alert addAction:cancel];
+    }
+    alert.messageTextAlignment = NSTextAlignmentLeft;
+    [alert xlShow];
+}
+
 -(void)showAlertTitle:(NSString *)title msg:(NSString *)msg actions:(NSArray<XLAlertAction *> *)array cancel:(XLAlertAction *)cancel style:(UIAlertControllerStyle)style{
     XLAlertView *alert = nil;
     alert = [XLAlertView alertWithTitle:title message:msg preferredStyle:style];
