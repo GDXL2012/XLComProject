@@ -254,7 +254,7 @@
     
     float datX = ((size.width - width) / 2.0f);
     float datY = ((size.height - height) / 2.0f);
-    CGRect rect = CGRectMake(datX, datY, width, height);
+    CGRect rect = CGRectMake(datX, datY, width * image.scale, height * image.scale);
     CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
     UIImage *cropped = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
@@ -269,6 +269,7 @@
  @return 截图
  */
 +(UIImage *)image:(UIImage *)image toRect:(CGRect)rect{
+    rect = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width * image.scale, rect.size.height * image.scale);
     CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
     UIImage *cropped = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
