@@ -412,6 +412,7 @@ static XLImagePreviewManager *previewManager;
            atSelectIndex:(NSInteger)selectIndex
              visibleView:(UIView *)visibleView{
     _selelctIndex = selectIndex;
+    _currentIndex = selectIndex;
     _visibleView = visibleView;
     [self initRreviewImageInfo:imageArray type:XLPreviewItemImage];
     [self showRreviewImageInfo];
@@ -424,6 +425,7 @@ static XLImagePreviewManager *previewManager;
               atSelectIndex:(NSInteger)selectIndex
                 visibleView:(UIView *)visibleView{
     _selelctIndex = selectIndex;
+    _currentIndex = selectIndex;
     _visibleView = visibleView;
     [self initRreviewImageInfo:imageUrlArray type:XLPreviewItemImageUrl];
     [self showRreviewImageInfo];
@@ -436,6 +438,7 @@ static XLImagePreviewManager *previewManager;
                atSelectIndex:(NSInteger)selectIndex
                  visibleView:(UIView *)visibleView{
     _selelctIndex = selectIndex;
+    _currentIndex = selectIndex;
     _visibleView = visibleView;
     [self initRreviewImageInfo:imageViewArray type:XLPreviewItemImageView];
     [self showRreviewImageInfo];
@@ -448,6 +451,7 @@ static XLImagePreviewManager *previewManager;
                  atSelectIndex:(NSInteger)selectIndex
                    visibleView:(UIView *)visibleView{
     _selelctIndex = selectIndex;
+    _currentIndex = selectIndex;
     _visibleView = visibleView;
     [self initRreviewImageInfo:imageViewArray type:XLPreviewItemSDImageView];
     [self showRreviewImageInfo];
@@ -464,6 +468,7 @@ static XLImagePreviewManager *previewManager;
     
     if (dataSource != nil) {
         _selelctIndex = atIndex;
+        _currentIndex = atIndex;
         _visibleView = visibleView;
         _xlDataSource = dataSource;
         [self initRreviewImageInfoWithDataSource];
