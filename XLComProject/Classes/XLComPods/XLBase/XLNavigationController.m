@@ -59,8 +59,6 @@
     _viewHasLoad = YES;
     // Do any additional setup after loading the view.
     [self configNavigationBarStyle];
-    
-    NSLog(@"self.navigationBar.delegate = %@", self.navigationBar.delegate);
 }
 
 /// 设置导航栏分割线显示状态
@@ -123,12 +121,23 @@
     [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBarItemFont, NSFontAttributeName,XLBarItemColor,NSForegroundColorAttributeName,nil] forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBarItemFont, NSFontAttributeName,[XLBarItemColor colorWithAlphaComponent:0.5],NSForegroundColorAttributeName,nil] forState:UIControlStateHighlighted];
     
-    NSString *string = [XLConfigManager xlConfigManager].adaptationConfig.backImageName;
+    NSString *backImageName = [XLConfigManager xlConfigManager].adaptationConfig.backImageName;
     // 替换系统自带的返回按钮
-    if (![NSString isEmpty:string]) {
-        UIImage *buttonNormal = [[UIImage imageNamed:string] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        [self.navigationController.navigationBar setBackIndicatorImage:buttonNormal];
-        [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:buttonNormal];
+    if (![NSString isEmpty:backImageName]) {
+        // 替换系统自带的返回按钮
+        UIImage *buttonNormal = [[UIImage imageNamed:backImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        if (@available(iOS 15.0, *)) {
+            UINavigationBarAppearance *appearance = self.navigationController.navigationBar.scrollEdgeAppearance;
+            if (appearance == nil) {
+                appearance = [[UINavigationBarAppearance alloc] init];
+            }
+            [appearance setBackIndicatorImage:buttonNormal transitionMaskImage:buttonNormal];
+            [[UINavigationBar appearance] setScrollEdgeAppearance:appearance];
+            [[UINavigationBar appearance] setStandardAppearance:appearance];
+        } else {
+            [self.navigationController.navigationBar setBackIndicatorImage:buttonNormal];
+            [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:buttonNormal];
+        }
     }
 }
 

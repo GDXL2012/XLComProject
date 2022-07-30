@@ -120,30 +120,6 @@
                 [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:buttonNormal];
             }
         }
-        
-        BOOL showBackTitle = [XLConfigManager xlConfigManager].adaptationConfig.showBackTitle;
-        if (showBackTitle) {
-            if (![NSString isEmpty:self.previewTitle]) {
-                // 设置返回按钮文字
-                NSString *previewTitle = self.previewTitle;
-                NSInteger maxCount = 13;
-                if (XLMiniScreen) {
-                    maxCount = 10;
-                }
-                if (previewTitle.length > maxCount) {
-                    previewTitle = [previewTitle substringToIndex:maxCount];
-                    previewTitle = [previewTitle stringByAppendingString:@"..."];
-                }
-                UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:previewTitle style:UIBarButtonItemStylePlain target:self action:nil];
-                [backItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBarItemFont, NSFontAttributeName,XLBarTitleColor,NSForegroundColorAttributeName,nil] forState:UIControlStateNormal];
-                [backItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBarItemFont, NSFontAttributeName,[XLBarTitleColor colorWithAlphaComponent:0.5], NSForegroundColorAttributeName,nil] forState:UIControlStateHighlighted];
-                self.navigationItem.backBarButtonItem = backItem;
-            }
-        } else {
-            // 设置没有返回按钮后面的文字
-            UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
-            self.navigationItem.backBarButtonItem = backItem;
-        }
     }
 }
 
