@@ -116,23 +116,36 @@ static XLDevice  *shareInstance;
                 // 获取底部安全区域高度，iPhone X 竖屏下为 34.0，横屏下为 21.0，其他类型设备都为 0
                 CGFloat bottomSafeInset = window.safeAreaInsets.bottom;
                 
-                if (bottomSafeInset == 34.0f || bottomSafeInset == 21.0f) {
+                if (bottomSafeInset > 0) {
                     _xlBangsScreen = YES;
+                    // 状态栏高度
+                    _xlStatusBarHeight        = window.safeAreaInsets.top;
+                    // 底部高度
+                    _xlNaviBottomTotalHeight  = bottomSafeInset;
+                } else {
+                    // 状态栏高度
+                    _xlStatusBarHeight        = 20.f;
+                    // 底部高度
+                    _xlNaviBottomTotalHeight  = 0.0f;
                 }
             } else {
                 _xlBangsScreen = NO;
+                // 状态栏高度
+                _xlStatusBarHeight        = 20.f;
+                // 底部高度
+                _xlNaviBottomTotalHeight  = 0.0f;
             }
         } else {
             /// 小屏幕
             _xlMiniScreen = _xliPhone4 = _xliPhone5 = _xliPhone5s = _xliPhone6 = _xliPhone6p = _xliPhoneXR = _xliPhoneX = _xliPhoneXsMax = _xlBangsScreen = NO;
+            // 状态栏高度
+            _xlStatusBarHeight        = 20.f;
+            // 底部高度
+            _xlNaviBottomTotalHeight  = 0.0f;
         }
-        // 状态栏高度
-        _xlStatusBarHeight        = (_xlBangsScreen ? 44.f : 20.f);
         _xlNaviBarHeight          = 44.0f;
         // 顶部高度
         _xlNaviTopTotalHeight     = (_xlNaviBarHeight + _xlStatusBarHeight);
-        // 底部高度
-        _xlNaviBottomTotalHeight  = (_xlBangsScreen ? 34.f : 0.f);
     }
     return self;
 }
