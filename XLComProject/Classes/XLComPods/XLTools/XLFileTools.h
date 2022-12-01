@@ -21,6 +21,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (BOOL)writeToFile:(NSString *)filePath data:(NSData *)data error:(NSError **)error;
 
+/// 删除文件：会判断文件是否存在，如不存在，则不执行删除，直接返回YES
+/// @param filePath <#filePath description#>
+/// @param error <#error description#>
+-(BOOL)deleteFileIfExit:(NSString *)filePath error:(NSError * _Nullable)error;
+
+//文件移动
++ (BOOL)moveFileAtPath:(NSString *)filePath toPath:(NSString *)toPath error:(NSError **)error;
+
 /**
  删除文件
  

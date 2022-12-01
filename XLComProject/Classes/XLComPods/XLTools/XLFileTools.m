@@ -29,6 +29,22 @@ static CGFloat CMFileSizeUnitTransformG  = 1024.0f * 1024.0f * 1024.0f;
     return YES;
 }
 
+//文件的移动
++ (BOOL)moveFileAtPath:(NSString *)filePath toPath:(NSString *)toPath error:(NSError **)error{
+    return [XLFileManager moveItemAtPath:filePath toPath:toPath error:error];
+}
+
+/// 删除文件：会判断文件是否存在，如不存在，则不执行删除，直接返回YES
+/// @param filePath <#filePath description#>
+/// @param error <#error description#>
+-(BOOL)deleteFileIfExit:(NSString *)filePath error:(NSError * _Nullable)error{
+    if ([XLFileTools fileIsExit:filePath]) {
+        [XLFileTools deleteFile:filePath error:error];
+    } else {
+        return YES;
+    }
+}
+
 /**
  删除文件
  
