@@ -22,7 +22,7 @@
  
  @param action 返回按钮事件
  */
--(void)setLeftBarButtonWithAction:(SEL)action{
+-(void)setLeftBarButtonWithAction:(nullable SEL)action{
     NSString *backImg = [XLConfigManager xlConfigManager].adaptationConfig.backImageName;
     UIImage *image = [UIImage imageNamed:backImg];
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(action)];
@@ -35,7 +35,7 @@
  @param title 标题
  @param action 返回按钮事件
  */
--(void)setLeftBarButtonWithTitle:(NSString *)title action:(SEL)action{
+-(void)setLeftBarButtonWithTitle:(NSString *)title action:(nullable SEL)action{
     [self setLeftBarButtonWithTitle:title color:XLBarTitleColor action:action];
 }
 
@@ -46,7 +46,7 @@
  @param color 标题颜色
  @param action 返回按钮事件
  */
--(void)setLeftBarButtonWithTitle:(NSString *)title color:(UIColor *)color action:(SEL)action{
+-(void)setLeftBarButtonWithTitle:(NSString *)title color:(UIColor *)color action:(nullable SEL)action{
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:action];
     [backItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBFont(17.0f), NSFontAttributeName,color,NSForegroundColorAttributeName,nil] forState:UIControlStateNormal];
     [backItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:XLBFont(17.0f), NSFontAttributeName,color,NSForegroundColorAttributeName,nil] forState:UIControlStateHighlighted];

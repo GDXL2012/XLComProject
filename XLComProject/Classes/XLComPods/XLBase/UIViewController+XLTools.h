@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param action 返回按钮事件
  */
--(void)setLeftBarButtonWithAction:(SEL)action;
+-(void)setLeftBarButtonWithAction:(nullable SEL)action;
 
 /**
  设置导航栏左侧按钮
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param title 标题
  @param action 返回按钮事件
  */
--(void)setLeftBarButtonWithTitle:(NSString *)title action:(SEL)action;
+-(void)setLeftBarButtonWithTitle:(NSString *)title action:(nullable SEL)action;
 
 /**
  设置导航栏左侧按钮
@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param color 标题颜色
  @param action 返回按钮事件
  */
--(void)setLeftBarButtonWithTitle:(NSString *)title color:(UIColor *)color action:(SEL)action;
+-(void)setLeftBarButtonWithTitle:(NSString *)title color:(UIColor *)color action:(nullable SEL)action;
 
 /**
  设置右侧按钮
