@@ -68,7 +68,7 @@
         [self addSubview:_placeHolderLabel];
         [_placeHolderLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(self);
-            make.right.mas_equalTo(self);
+            make.width.mas_equalTo(self);
             make.top.mas_equalTo(self);
         }];
     }
