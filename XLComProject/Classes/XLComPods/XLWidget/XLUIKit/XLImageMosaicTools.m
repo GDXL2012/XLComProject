@@ -202,22 +202,24 @@
 }
 
 -(void)drawMosaicForAllPath{
-    CGFloat scale = [UIScreen mainScreen].scale;
-    CGSize size = self.xlMosaicImgView.frame.size;
-    UIGraphicsBeginImageContextWithOptions(size, NO, scale);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetBlendMode(context, kCGBlendModeCopy);
-    //去掉锯齿
-    CGContextSetAllowsAntialiasing(context, true);
-    CGContextSetShouldAntialias(context, true);
-    
-    for (XLMosaicPath *path in self.xlMosaicPathArray) {
-        [path drawPathInCurrentImageContext];
+    @autoreleasepool {
+        CGFloat scale = [UIScreen mainScreen].scale;
+        CGSize size = self.xlMosaicImgView.frame.size;
+        UIGraphicsBeginImageContextWithOptions(size, NO, scale);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextSetBlendMode(context, kCGBlendModeCopy);
+        //去掉锯齿
+        CGContextSetAllowsAntialiasing(context, true);
+        CGContextSetShouldAntialias(context, true);
+        
+        for (XLMosaicPath *path in self.xlMosaicPathArray) {
+            [path drawPathInCurrentImageContext];
+        }
+        
+        self.xlDosaicContentImgView.image = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext();
     }
-    
-    self.xlDosaicContentImgView.image = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
 }
 
 /// 涂鸦后的图片
