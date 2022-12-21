@@ -33,12 +33,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  初始化
- 
- @param titles 标题
- @param icos 图标
- @return <#return value description#>
  */
--(instancetype)initWithTitles:(NSArray *)titles icos:(NSArray *)icos;
+-(instancetype)initWithTitles:(NSArray *)titles
+                         icos:(NSArray *)icos
+                    underView:(UIView *)underView
+                       inView:(UIView *)view;
 
 #pragma mark - 单例对象
 /**
@@ -50,6 +49,15 @@ NS_ASSUME_NONNULL_BEGIN
  @param delegate <#delegate description#>
  */
 +(void)showMenuView:(NSArray *)titles icos:(NSArray *)icos inView:(UIView *)view delegate:(id<XLMoreMenuViewDelegate>)delegate;
+
+/**
+ 显示菜单
+ */
++(void)showMenuView:(NSArray *)titles
+               icos:(NSArray *)icos
+             inView:(UIView *)view
+          underView:(UIView *)underView
+           delegate:(id<XLMoreMenuViewDelegate>)delegate;
 +(void)hiddenMenuView;
 @end
 

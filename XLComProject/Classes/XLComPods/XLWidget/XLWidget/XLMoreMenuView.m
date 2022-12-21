@@ -9,21 +9,33 @@
 #import "XLMoreMenuView.h"
 #import "Masonry.h"
 #import "XLMacroFont.h"
+#import "NSString+XLCategory.h"
+#import "UIColor+XLCategory.h"
+#import "XLMacroLayout.h"
 
 @interface XLMoreMenuView()
-@property (nonatomic, strong) UIImageView *blackView;
+@property (nonatomic, strong)   UIImageView *blackView;
+@property (nonatomic, strong)   UIView *arrowView;
+@property (nonatomic, weak)     UIView *underView;
+@property (nonatomic, weak)     UIView *showView;
+@property (nonatomic, assign)   CGFloat xlMaxWidth;
 @end
 
 static NSInteger MoreMenuItemTag     = 1000;     // 菜单按钮tag基础值
-static CGFloat   MoreMenuItemWidth   = 150.0f;   // 菜单宽度
+//static CGFloat   MoreMenuItemWidth   = 150.0f; // 菜单宽度
+static CGFloat   MoreMenuLeftMargin      = 15.0f;    // 菜单项左右间距
+static CGFloat   MoreMenuRightMargin     = 30.0f;    // 菜单项左右间距
+static CGFloat   MoreMenuItemMargin  = 10.0f;    // 菜单项内容间距
 static CGFloat   MoreMenuItemHeight  = 45.0f;    // 菜单单项高度
 static CGFloat   MoreMenuIcoHeight   = 18.0f;    // 菜单单项高度
 static CGFloat   MoreMenuTopMargin   = 5.0f;     // 菜单上下两项多出的高度
-static CGFloat   MoreMenuArrowHeight = 0.0f;     // 菜单上部箭头高度
+static CGFloat   MoreMenuArrowHeight = 10.0f;    // 菜单上部箭头高度
+static CGFloat   MoreMenuArrowWidth  = 20.0f;    // 菜单上部箭头高度
 
 static XLMoreMenuView *moreMenuView;
 
 @implementation XLMoreMenuView
+
 /**
  显示菜单
  
@@ -32,8 +44,21 @@ static XLMoreMenuView *moreMenuView;
  @param view <#view description#>
  @param delegate <#delegate description#>
  */
-+(void)showMenuView:(NSArray *)titles icos:(NSArray *)icos inView:(UIView *)view delegate:(id<XLMoreMenuViewDelegate>)delegate{
-    moreMenuView = [[XLMoreMenuView alloc] initWithTitles:titles icos:icos];
++(void)showMenuView:(NSArray *)titles
+               icos:(NSArray *)icos
+             inView:(UIView *)view
+           delegate:(id<XLMoreMenuViewDelegate>)delegate{
+    [XLMoreMenuView showMenuView:titles icos:icos inView:view underView:nil delegate:delegate];
+}
+/**
+ 显示菜单
+ */
++(void)showMenuView:(NSArray *)titles
+               icos:(NSArray *)icos
+             inView:(UIView *)view
+          underView:(UIView *)underView
+           delegate:(id<XLMoreMenuViewDelegate>)delegate{
+    moreMenuView = [[XLMoreMenuView alloc] initWithTitles:titles icos:icos underView:underView inView:view];
     [view addSubview:moreMenuView];
     moreMenuView.menuDelegate = delegate;
     [moreMenuView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -55,9 +80,14 @@ static XLMoreMenuView *moreMenuView;
  @param icos 图标
  @return <#return value description#>
  */
--(instancetype)initWithTitles:(NSArray *)titles icos:(NSArray *)icos{
+-(instancetype)initWithTitles:(NSArray *)titles
+                         icos:(NSArray *)icos
+                    underView:(UIView *)underView
+                       inView:(UIView *)view{
     self = [super init];
     if (self) {
+        self.underView = underView;
+        self.showView = view;
         [self displayViewWithTitles:titles icos:icos];
         [self addTap];
     }
@@ -78,24 +108,71 @@ static XLMoreMenuView *moreMenuView;
     [XLMoreMenuView hiddenMenuView];
 }
 
+-(void)xlUpdateMenuViewWidthWithTitles:(NSArray *)titles{
+    CGSize maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
+    self.xlMaxWidth = 0;
+    for (NSString *title in titles) {
+        CGSize size = [NSString sizeWithFont:XLGFont(15.0f) maxSize:maxSize string:title];
+        CGFloat tmpWidth = MoreMenuLeftMargin + MoreMenuIcoHeight + MoreMenuItemMargin + ceil(size.width) + MoreMenuRightMargin;
+        if (tmpWidth > self.xlMaxWidth) {
+            self.xlMaxWidth = tmpWidth;
+        }
+    }
+}
+
 -(void)displayViewWithTitles:(NSArray *)titles icos:(NSArray *)icos{
     self.backgroundColor = [UIColor clearColor];
     NSInteger count = titles.count;
     
+    [self xlUpdateMenuViewWidthWithTitles:titles];
+    
     _blackView = [[UIImageView alloc] init];
-    _blackView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.85];
-    _blackView.layer.cornerRadius = 4.0f;
+    _blackView.backgroundColor = [UIColor colorWithHexString:@"#353535"];
+    _blackView.layer.cornerRadius = XLButtonRadius;
     _blackView.layer.masksToBounds = YES;
+    
     /// 替换为图片
 //    UIImage *image = [UIImage imageNamed:@"xl_icon_common_pop"];
 //    _blackView.image = image;
     [self addSubview:_blackView];
+    
+    CGFloat offset = 3.0f;
+    if (self.underView != nil) {
+        CGRect frame = [self.underView.superview convertRect:self.underView.frame toView:self.showView];
+//        frame = [self.showView convertRect:self.underView.frame fromView:self.underView.superview];
+        offset = offset + frame.size.height + frame.origin.y;
+        
+        if (MoreMenuArrowHeight > 0) {
+            _arrowView = [[UIView alloc] init];
+            _arrowView.backgroundColor = [UIColor clearColor];
+            [self addSubview:_arrowView];
+            CGFloat datX = frame.origin.x + frame.size.width / 2.0f - MoreMenuArrowWidth / 2.0f;
+            [_arrowView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.mas_equalTo(self).offset(offset);
+                make.left.mas_equalTo(datX);
+                make.size.mas_equalTo(CGSizeMake(MoreMenuArrowWidth, MoreMenuArrowHeight));
+            }];
+            UIBezierPath *path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(MoreMenuArrowWidth / 2.0f, 0.0f)];
+            [path addLineToPoint:CGPointMake(MoreMenuArrowWidth, MoreMenuArrowHeight)];
+            [path addLineToPoint:CGPointMake(0.0f, MoreMenuArrowHeight)];
+            [path closePath];
+            CAShapeLayer *layer = [CAShapeLayer layer];
+            layer.fillColor = [UIColor colorWithHexString:@"#353535"].CGColor;
+            layer.path = path.CGPath;
+
+            [_arrowView.layer addSublayer:layer];
+            
+            offset = offset + MoreMenuArrowHeight;
+        }
+    }
     [_blackView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(self).offset(-8.0f);
-        make.top.mas_equalTo(self).offset(3.0f);
-        make.width.mas_equalTo(MoreMenuItemWidth);
+        make.right.mas_equalTo(self).offset(-12.0f);
+        make.top.mas_equalTo(self).offset(offset);
+        make.width.mas_equalTo(self.xlMaxWidth);
         make.height.mas_equalTo(MoreMenuArrowHeight + MoreMenuItemHeight * count + MoreMenuTopMargin * 2);
     }];
+    
     for (NSInteger index = 0; index < count; index ++) {
         NSString *icoName = icos[index];
         UIImageView *imageView = [[UIImageView alloc] init];
@@ -107,7 +184,7 @@ static XLMoreMenuView *moreMenuView;
         // Item图标偏移量
         CGFloat icoOffset = itemOffset + (MoreMenuItemHeight - height) / 2.0f;
         [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self.blackView).offset(16.0f);
+            make.left.mas_equalTo(self.blackView).offset(MoreMenuLeftMargin);
             make.size.mas_equalTo(CGSizeMake(height, height));
             make.top.mas_equalTo(self.blackView).offset(icoOffset);
         }];
@@ -119,7 +196,7 @@ static XLMoreMenuView *moreMenuView;
         [self addSubview:titleLabel];
         titleLabel.text = title;
         [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(imageView.mas_right).offset(16.0f);
+            make.left.mas_equalTo(imageView.mas_right).offset(MoreMenuItemMargin);
             make.centerY.mas_equalTo(imageView);
         }];
         
@@ -136,13 +213,13 @@ static XLMoreMenuView *moreMenuView;
         [button addTarget:self action:@selector(menuButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         if (count > 1 && index < count - 1) {
             UIView *sepView = [[UIView alloc] init];
-            sepView.backgroundColor = [UIColor colorWithRed:102/255.0 green:102/255.0 blue:102/255.0 alpha:1.0];;
+            sepView.backgroundColor = [UIColor colorWithHexString:@"#6f6f6f"];
             [self addSubview:sepView];
             [sepView mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.left.mas_equalTo(imageView);
+                make.left.mas_equalTo(titleLabel);
                 make.bottom.mas_equalTo(button);
-                make.right.mas_equalTo(self.blackView);
-                make.height.mas_equalTo(0.5f);
+                make.right.mas_equalTo(self.blackView).offset(-5.0f);
+                make.height.mas_equalTo(XLCellSepHeight);
             }];
         }
     }

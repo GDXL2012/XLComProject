@@ -274,6 +274,9 @@ NSCalendarUnit const XLUnitFlags = NSCalendarUnitSecond | NSCalendarUnitMinute |
 
 #pragma mark Adjusting Dates
 - (NSDate *)dateByAddingDays:(NSInteger)dDays{
+    if (dDays == 0.0f) {
+        return self;
+    }
     NSTimeInterval aTimeInterval = [self timeIntervalSinceReferenceDate] + XLDateDay * dDays;
     NSDate *newDate = [NSDate dateWithTimeIntervalSinceReferenceDate:aTimeInterval];
     return newDate;

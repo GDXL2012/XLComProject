@@ -45,15 +45,17 @@ NSString *const XLTableReusableFooterID = @"XLTableReusableFooterID";
     if(type != XLTableReusableEmpty){
         _xlLabel = [[UILabel alloc] init];
         _xlLabel.font = XLGFont(15.0f);
+        _xlLabel.numberOfLines = 0;
         _xlLabel.textColor = XLHolderColor;
-        [self.contentView addSubview:_xlLabel];
+        [self addSubview:_xlLabel];
         [_xlLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self.contentView).offset(XLHMargin);
+            make.left.mas_equalTo(self).offset(XLHMargin);
             if (type == XLTableReusableTitleBottom) {
-                make.bottom.mas_equalTo(self.contentView).offset(-9.0f);
+                make.bottom.mas_equalTo(self).offset(-9.0f);
             } else {
-                make.centerY.mas_equalTo(self.contentView);
+                make.centerY.mas_equalTo(self);
             }
+            make.right.mas_equalTo(self).offset(-XLHMargin);
         }];
     }
 }
@@ -72,12 +74,5 @@ NSString *const XLTableReusableFooterID = @"XLTableReusableFooterID";
     _xlFont = xlFont;
     self.xlLabel.font = xlFont;
 }
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end
