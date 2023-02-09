@@ -41,7 +41,7 @@ CGFloat        const toastMargin        = 10.0f;
     hud.detailsLabel.text = toast;
     hud.margin = toastMargin;
     CGPoint offset = hud.offset;
-    offset.y = -XLNavTopHeight;
+    offset.y = -XLNavTopHeight();
     hud.offset = offset;
     hud.minShowTime = toastMinShowTime;
     hud.removeFromSuperViewOnHide = YES;
@@ -88,7 +88,7 @@ CGFloat        const toastMargin        = 10.0f;
     }
     hud.margin = toastMargin;
     CGPoint offset = hud.offset;
-//    offset.y = -XLNavTopHeight;
+//    offset.y = -XLNavTopHeight();
     hud.offset = offset;
     hud.minShowTime = toastMinShowTime;
     hud.removeFromSuperViewOnHide = YES;

@@ -336,7 +336,7 @@
  @return 纯色图片
  */
 + (UIImage *)sepImageWithColor:(UIColor *)color alpha:(CGFloat)alpha{
-    return [UIImage imageWithColor:color size:CGSizeMake(XLScreenWidth, XLCellSepHeight) alpha:alpha];
+    return [UIImage imageWithColor:color size:CGSizeMake(XLScreenWidth(), XLCellSepHeight) alpha:alpha];
 }
 
 /**

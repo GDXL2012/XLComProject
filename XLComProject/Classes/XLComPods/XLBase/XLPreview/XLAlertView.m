@@ -77,7 +77,7 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
                 make.right.mas_equalTo(self);
                 make.bottom.mas_equalTo(self.mas_bottom);
             } else {
-                if (XLMiniScreen) {
+                if (XLMiniScreen()) {
                     make.left.mas_equalTo(self).offset(35.0f);
                     make.right.mas_equalTo(self).offset(-35.0f);
                 } else {
@@ -433,13 +433,13 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
     }];
 //    _actionTableView.frame = CGRectMake(0, screenSize.height, screenSize.width, contentHeight);
 //
-//    CGFloat bgHeight = contentHeight + kXLAlertSheetCornerRadius + XLNavBottomHeight;
+//    CGFloat bgHeight = contentHeight + kXLAlertSheetCornerRadius + XLNavBottomHeight();
 //    self.whiteBgView.frame = CGRectMake(0, screenSize.height - kXLAlertSheetCornerRadius, screenSize.width,  contentHeight);
     self.alpha = 0.0f;
     
     [UIView animateWithDuration:0.25f animations:^{
         self.alpha = 1.0f;
-        CGFloat datY = screenSize.height - contentHeight - XLNavBottomHeight;
+        CGFloat datY = screenSize.height - contentHeight - XLNavBottomHeight();
 //        self.actionTableView.frame = CGRectMake(0, datY , screenSize.width, contentHeight);
 //        self.whiteBgView.frame = CGRectMake(0, datY - kXLAlertSheetCornerRadius, screenSize.width, bgHeight);
     }];
@@ -484,7 +484,7 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
     UITableViewHeaderFooterView *headView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"headViewID"];
     if (!headView) {
         headView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"headViewID"];
-        headView.backgroundView.backgroundColor = XLContBGColor;
+        headView.contentView.backgroundColor = XLContBGColor;
     }
     return headView;
 }

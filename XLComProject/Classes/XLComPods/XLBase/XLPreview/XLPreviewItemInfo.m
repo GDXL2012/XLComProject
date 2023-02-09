@@ -68,16 +68,16 @@
     /// 预览图片的位置
     _previewFrame = self.originalFrame;
     self.imageSize = self.originalFrame.size;
-    _previewFrame.origin.x = self.showIndex * XLScreenWidth + _previewFrame.origin.x;
+    _previewFrame.origin.x = self.showIndex * XLScreenWidth() + _previewFrame.origin.x;
 }
 
 -(void)initPreviewFrameForImage{
     /// 设置原位置
-    _originalFrame = CGRectMake(XLScreenWidth / 2.0f, XLScreenHeight / 2.0f, 0.0f, 0.0f);
+    _originalFrame = CGRectMake(XLScreenWidth() / 2.0f, XLScreenHeight() / 2.0f, 0.0f, 0.0f);
     /// 预览图片的位置
     _previewFrame = self.originalFrame;
     self.imageSize = self.originalFrame.size;
-    _previewFrame.origin.x = self.showIndex * XLScreenWidth + _previewFrame.origin.x;
+    _previewFrame.origin.x = self.showIndex * XLScreenWidth() + _previewFrame.origin.x;
 }
 
 //// ImageView 预览初始化
@@ -97,6 +97,6 @@
     
     /// 预览图片的位置
     _previewFrame = self.originalFrame;
-    _previewFrame.origin.x = self.showIndex * XLScreenWidth + _previewFrame.origin.x;
+    _previewFrame.origin.x = self.showIndex * XLScreenWidth() + _previewFrame.origin.x;
 }
 @end

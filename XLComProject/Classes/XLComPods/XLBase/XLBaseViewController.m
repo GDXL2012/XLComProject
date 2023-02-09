@@ -17,6 +17,7 @@
 #import "XLDeviceMacro.h"
 #import "Masonry.h"
 #import "UIView+XLAdditions.h"
+#import "XLNotificationTools.h"
 
 @interface XLBaseViewController () <UIGestureRecognizerDelegate>
 @property (nonatomic, strong) UIView *bottomAdapterView;
@@ -44,13 +45,13 @@
     return self;
 }
 
--(instancetype)init{
-    self = [super init];
-    if (self) {
-        [self xlInitOperation];
-    }
-    return self;
-}
+//-(instancetype)init{
+//    self = [super init];
+//    if (self) {
+////        [self xlInitOperation];
+//    }
+//    return self;
+//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -61,11 +62,11 @@
     [self xlInitViewDisplay];
     [self xlInitViewData];
     
-    [self xlRegisterNotification];
+    [self base_xlRegisterNotification];
 }
 
 -(void)dealloc{
-    [self xlUnregisterNotification];
+    [self base_xlUnregisterNotification];
 #ifdef DEBUG
     NSLog(@"%s dealloc", __FILE_NAME__);
 #endif
@@ -241,6 +242,31 @@
  注册通知
  覆写后父类自动调用
  */
+-(void)base_xlRegisterNotification{
+    // 横竖屏切换通知
+    if (XLIsiPad()) {
+        [XLNotificationTools addObserver:self selector:@selector(xlIpadDidChangeStatusBarNotification:) name:UIApplicationDidChangeStatusBarOrientationNotification];
+    }
+    
+    [self xlRegisterNotification];
+}
+
+/**
+ 注销通知
+ 覆写后父类自动调用
+ */
+-(void)base_xlUnregisterNotification{
+    if (XLIsiPad()) {
+        [XLNotificationTools removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification];
+    }
+    [self xlUnregisterNotification];
+}
+
+#pragma mark - Notificaton
+/**
+ 注册通知
+ 覆写后父类自动调用
+ */
 -(void)xlRegisterNotification{}
 
 /**
@@ -249,6 +275,12 @@
  */
 -(void)xlUnregisterNotification{}
 
+// iPad 旋转监听：子类可以复写，处理回调
+-(void)xlIpadDidChangeStatusBarNotification:(NSNotification *)notification{
+    NSLog(@"xlIpadDidChangeStatusBarNotification");
+}
+
+#pragma mark - Other
 /// 移除当前控制器
 -(void)removeCurrentViewController{
     /// 此处逻辑：移除当前页面，同时设置返回按钮文本
@@ -268,7 +300,7 @@
                 if (![NSString isEmpty:previewTitle]) {
                     // 设置返回按钮文字
                     NSInteger maxCount = 13;
-                    if (XLMiniScreen) {
+                    if (XLMiniScreen()) {
                         maxCount = 10;
                     }
                     if (previewTitle.length > maxCount) {
@@ -330,7 +362,7 @@
             make.right.mas_equalTo(self.view);
         }
         make.bottom.mas_equalTo(self.view.mas_bottom).offset(1.0f);
-        make.height.mas_equalTo(XLNavBottomHeight + 1.0f);
+        make.height.mas_equalTo(XLNavBottomHeight() + 1.0f);
     }];
     
     if (self.showBottomAdapterView) {
@@ -364,14 +396,5 @@
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
     return UIInterfaceOrientationPortrait;
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

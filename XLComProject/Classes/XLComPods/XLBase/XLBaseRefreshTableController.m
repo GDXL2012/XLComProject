@@ -56,7 +56,7 @@
  配置Empty HeadFooter View
  */
 -(void)xlConfigHeadFooterView{
-    CGRect minRect = CGRectMake(0, 0, XLScreenWidth, CGFLOAT_MIN);
+    CGRect minRect = CGRectMake(0, 0, XLScreenWidth(), CGFLOAT_MIN);
     self.xlRefreshTableView.tableHeaderView = [[UIView alloc] initWithFrame:minRect];
     self.xlRefreshTableView.tableFooterView = [[UIView alloc] initWithFrame:minRect];
 }

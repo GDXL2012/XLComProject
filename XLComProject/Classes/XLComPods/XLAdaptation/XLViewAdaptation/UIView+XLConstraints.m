@@ -19,7 +19,7 @@
  @param view <#view description#>
  */
 -(void)makeConstraintsWithView:(UIView *)view{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {
             // 版本适配
             make.left.mas_equalTo(view.mas_safeLeft);
@@ -41,7 +41,7 @@
  @param view <#view description#>
  */
 -(void)makeUnsafeConstraintsWithView:(UIView *)view{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(view);
         make.right.mas_equalTo(view);
         make.bottom.mas_equalTo(view);
@@ -55,7 +55,7 @@
  @param view <#view description#>
  */
 -(void)makeConstraintsWithView:(UIView *)view edge:(UIEdgeInsets)insets{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {
             // 版本适配
             make.left.mas_equalTo(view.mas_safeLeft).offset(insets.left);
@@ -77,7 +77,7 @@
  @param view <#view description#>
  */
 -(void)makeUnsafeConstraintsWithView:(UIView *)view edge:(UIEdgeInsets)insets{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(view).offset(insets.left);
         make.right.mas_equalTo(view).offset(-insets.right);
         make.bottom.mas_equalTo(view).offset(-insets.bottom);
@@ -92,7 +92,7 @@
  @param height <#view description#>
  */
 -(void)makeConstraintsWithView:(UIView *)view height:(CGFloat)height{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {
             // 版本适配
             make.left.mas_equalTo(view.mas_safeLeft);
@@ -114,7 +114,7 @@
  @param height <#view description#>
  */
 -(void)makeUnsafeConstraintsWithView:(UIView *)view height:(CGFloat)height{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(view);
         make.right.mas_equalTo(view);
         make.top.mas_equalTo(view);
@@ -129,7 +129,7 @@
  @param height <#view description#>
  */
 -(void)makeConstraintsWithViewBottom:(UIView *)view height:(CGFloat)height{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {
             // 版本适配
             make.left.mas_equalTo(view.mas_safeLeft);
@@ -151,7 +151,7 @@
  @param height <#view description#>
  */
 -(void)makeUnsafeConstraintsWithViewBottom:(UIView *)view height:(CGFloat)height{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(view);
         make.right.mas_equalTo(view);
         make.bottom.mas_equalTo(view);
@@ -166,7 +166,7 @@
  @param ratio 宽高比
  */
 -(void)makeConstraintsWithView:(UIView *)view ratio:(CGFloat)ratio{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {
             // 版本适配
             make.left.mas_equalTo(view.mas_safeLeft);
@@ -188,7 +188,7 @@
  @param ratio 宽高比
  */
 -(void)makeUnsafeConstraintsWithView:(UIView *)view ratio:(CGFloat)ratio{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(view);
         make.right.mas_equalTo(view);
         make.top.mas_equalTo(view);
@@ -203,7 +203,7 @@
  @param ratio 宽高比
  */
 -(void)makeConstraintsWithViewBottom:(UIView *)view ratio:(CGFloat)ratio{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {
             // 版本适配
             make.left.mas_equalTo(view.mas_safeLeft);
@@ -225,7 +225,7 @@
  @param ratio 宽高比
  */
 -(void)makeUnsafeConstraintsWithViewBottom:(UIView *)view ratio:(CGFloat)ratio{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(view);
         make.right.mas_equalTo(view);
         make.bottom.mas_equalTo(view);
@@ -248,7 +248,7 @@
     } else if (!header && bottom) {
         [self makeConstraintsWithView:view bottom:bottom];
     } else {
-        [self mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self mas_remakeConstraints:^(MASConstraintMaker *make) {
             if (XLAvailableiOS11) {
                 // 版本适配
                 make.left.mas_equalTo(view.mas_safeLeft);
@@ -278,7 +278,7 @@
     } else if (!header && bottom) {
         [self makeUnsafeConstraintsWithView:view bottom:bottom];
     } else {
-        [self mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(view);
             make.right.mas_equalTo(view);
             make.top.mas_equalTo(header.mas_bottom);
@@ -294,7 +294,7 @@
  @param header 头部
  */
 -(void)makeConstraintsWithView:(UIView *)view header:(UIView *)header{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {
             // 版本适配
             make.left.mas_equalTo(view.mas_safeLeft);
@@ -316,7 +316,7 @@
  @param header 头部
  */
 -(void)makeUnsafeConstraintsWithView:(UIView *)view header:(UIView *)header{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(view);
         make.right.mas_equalTo(view);
         make.bottom.mas_equalTo(view);
@@ -331,7 +331,7 @@
  @param bottom 底部
  */
 -(void)makeConstraintsWithView:(UIView *)view bottom:(UIView *)bottom{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {
             // 版本适配
             make.left.mas_equalTo(view.mas_safeLeft);
@@ -353,7 +353,7 @@
  @param bottom 底部
  */
 -(void)makeUnsafeConstraintsWithView:(UIView *)view bottom:(UIView *)bottom{
-    [self mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(view);
         make.right.mas_equalTo(view);
         make.top.mas_equalTo(view);

@@ -54,11 +54,11 @@
     UIView *containerView = [transitionContext containerView];
     [containerView addSubview:toVC.view];
     
-    toVC.view.frame = CGRectOffset(finalFrameForVC, XLScreenWidth, 0);
+    toVC.view.frame = CGRectOffset(finalFrameForVC, XLScreenWidth(), 0);
     [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         fromVC.view.alpha = 0.5f;
         toVC.view.frame = finalFrameForVC;
-        fromVC.view.frame = CGRectOffset(fromVC.view.frame, -XLScreenWidth / 3.0f, 0);
+        fromVC.view.frame = CGRectOffset(fromVC.view.frame, -XLScreenWidth() / 3.0f, 0);
     } completion:^(BOOL finished) {
         [transitionContext completeTransition:YES];
     }];
@@ -89,12 +89,12 @@
         [toVC beginAppearanceTransition:YES animated:YES];
     }
     
-    CGRect finalFrame = CGRectOffset(initFrame, XLScreenWidth, 0);
+    CGRect finalFrame = CGRectOffset(initFrame, XLScreenWidth(), 0);
     CGRect toVCFrame = toVC.view.frame;
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromVC.view.frame = finalFrame;
         toVC.view.alpha = 1.0f;
-        toVC.view.frame = CGRectOffset(toVCFrame, XLScreenWidth / 3.0f, 0);
+        toVC.view.frame = CGRectOffset(toVCFrame, XLScreenWidth() / 3.0f, 0);
     } completion:^(BOOL finished) {
         if (fromVC.modalPresentationStyle == UIModalPresentationCustom) {
             [toVC endAppearanceTransition];
@@ -153,8 +153,8 @@
         }
         case UIGestureRecognizerStateChanged: {
             CGFloat fraction;
-            CGFloat pointX = XLScreenWidth + [gesture locationInView:self.viewController.view].x;
-            fraction = (pointX / XLScreenWidth);
+            CGFloat pointX = XLScreenWidth() + [gesture locationInView:self.viewController.view].x;
+            fraction = (pointX / XLScreenWidth());
             fraction = fmin(fmaxf(fraction, 0.0), 1.0);
             _shouldComplete = fraction > 0.5;
             [self updateInteractiveTransition:fraction];

@@ -80,6 +80,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 移除当前控制器
 -(void)removeCurrentViewController;
+
+// iPad 旋转监听：子类可以复写，处理回调
+-(void)xlIpadDidChangeStatusBarNotification:(NSNotification *)notification;
 @end
 
 NS_ASSUME_NONNULL_END

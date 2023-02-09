@@ -204,7 +204,7 @@ static XLImagePreviewManager *previewManager;
     if (self) {
         _previewInfoArray = [NSMutableArray array];
         
-        _backgroundView = [[UIView alloc] initWithFrame:XLScreenBounds];
+        _backgroundView = [[UIView alloc] initWithFrame:XLScreenBounds()];
         _backgroundView.backgroundColor = [UIColor blackColor];
         
         _transitionImgView = [[UIImageView alloc] init];
@@ -534,8 +534,8 @@ static XLImagePreviewManager *previewManager;
 -(void)showRreviewImageInfo{
     CGFloat paddingMargin = 10.0f;
     NSInteger count = self.previewInfoArray.count;
-    CGFloat itemWidth = XLScreenWidth + paddingMargin * 2;
-    CGFloat itemHeight = XLScreenHeight;
+    CGFloat itemWidth = XLScreenWidth() + paddingMargin * 2;
+    CGFloat itemHeight = XLScreenHeight();
     CGFloat totalWidth = itemWidth * count;
     
     CGFloat xOffset = itemWidth * self.selelctIndex;
@@ -781,12 +781,12 @@ static XLImagePreviewManager *previewManager;
     CGFloat height = original.imageSize.height;
     if (oldFrame.size.width <= 0 ||
         oldFrame.size.height <= 0) {
-        widht = XLScreenWidth;
-        height = XLScreenHeight;
+        widht = XLScreenWidth();
+        height = XLScreenHeight();
     } else {
         CGSize iamgeSize = original.imageSize;
-        CGFloat xScale = XLScreenWidth / iamgeSize.width;
-        CGFloat yScale = XLScreenHeight / iamgeSize.height;
+        CGFloat xScale = XLScreenWidth() / iamgeSize.width;
+        CGFloat yScale = XLScreenHeight() / iamgeSize.height;
         /// 按最大边缩放：值越小，边长越大
         if(xScale > yScale){
             xScale = yScale;
@@ -836,7 +836,7 @@ static XLImagePreviewManager *previewManager;
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     [(XLImagePreviewCell *)cell recoverPreviewView];
     if (indexPath.row == _willDisplayIndex) {
-        /// 与将要显示的不是同一个:说明又划回去，恢复状态
+        /// 与将要显示的是同一个:说明又划回去，恢复状态
         [self updateBottomStateForIndex:self.currentIndex];
     } else {
         self.currentIndex = self.willDisplayIndex;
@@ -969,7 +969,7 @@ static XLImagePreviewManager *previewManager;
              visibleView:(UIView *)visibleView{
     [[XLImagePreviewManager previewManager] previewImageArray:imageArray
                                                 atSelectIndex:selectIndex
-                                                  visibleView:self.view];
+                                                  visibleView:visibleView];
 }
 
 /// 网络图片预览：默认从中间放大显示

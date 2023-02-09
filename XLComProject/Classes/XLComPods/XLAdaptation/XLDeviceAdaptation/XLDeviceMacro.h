@@ -8,61 +8,107 @@
 
 #ifndef XLDeviceMacro_h
 #define XLDeviceMacro_h
-#import "XLDevice.h"
 
-#define XLScreenScale       [[XLDevice xlDevice] xlScale]
-#define XLScreenNativeScale [[XLDevice xlDevice] xlNativeScale]
+static inline CGFloat XLScreenScale(){
+    return [UIScreen mainScreen].scale;
+}
+static inline CGFloat XLScreenNativeScale(){
+    return [UIScreen mainScreen].nativeScale;
+}
 
 // 屏幕物理尺寸
-#define XLScreenNativeBounds      [[XLDevice xlDevice] xlScreenNativeBounds]
+static inline CGRect XLScreenNativeBounds(){
+    return [UIScreen mainScreen].nativeBounds;
+}
 // 屏幕物理大小
-#define XLScreenNativeSize        [[XLDevice xlDevice] xlScreenNativeSize]
+static inline CGSize XLScreenNativeSize(){
+    return [UIScreen mainScreen].nativeBounds.size;
+}
 // 屏幕物理宽度
-#define XLScreenNativeWidth       [[XLDevice xlDevice] xlScreenNativeWidth]
+static inline CGFloat XLScreenNativeWidth(){
+    return [UIScreen mainScreen].nativeBounds.size.width;
+}
 // 屏幕物理高度
-#define XLScreenNativeHeight      [[XLDevice xlDevice] xlScreenNativeHeight]
+static inline CGFloat XLScreenNativeHeight(){
+    return [UIScreen mainScreen].nativeBounds.size.height;
+}
 
 // 屏幕尺寸
-#define XLScreenBounds      [UIScreen mainScreen].bounds
+static inline CGRect XLScreenBounds(){
+    return [UIScreen mainScreen].bounds;
+}
 // 屏幕大小
-#define XLScreenSize        [[XLDevice xlDevice] xlScreenSize]
+static inline CGSize XLScreenSize(){
+    return [UIScreen mainScreen].bounds.size;
+}
 // 屏幕宽度
-#define XLScreenWidth       [[XLDevice xlDevice] xlScreenWidth]
+static inline CGFloat XLScreenWidth(){
+    return [UIScreen mainScreen].bounds.size.width;
+}
 // 屏幕高度
-#define XLScreenHeight      [[XLDevice xlDevice] xlScreenHeight]
+static inline CGFloat XLScreenHeight(){
+    return [UIScreen mainScreen].bounds.size.height;
+}
 
 // 设备：简单的判断方法,详细的参考：UIDevice+XLCategory.h
-#define XLIsiPad     [[XLDevice xlDevice] xlIsiPad]     // iPad
-#define XLIsiPhone   [[XLDevice xlDevice] xlIsiPhone]   // iPhone
-#define XLIsRetina   [[XLDevice xlDevice] xlIsRetina]   // 是否为retina屏幕
+static inline BOOL XLIsiPad(){
+    return [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
+}
 
-/// 小屏幕
-#define XLMiniScreen    [[XLDevice xlDevice] xlMiniScreen]
-/// 手机型号
-#define XLiPhone4       [[XLDevice xlDevice] xliPhone4]
-#define XLiPhone5       [[XLDevice xlDevice] xliPhone5]
-#define XLiPhone5S      [[XLDevice xlDevice] xliPhone5s]
-// iPhone 6/7/8系列屏幕一致
-#define XLiPhone6       [[XLDevice xlDevice] xliPhone6]
-// iPhone 6p/7p/8p系列屏幕一致
-#define XLiPhone6P      [[XLDevice xlDevice] xliPhone6p]
+static inline BOOL XLIsiPhone(){
+    return [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone;
+}
 
-/// 刘海屏
-#define XLBangsScreen   [[XLDevice xlDevice] xlBangsScreen]
+static inline BOOL XLMiniScreen(){
+//    [UIScreen mainScreen].bounds.size.height < 568.0f &&
+    return [UIScreen mainScreen].bounds.size.width <= 568.0f;
+}
+static inline BOOL XLiPhone4(){
+    return [UIScreen mainScreen].bounds.size.height < 568.0f && [UIScreen mainScreen].bounds.size.width < 568.0f;
+}
+static inline BOOL XLiPhone5(){
+    return [UIScreen mainScreen].bounds.size.height == 568.0f || [UIScreen mainScreen].bounds.size.width == 568.0f;
+}
+static inline BOOL XLiPhone5s(){
+    return [UIScreen mainScreen].bounds.size.height == 640.0f || [UIScreen mainScreen].bounds.size.width < 640.0f;
+}
+static inline BOOL XLiPhone6(){
+    return [UIScreen mainScreen].bounds.size.height == 667.0f || [UIScreen mainScreen].bounds.size.width == 667.0f;
+}
+static inline BOOL XLiPhone6p(){
+    return [UIScreen mainScreen].bounds.size.height == 736.0f || [UIScreen mainScreen].bounds.size.width == 736.0f;
+}
 
-/// iPhone Pro, iPHone X, iPhone Xs
-#define XLiPhoneX       [[XLDevice xlDevice] xliPhoneX]
-/// iPhone XR：包含缩水屏（750, 1624）
-#define XLiPhoneXR      [[XLDevice xlDevice] xliPhoneXR]
-/// XLiPhoneXSMax、iPhone Pro Max 尺寸一致
-#define XLiPhoneXsMax   [[XLDevice xlDevice] xliPhoneXsMax]
+static inline BOOL XLiPhoneXR(){
+    return [UIScreen mainScreen].bounds.size.height == 828.0f || [UIScreen mainScreen].bounds.size.width < 828.0f || [UIScreen mainScreen].bounds.size.height == 750.0f || [UIScreen mainScreen].bounds.size.width < 750.0f;
+}
+static inline BOOL XLiPhoneX(){
+    return [UIScreen mainScreen].bounds.size.height < 736.0f || [UIScreen mainScreen].bounds.size.width == 736.0f;
+}
+static inline BOOL XLiPhoneXsMax(){
+    return [UIScreen mainScreen].bounds.size.height == 1242.0f || [UIScreen mainScreen].bounds.size.width == 1242.0f;
+}
+
+static inline BOOL XLBangsScreen(){
+    return [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.bottom > 0;
+}
 
 // 状态栏高度
-#define XLStatusBarHeight   [[XLDevice xlDevice] xlStatusBarHeight]
-#define XLNavBarHeight      [[XLDevice xlDevice] xlNaviBarHeight]
-// 顶部高度
-#define XLNavTopHeight      [[XLDevice xlDevice] xlNaviTopTotalHeight]
-// 底部高度
-#define XLNavBottomHeight   [[XLDevice xlDevice] xlNaviBottomTotalHeight]
+static inline CGFloat XLStatusBarHeight(){
+    return [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.bottom > 0 ? [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.top : 20.0f;
+}
+
+static inline CGFloat XLNavBottomHeight(){
+    return [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.bottom > 0 ? [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.bottom : 0.0f;
+}
+
+// 状态栏高度
+static inline CGFloat XLNavBarHeight(){
+    return 44.0f;
+}
+
+static inline CGFloat XLNavTopHeight(){
+    return ([[[UIApplication sharedApplication] delegate] window].safeAreaInsets.bottom > 0 ? [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.top : 20.0f) + 44.0f;
+}
 
 #endif /* XLDeviceMacro_h */

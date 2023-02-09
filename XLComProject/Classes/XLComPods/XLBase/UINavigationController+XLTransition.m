@@ -74,8 +74,8 @@
         }
         case UIGestureRecognizerStateChanged: {
             CGFloat fraction;
-            CGFloat locationX = XLScreenWidth + [gesture locationInView:gesture.view].x;
-            fraction = (locationX / XLScreenWidth);
+            CGFloat locationX = XLScreenWidth() + [gesture locationInView:gesture.view].x;
+            fraction = (locationX / XLScreenWidth());
             fraction = fmin(fmaxf(fraction, 0.0), 1.0);
             self.xlTransition.shouldComplete = fraction > 0.5;
             [self.xlTransition updateInteractiveTransition:fraction];
@@ -196,18 +196,18 @@
         [containerView addSubview:tureBar];
     }
     
-    toVC.view.frame = CGRectOffset(finalFrameForVC, XLScreenWidth, 0);
+    toVC.view.frame = CGRectOffset(finalFrameForVC, XLScreenWidth(), 0);
     [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         toVC.view.frame = finalFrameForVC;
-        fromVC.view.frame = CGRectOffset(fromVC.view.frame, -XLScreenWidth / 3.0f, 0);
+        fromVC.view.frame = CGRectOffset(fromVC.view.frame, -XLScreenWidth() / 3.0f, 0);
         if (tureBar.hidden) {
             /// 导航栏隐藏状态，偏移
-            tureBar.frame = CGRectOffset(oldNvBarFrame, -XLScreenWidth, 0);
+            tureBar.frame = CGRectOffset(oldNvBarFrame, -XLScreenWidth(), 0);
         }
     } completion:^(BOOL finished) {
         if (tureBar.hidden) {
             /// 导航栏隐藏状态，偏移
-            tureBar.frame = CGRectOffset(oldNvBarFrame, -XLScreenWidth, 0);
+            tureBar.frame = CGRectOffset(oldNvBarFrame, -XLScreenWidth(), 0);
         }
         if (tureBar.hidden) {
             /// 导航栏隐藏状态，偏移
@@ -259,21 +259,21 @@
     if (!hidesBottomBar && toVC.tabBarController) {
         tabBar = toVC.tabBarController.tabBar;
         CGRect tabBarFrame = tabBar.frame;
-        tabBarFrame.origin.x = -XLScreenWidth;
+        tabBarFrame.origin.x = -XLScreenWidth();
         tabBar.frame = tabBarFrame;
     }
     
     CGRect oldToFrame = toVC.view.frame;
     CGRect toframe = toVC.view.frame;
     toframe.origin.y = barBottom < 0 ? 0 : barBottom;
-    toframe.origin.x = -XLScreenWidth / 3.0f;
+    toframe.origin.x = -XLScreenWidth() / 3.0f;
     toframe.size.height = toframe.size.height - barBottom;
     toVC.view.frame = toframe;
     [containerView addSubview:toVC.view];
     [containerView sendSubviewToBack:toVC.view];
 
     CGRect oldFromeFrame = [transitionContext initialFrameForViewController:fromVC];
-    CGRect finalFrame = CGRectOffset(oldFromeFrame, XLScreenWidth, 0);
+    CGRect finalFrame = CGRectOffset(oldFromeFrame, XLScreenWidth(), 0);
     NSTimeInterval interval = [self transitionDuration:transitionContext];
     fromVC.view.layer.zPosition = 1000;
     [UIView animateWithDuration:interval animations:^{
@@ -282,10 +282,10 @@
             tureBar.frame = oldNvBarFrame;
         }
         fromVC.view.frame = finalFrame;
-        toVC.view.frame = CGRectOffset(toframe, XLScreenWidth / 3.0f, 0);
+        toVC.view.frame = CGRectOffset(toframe, XLScreenWidth() / 3.0f, 0);
         if (tabBar) {
             CGRect tabBarFrame = tabBar.frame;
-            tabBar.frame = CGRectOffset(tabBarFrame, XLScreenWidth, 0);
+            tabBar.frame = CGRectOffset(tabBarFrame, XLScreenWidth(), 0);
         }
     } completion:^(BOOL finished) {
         BOOL cancelled = [transitionContext transitionWasCancelled];

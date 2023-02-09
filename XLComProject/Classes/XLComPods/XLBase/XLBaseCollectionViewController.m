@@ -59,14 +59,9 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     return nil;
 }
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+// iPad 旋转监听：子类可以复写，处理回调
+-(void)xlIpadDidChangeStatusBarNotification:(NSNotification *)notification{
+    [self.xlCollectionView reloadData];
 }
-*/
-
 @end

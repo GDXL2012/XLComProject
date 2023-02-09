@@ -122,7 +122,7 @@ NSInteger const kEditColorButtonPreTag = 1001;
         make.left.mas_equalTo(self);
         make.right.mas_equalTo(self);
         make.top.mas_equalTo(self);
-        make.height.mas_equalTo(XLNavTopHeight);
+        make.height.mas_equalTo(XLNavTopHeight());
     }];
     
     _cancelEditButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -131,7 +131,7 @@ NSInteger const kEditColorButtonPreTag = 1001;
     [_cancelEditButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.editNaviBarView addSubview:_cancelEditButton];
     [_cancelEditButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(XLNavBarHeight);
+        make.height.mas_equalTo(XLNavBarHeight());
         make.left.mas_equalTo(self.editNaviBarView).offset(XLHMargin);;
         make.bottom.mas_equalTo(self.editNaviBarView);
     }];
@@ -142,7 +142,7 @@ NSInteger const kEditColorButtonPreTag = 1001;
     [_revokeEditButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.editNaviBarView addSubview:_revokeEditButton];
     [_revokeEditButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.mas_equalTo(XLNavBarHeight);
+        make.height.mas_equalTo(XLNavBarHeight());
         make.right.mas_equalTo(self.editNaviBarView).offset(-XLHMargin);
         make.bottom.mas_equalTo(self.editNaviBarView);
     }];
@@ -154,7 +154,7 @@ NSInteger const kEditColorButtonPreTag = 1001;
         make.left.mas_equalTo(self);
         make.right.mas_equalTo(self);
         make.bottom.mas_equalTo(self);
-        make.height.mas_equalTo(XLNavTopHeight);
+        make.height.mas_equalTo(XLNavTopHeight());
     }];
     
     _completeButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -165,15 +165,15 @@ NSInteger const kEditColorButtonPreTag = 1001;
     [_completeButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.size.mas_equalTo(CGSizeMake(60.0f, 35.0f));
         make.right.mas_equalTo(self.editToolBarView).offset(-XLHMargin);
-        make.top.mas_equalTo(self.editToolBarView).offset((XLNavBarHeight - 35.0f) / 2.0f);
+        make.top.mas_equalTo(self.editToolBarView).offset((XLNavBarHeight() - 35.0f) / 2.0f);
     }];
     
     NSInteger count = self.editColorArray.count;
     CGFloat datX = XLHMargin;
-    CGFloat editButtonWidth = XLMiniScreen ? 28.0f : 36.0f;
-    CGFloat datY = (XLNavBarHeight - editButtonWidth) / 2.0f;
+    CGFloat editButtonWidth = XLMiniScreen() ? 28.0f : 36.0f;
+    CGFloat datY = (XLNavBarHeight() - editButtonWidth) / 2.0f;
     
-    CGFloat layerWidht = XLMiniScreen ? 20.0f : 25.0f;
+    CGFloat layerWidht = XLMiniScreen() ? 20.0f : 25.0f;
     CGFloat layerDatX = (editButtonWidth - layerWidht) / 2.0f;
     for (NSInteger index = 0; index < count; index ++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
