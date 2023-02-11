@@ -293,7 +293,7 @@
         width = height * aspectRatio;
     } else {
         // 高度需要剪切
-        height = width * aspectRatio;
+        height = width / aspectRatio;
     }
     UIGraphicsBeginImageContext(CGSizeMake(width, height));
 //    CGFloat scale = [UIScreen mainScreen].scale;
@@ -576,6 +576,11 @@
     CGContextRelease(ctx);
     CGImageRelease(cgimg);
     return img;
+}
+
+// 截取图片
+-(UIImage *)cliperIamgeWithRect:(CGRect)rect{
+    
 }
 
 @end

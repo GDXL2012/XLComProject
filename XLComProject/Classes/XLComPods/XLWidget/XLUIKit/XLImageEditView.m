@@ -55,6 +55,9 @@ NSInteger const kEditColorButtonPreTag = 1001;
     editView.cmPreviewImage = image;
     editView.cmDelegate = delegate;
     [view addSubview:editView];
+    [editView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(view);
+    }];
 }
 
 -(instancetype)initWithFrame:(CGRect)frame{
