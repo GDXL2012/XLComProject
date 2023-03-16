@@ -484,7 +484,7 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
     UITableViewHeaderFooterView *headView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"headViewID"];
     if (!headView) {
         headView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"headViewID"];
-        headView.contentView.backgroundColor = XLContBGColor;
+        headView.contentView.backgroundColor = XLComBGColor;
     }
     return headView;
 }

@@ -23,14 +23,14 @@
 
 static NSInteger MoreMenuItemTag     = 1000;     // 菜单按钮tag基础值
 //static CGFloat   MoreMenuItemWidth   = 150.0f; // 菜单宽度
-static CGFloat   MoreMenuLeftMargin      = 15.0f;    // 菜单项左右间距
-static CGFloat   MoreMenuRightMargin     = 30.0f;    // 菜单项左右间距
-static CGFloat   MoreMenuItemMargin  = 10.0f;    // 菜单项内容间距
-static CGFloat   MoreMenuItemHeight  = 45.0f;    // 菜单单项高度
-static CGFloat   MoreMenuIcoHeight   = 18.0f;    // 菜单单项高度
+static CGFloat   MoreMenuLeftMargin      = 15.0f;    // 菜单项左间距
+static CGFloat   MoreMenuRightMargin     = 20.0f;    // 菜单项右间距
+static CGFloat   MoreMenuItemMargin  = 12.0f;    // 菜单项内容间距
+static CGFloat   MoreMenuItemHeight  = 48.0f;    // 菜单单项高度
+static CGFloat   MoreMenuIcoHeight   = 24.0f;    // 菜单图标单项高度
 static CGFloat   MoreMenuTopMargin   = 5.0f;     // 菜单上下两项多出的高度
 static CGFloat   MoreMenuArrowHeight = 10.0f;    // 菜单上部箭头高度
-static CGFloat   MoreMenuArrowWidth  = 20.0f;    // 菜单上部箭头高度
+static CGFloat   MoreMenuArrowWidth  = 20.0f;    // 菜单上部箭头宽度
 
 static XLMoreMenuView *moreMenuView;
 
@@ -112,7 +112,7 @@ static XLMoreMenuView *moreMenuView;
     CGSize maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
     self.xlMaxWidth = 0;
     for (NSString *title in titles) {
-        CGSize size = [NSString sizeWithFont:XLGFont(15.0f) maxSize:maxSize string:title];
+        CGSize size = [NSString sizeWithFont:XLGFont(17.0f) maxSize:maxSize string:title];
         CGFloat tmpWidth = MoreMenuLeftMargin + MoreMenuIcoHeight + MoreMenuItemMargin + ceil(size.width) + MoreMenuRightMargin;
         if (tmpWidth > self.xlMaxWidth) {
             self.xlMaxWidth = tmpWidth;
@@ -127,7 +127,7 @@ static XLMoreMenuView *moreMenuView;
     [self xlUpdateMenuViewWidthWithTitles:titles];
     
     _blackView = [[UIImageView alloc] init];
-    _blackView.backgroundColor = [UIColor colorWithHexString:@"#353535"];
+    _blackView.backgroundColor = [UIColor colorWithHexString:@"#4C4C4C"];
     _blackView.layer.cornerRadius = XLButtonRadius;
     _blackView.layer.masksToBounds = YES;
     
@@ -158,7 +158,7 @@ static XLMoreMenuView *moreMenuView;
             [path addLineToPoint:CGPointMake(0.0f, MoreMenuArrowHeight)];
             [path closePath];
             CAShapeLayer *layer = [CAShapeLayer layer];
-            layer.fillColor = [UIColor colorWithHexString:@"#353535"].CGColor;
+            layer.fillColor = [UIColor colorWithHexString:@"#4C4C4C"].CGColor;
             layer.path = path.CGPath;
 
             [_arrowView.layer addSublayer:layer];
@@ -170,7 +170,7 @@ static XLMoreMenuView *moreMenuView;
         make.right.mas_equalTo(self).offset(-12.0f);
         make.top.mas_equalTo(self).offset(offset);
         make.width.mas_equalTo(self.xlMaxWidth);
-        make.height.mas_equalTo(MoreMenuArrowHeight + MoreMenuItemHeight * count + MoreMenuTopMargin * 2);
+        make.height.mas_equalTo(MoreMenuItemHeight * count + MoreMenuTopMargin * 2);
     }];
     
     for (NSInteger index = 0; index < count; index ++) {
@@ -180,7 +180,7 @@ static XLMoreMenuView *moreMenuView;
         [self addSubview:imageView];
         CGFloat height = MoreMenuIcoHeight;
         // Item整体偏移量
-        CGFloat itemOffset = index * MoreMenuItemHeight + MoreMenuTopMargin + MoreMenuArrowHeight;
+        CGFloat itemOffset = index * MoreMenuItemHeight + MoreMenuTopMargin;
         // Item图标偏移量
         CGFloat icoOffset = itemOffset + (MoreMenuItemHeight - height) / 2.0f;
         [imageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -192,7 +192,7 @@ static XLMoreMenuView *moreMenuView;
         NSString *title = titles[index];
         UILabel *titleLabel = [[UILabel alloc] init];
         titleLabel.textColor = [UIColor whiteColor];
-        titleLabel.font = XLGFont(15.0f);
+        titleLabel.font = XLGFont(17.0f);
         [self addSubview:titleLabel];
         titleLabel.text = title;
         [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -213,7 +213,8 @@ static XLMoreMenuView *moreMenuView;
         [button addTarget:self action:@selector(menuButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         if (count > 1 && index < count - 1) {
             UIView *sepView = [[UIView alloc] init];
-            sepView.backgroundColor = [UIColor colorWithHexString:@"#6f6f6f"];
+//            sepView.backgroundColor = [UIColor colorWithHexString:@"#6f6f6f"];
+            sepView.backgroundColor = [UIColor colorWithHexString:@"#666666"];
             [self addSubview:sepView];
             [sepView mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.left.mas_equalTo(titleLabel);

@@ -30,6 +30,11 @@ NS_ASSUME_NONNULL_BEGIN
  @param identifier identifier
  */
 -(void)registerNibName:(NSString *)name forCellReuseIdentifier:(NSString *)identifier;
+
+// 解决顶部留白太宽问题
+-(void)xlAddMinRectFooterAndHeadView;
+// 底部添加footerview适配安全区域、解决顶部留白太宽问题
+-(void)xlAdaptationSafeAreaAndTopSpaceArea;
 @end
 
 NS_ASSUME_NONNULL_END

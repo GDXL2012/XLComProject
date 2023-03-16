@@ -174,13 +174,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param maskImage <#maskImage description#>
 /// @param blur <#blur description#>
 +(UIImage *)moBlurryImage:(UIImage *)image withMaskImage:(UIImage *)maskImage blurLevel:(CGFloat)blur;
-/**
- 截屏
- 
- @param view 需要截屏内容的view
- @return 截屏图片
- */
+
+///  截屏：
+/// @param view 需要截屏内容的view， view不做背景色填充
 +(UIImage *)screenCaptureFromView:(UIView*)view;
+
+///  截屏：
+/// @param view 需要截屏内容的view
+/// @param fillRadius YES view为圆角时填充背景色
++(UIImage *)screenCaptureFromView:(UIView*)view fillRadius:(BOOL)fillRadius;
 
 /**
  图片二值化：将图片黑白处理

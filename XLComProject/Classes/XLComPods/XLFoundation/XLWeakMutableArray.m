@@ -84,6 +84,19 @@
     [self.pointerArray removePointerAtIndex:index];
 }
 
+- (void)removeObject:(id)anObject{
+    @synchronized (self) {
+        NSInteger count = self.pointerArray.count;
+        for (NSInteger index = 0; index < count; index ++) {
+            id object = [self objectAtIndex:index];
+            if(object == anObject){
+                [self removeObjectAtIndex:index];
+                break;
+            }
+        }
+    }
+}
+
 - (void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject{
     [self.pointerArray replacePointerAtIndex:index withPointer:(__bridge void *)(anObject)];
 }

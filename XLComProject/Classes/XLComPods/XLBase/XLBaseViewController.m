@@ -351,7 +351,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     _bottomAdapterView = [[UIView alloc] init];
-    _bottomAdapterView.backgroundColor = XLContBGColor;
+    _bottomAdapterView.backgroundColor = XLComBGColor;
     [self.view addSubview:_bottomAdapterView];
     [_bottomAdapterView mas_makeConstraints:^(MASConstraintMaker *make) {
         if (XLAvailableiOS11) {

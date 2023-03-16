@@ -440,11 +440,16 @@
  @param view 需要截屏内容的view
  @return 截屏图片
  */
-+(UIImage *)screenCaptureFromView:(UIView*)view{
++(UIImage *)screenCaptureFromView:(UIView*)view fillRadius:(BOOL)fillRadius{
     CGRect rect = view.frame;
     // 1.开启上下文
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
+    if(view.layer.cornerRadius > 0 && fillRadius){ // 有圆角，填充下背景颜色
+        CGContextSetFillColorWithColor(context, view.backgroundColor.CGColor);
+        CGContextAddRect(context, view.bounds);
+        CGContextFillPath(context);
+    }
     // 2.将控制器view的layer渲染到上下文
     [view.layer renderInContext:context];
     // 3.取出图片
@@ -452,6 +457,16 @@
     // 4.结束上下文
     UIGraphicsEndImageContext();
     return img;
+}
+
+/**
+ 截屏
+ 
+ @param view 需要截屏内容的view
+ @return 截屏图片
+ */
++(UIImage *)screenCaptureFromView:(UIView*)view{
+    return [UIImage screenCaptureFromView:view fillRadius:NO];
 }
 
 /**

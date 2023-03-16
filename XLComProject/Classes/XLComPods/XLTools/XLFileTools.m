@@ -179,6 +179,9 @@ static CGFloat CMFileSizeUnitTransformG  = 1024.0f * 1024.0f * 1024.0f;
  @param filePath 路径
  */
 +(BOOL)fileIsExit:(NSString *)filePath{
+    if([NSString isEmpty:filePath]){
+        return NO;
+    }
     BOOL isDir = NO;
     BOOL existed = [XLFileManager fileExistsAtPath:filePath isDirectory:&isDir];
     if (isDir == NO && existed == YES) {

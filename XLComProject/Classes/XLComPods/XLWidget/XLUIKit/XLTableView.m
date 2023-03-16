@@ -8,12 +8,28 @@
 
 #import "XLTableView.h"
 #import "XLSystemMacro.h"
+#import "XLDeviceMacro.h"
 
 @interface XLTableView ()
 @property (nonatomic, assign) BOOL estimatedEnable; /// 预估高度
 @end
 
 @implementation XLTableView
+
+-(instancetype)initWithCoder:(NSCoder *)coder{
+    self = [super initWithCoder:coder];
+    if(self){
+        self.separatorStyle = UITableViewCellSeparatorStyleNone;
+        if (@available(iOS 15.0, *)) {
+            /// 间隔过大问题修改
+            self.sectionHeaderTopPadding = 0;
+        }
+        if(XLAvailableiOS11) {
+            self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
+    }
+    return self;
+}
 
 -(instancetype)initWithFrame:(CGRect)frame style:(UITableViewStyle)style{
     self = [super initWithFrame:frame style:style];
@@ -22,6 +38,9 @@
         if (@available(iOS 15.0, *)) {
             /// 间隔过大问题修改
             self.sectionHeaderTopPadding = 0;
+        }
+        if(XLAvailableiOS11) {
+            self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
     }
     return self;
@@ -61,12 +80,27 @@
     [self registerNib:nib forCellReuseIdentifier:identifier];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+-(void)xlAddMinRectFooterAndHeadView{
+    CGRect minRect = CGRectMake(0, 0, XLScreenWidth(), CGFLOAT_MIN);
+    self.tableHeaderView = [[UIView alloc] initWithFrame:minRect];
+    self.tableFooterView = [[UIView alloc] initWithFrame:minRect];
 }
-*/
+
+// 底部添加footerview适配安全区域,解决顶部留白太宽问题
+-(void)xlAdaptationSafeAreaAndTopSpaceArea{
+    CGRect minRect = CGRectMake(0, 0, XLScreenWidth(), CGFLOAT_MIN);
+    self.tableHeaderView = [[UIView alloc] initWithFrame:minRect];
+    
+    CGRect rect = CGRectMake(0.0f, 0.0f, XLScreenWidth(), XLNavBottomHeight());
+    self.tableFooterView = [[UIView alloc] initWithFrame:rect];
+    self.tableFooterView.backgroundColor = self.backgroundColor;
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor{
+    [super setBackgroundColor:backgroundColor];
+    if(self.tableFooterView){
+        self.tableFooterView.backgroundColor = backgroundColor;
+    }
+}
 
 @end

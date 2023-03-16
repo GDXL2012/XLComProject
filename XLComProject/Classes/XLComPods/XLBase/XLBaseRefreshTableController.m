@@ -56,9 +56,7 @@
  配置Empty HeadFooter View
  */
 -(void)xlConfigHeadFooterView{
-    CGRect minRect = CGRectMake(0, 0, XLScreenWidth(), CGFLOAT_MIN);
-    self.xlRefreshTableView.tableHeaderView = [[UIView alloc] initWithFrame:minRect];
-    self.xlRefreshTableView.tableFooterView = [[UIView alloc] initWithFrame:minRect];
+    [self.xlRefreshTableView xlAdaptationSafeAreaAndTopSpaceArea];
 }
 
 /**
@@ -70,7 +68,7 @@
 
 /// 子类实现后可设置TableView控件位置
 -(void)xlMakeTableViewConstraints{
-    [self.xlRefreshTableView makeConstraintsWithView:self.view];
+    [self.xlRefreshTableView makeUnsafeConstraintsWithView:self.view];
 }
 
 // 下拉刷新

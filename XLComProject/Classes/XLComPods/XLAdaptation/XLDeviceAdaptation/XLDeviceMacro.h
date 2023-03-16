@@ -61,7 +61,7 @@ static inline BOOL XLIsiPhone(){
 
 static inline BOOL XLMiniScreen(){
 //    [UIScreen mainScreen].bounds.size.height < 568.0f &&
-    return [UIScreen mainScreen].bounds.size.width <= 568.0f;
+    return [UIScreen mainScreen].bounds.size.height <= 568.0f && [UIScreen mainScreen].bounds.size.height <= 568.0f;
 }
 static inline BOOL XLiPhone4(){
     return [UIScreen mainScreen].bounds.size.height < 568.0f && [UIScreen mainScreen].bounds.size.width < 568.0f;
@@ -70,7 +70,7 @@ static inline BOOL XLiPhone5(){
     return [UIScreen mainScreen].bounds.size.height == 568.0f || [UIScreen mainScreen].bounds.size.width == 568.0f;
 }
 static inline BOOL XLiPhone5s(){
-    return [UIScreen mainScreen].bounds.size.height == 640.0f || [UIScreen mainScreen].bounds.size.width < 640.0f;
+    return [UIScreen mainScreen].bounds.size.height == 640.0f || [UIScreen mainScreen].bounds.size.width == 640.0f;
 }
 static inline BOOL XLiPhone6(){
     return [UIScreen mainScreen].bounds.size.height == 667.0f || [UIScreen mainScreen].bounds.size.width == 667.0f;
@@ -80,7 +80,7 @@ static inline BOOL XLiPhone6p(){
 }
 
 static inline BOOL XLiPhoneXR(){
-    return [UIScreen mainScreen].bounds.size.height == 828.0f || [UIScreen mainScreen].bounds.size.width < 828.0f || [UIScreen mainScreen].bounds.size.height == 750.0f || [UIScreen mainScreen].bounds.size.width < 750.0f;
+    return [UIScreen mainScreen].bounds.size.height == 828.0f || [UIScreen mainScreen].bounds.size.width == 828.0f || [UIScreen mainScreen].bounds.size.height == 750.0f || [UIScreen mainScreen].bounds.size.width == 750.0f;
 }
 static inline BOOL XLiPhoneX(){
     return [UIScreen mainScreen].bounds.size.height < 736.0f || [UIScreen mainScreen].bounds.size.width == 736.0f;

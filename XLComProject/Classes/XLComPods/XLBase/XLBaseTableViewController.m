@@ -39,7 +39,6 @@
     [_xlTableView configDelegate:self];
     [self.view addSubview:_xlTableView];
     [_xlTableView setEstimatedEnable:NO];
-    [self xlConfigHeadFooterView];
     [self xlUserCustomizationView];
     [self xlMakeTableViewConstraints];
     _xlTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -54,16 +53,15 @@
 
 /// 子类实现后可设置TableView控件位置
 -(void)xlMakeTableViewConstraints{
-    [self.xlTableView makeConstraintsWithView:self.view];
+    [self xlConfigHeadFooterView];
+    [self.xlTableView makeUnsafeConstraintsWithView:self.view];
 }
 
 /**
  配置Empty HeadFooter View
  */
 -(void)xlConfigHeadFooterView{
-    CGRect minRect = CGRectMake(0, 0, XLScreenWidth(), CGFLOAT_MIN);
-    self.xlTableView.tableHeaderView = [[UIView alloc] initWithFrame:minRect];
-    self.xlTableView.tableFooterView = [[UIView alloc] initWithFrame:minRect];
+    [self.xlTableView xlAdaptationSafeAreaAndTopSpaceArea];
 }
 
 #pragma mark - UITableViewDataSource, UITableViewDelegate
