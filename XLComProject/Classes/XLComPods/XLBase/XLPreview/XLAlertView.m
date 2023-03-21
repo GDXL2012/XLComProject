@@ -168,7 +168,9 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
             _xlMessageLabel.textColor = XLTitleColor;
             _xlMessageLabel.numberOfLines = 0;
         }
-        _xlMessageLabel.text = xlMessage;
+        
+        NSAttributedString *attr = [XLAlertView attributedWidthString:xlMessage textAlignment:NSTextAlignmentCenter font:XLFont(15.0f)];
+        _xlMessageLabel.attributedText = attr;
         [self addSubview:_xlMessageLabel];
         
         [self.xlMessageLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -181,6 +183,49 @@ static CGFloat kXLAlertTopSpace        = 25.0f;
             }
         }];
     }
+}
+
+/// 格式化字符串
+/// @param string <#string description#>
+/// @param font <#font description#>
++(NSMutableAttributedString *)attributedWidthString:(NSString *)string
+                                               font:(UIFont *)font{
+    return [XLAlertView attributedWidthString:string
+                                  textAlignment:NSTextAlignmentLeft
+                                           font:font];
+}
+
+/// 格式化字符串
+/// @param string <#string description#>
+/// @param alignment <#alignment description#>
+/// @param font <#font description#>
++(NSMutableAttributedString *)attributedWidthString:(NSString *)string
+                                      textAlignment:(NSTextAlignment)alignment
+                                               font:(UIFont *)font{
+    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:string];
+    NSMutableParagraphStyle *paragraphStyle = [XLAlertView paragraphStyle:font alignment:alignment];
+    [attrStr addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [string length])];
+    return attrStr;
+}
+
++(NSMutableParagraphStyle *)paragraphStyle:(UIFont *)font{
+    return [XLAlertView paragraphStyle:font
+                             alignment:NSTextAlignmentLeft
+                                 space:8.0f];
+}
+
++(NSMutableParagraphStyle *)paragraphStyle:(UIFont *)font
+                                 alignment:(NSTextAlignment)alignment{
+    return [XLAlertView paragraphStyle:font alignment:alignment space:8.0f];
+}
+
++(NSMutableParagraphStyle *)paragraphStyle:(UIFont *)font
+                                 alignment:(NSTextAlignment)alignment
+                                     space:(CGFloat)space{
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.alignment = alignment;
+    [paragraphStyle setLineSpacing:(space - (font.lineHeight - font.pointSize))];
+    return paragraphStyle;
 }
 
 @end
