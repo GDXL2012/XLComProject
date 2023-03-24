@@ -325,10 +325,13 @@
     self.tabBarItem.selectedImage = [selImg imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     if (XLAvailableiOS13) {
         /// 适配iOS 13发现设置UITabBarItem的颜色，未选中状态下无效为默认颜色，选中状态下有效
-        /// 但push后再返回，tabBarItem选中颜色变为系统蓝色：iOS 13及以上需针对tabbar实例对象设置
-        /// 实例代码如下:
-        /// self.tabBar.tintColor = [UIColor blueColor];
-        /// self.tabBar.unselectedItemTintColor = [UIColor lightGrayColor];
+        UITabBarAppearance *bar = [UITabBarAppearance new];
+        [bar.stackedLayoutAppearance.normal setTitleTextAttributes:@{NSForegroundColorAttributeName:normal}];
+        [bar.stackedLayoutAppearance.selected setTitleTextAttributes:@{NSForegroundColorAttributeName:selected}];
+        if(@available(iOS 15.0, *)){
+            self.tabBarItem.scrollEdgeAppearance = bar;
+        }
+        self.tabBarItem.standardAppearance = bar;
     } else {
         [self.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:normal} forState:UIControlStateNormal];
         [self.tabBarItem setTitleTextAttributes:@{NSForegroundColorAttributeName:selected} forState:UIControlStateSelected];
