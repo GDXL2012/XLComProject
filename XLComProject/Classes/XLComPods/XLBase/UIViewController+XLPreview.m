@@ -367,14 +367,23 @@ static XLImagePreviewManager *previewManager;
             /// 删除下标小于选中未知的，选中小标需要-1
             self.selelctIndex --;
         } else if (index == self.selelctIndex){
-            /// 删除小标等于当前选中图标的：转场图片需要重置
+            /// 删除下标标等于当前选中图标的：转场图片需要重置
             if (self.previewItemType == XLPreviewItemImageView ||
                 self.previewItemType == XLPreviewItemSDImageView) {
                 /// 重置转场画面图片
-                XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.selelctIndex];
-                self.transitionImgView.image = info.originalImage;
-                self.transitionImgView.contentMode = info.contentMode;
-//                self.transitionImgView.frame = info.originalFrame;
+                if(self.selelctIndex >= self.previewInfoArray.count){
+                    // 删除后下标越界，需要重置
+                    self.selelctIndex = self.previewInfoArray.count - 1;
+                }
+                if(self.selelctIndex >= 0){
+                    XLPreviewItemInfo *info = [self.previewInfoArray objectAtIndex:self.selelctIndex];
+                    self.transitionImgView.image = info.originalImage;
+                    self.transitionImgView.contentMode = info.contentMode;
+    //                self.transitionImgView.frame = info.originalFrame;
+                } else {
+                    // 删除后没有预览图片，则取消预览
+                    [self hiddenPreview:nil];
+                }
             }
         }
     }
@@ -651,8 +660,9 @@ static XLImagePreviewManager *previewManager;
 /// 隐藏预览
 /// @param gesture gesture description
 -(void)hiddenPreview:(UIGestureRecognizer *)gesture{
-    if (self.previewItemType == XLPreviewItemImageView ||
-        self.previewItemType == XLPreviewItemSDImageView) {
+    if ((self.previewItemType == XLPreviewItemImageView ||
+         self.previewItemType == XLPreviewItemSDImageView) &&
+        self.previewInfoArray.count > 0) {
         if (self.currentIndex == self.selelctIndex || self.previewInfoArray.count == 1) {
             /// 选中图片即当前点击图片，直接执行
             [self previewDisappearForSelectIndex];
