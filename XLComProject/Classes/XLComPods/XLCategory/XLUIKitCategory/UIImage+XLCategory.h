@@ -191,6 +191,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 修正图片转向
 + (UIImage *)fixOrientationForImage:(UIImage *)aImage;
+
+// 在指定区域绘制水印
+-(UIImage *)xlWaterMarkString:(NSString *)mark
+                       inRect:(CGRect)rect
+                     withAttr:(NSDictionary *)attr;
 @end
 
 NS_ASSUME_NONNULL_END

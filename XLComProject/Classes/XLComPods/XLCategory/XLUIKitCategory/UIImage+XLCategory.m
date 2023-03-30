@@ -621,9 +621,25 @@
     return img;
 }
 
-// 截取图片
--(UIImage *)cliperIamgeWithRect:(CGRect)rect{
+// 在指定区域绘制水印
+-(UIImage *)xlWaterMarkString:(NSString *)mark
+                       inRect:(CGRect)rect
+                     withAttr:(NSDictionary *)attr{
     
+    UIGraphicsBeginImageContext(self.size);
+    CGFloat width = self.size.width;
+    CGFloat height = self.size.height;
+    [self drawInRect:CGRectMake(0.0f, 0.0f, width, height)];
+  
+    NSDictionary *tmpAttr = attr;;
+    if(tmpAttr == nil){
+        tmpAttr = @{NSFontAttributeName: [UIFont systemFontOfSize:14.0f],
+                    NSForegroundColorAttributeName : [UIColor lightGrayColor]};
+    }
+    [mark drawInRect:rect withAttributes:attr];
+    UIImage *aimg = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+  
+    return aimg;
 }
-
 @end
