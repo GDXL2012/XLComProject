@@ -9,8 +9,8 @@
 #import "XLMediaOperateTools.h"
 
 #import <CoreServices/CoreServices.h>
-#import <Photos/Photos.h>
 #import <AVFoundation/AVFoundation.h>
+#import <PhotosUI/PHPhotoLibrary+PhotosUISupport.h>
 
 #import "XLProgressHUDHelper.h"
 #import "XLAppInfoTools.h"
@@ -77,23 +77,60 @@
 }
 
 /** 校验是否有相册权限 */
-+ (void)xlCheckAlbumAuthorization:(void(^)(BOOL granted))permissionGranted {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (status == PHAuthorizationStatusRestricted) {
-                // 这是系统级别的限制（比如家长控制），用户也无法修改这个授权状态
-                [self showMediaRestricted];
-            } else if (status == PHAuthorizationStatusDenied) { // 拒绝访问
-                [XLMediaOperateTools showPhotoAuthorization];
-            } else if (status == PHAuthorizationStatusAuthorized) { // 已授权
-            } else { // 用户未选择受权
-                [self showPhotoAuthorization];
-            }
-            if (permissionGranted){
-                permissionGranted(status == PHAuthorizationStatusAuthorized);
-            }
-        });
-    }];
++ (void)xlCheckAlbumAuthorization:(void (^)(BOOL, PHAuthorizationStatus))permissionGranted{
+    if(@available(iOS 14.0, *)){
+        [PHPhotoLibrary requestAuthorizationForAccessLevel:PHAccessLevelReadWrite handler:^(PHAuthorizationStatus status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                BOOL granted = NO;
+                if (status == PHAuthorizationStatusRestricted) {
+                    // 这是系统级别的限制（比如家长控制），用户也无法修改这个授权状态
+                    [self showMediaRestricted];
+                } else if (status == PHAuthorizationStatusDenied) { // 拒绝访问
+                    [XLMediaOperateTools showPhotoAuthorization];
+                } else if (status == PHAuthorizationStatusAuthorized ||
+                           status == PHAuthorizationStatusLimited) { // 已授权
+                    granted = YES;
+                } else { // 用户未选择受权
+                    [XLMediaOperateTools showPhotoAuthorization];
+                }
+                if (permissionGranted){
+                    permissionGranted(granted, status);
+                }
+            });
+        }];
+    } else {
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (status == PHAuthorizationStatusRestricted) {
+                    // 这是系统级别的限制（比如家长控制），用户也无法修改这个授权状态
+                    [self showMediaRestricted];
+                } else if (status == PHAuthorizationStatusDenied) { // 拒绝访问
+                    [XLMediaOperateTools showPhotoAuthorization];
+                } else if (status == PHAuthorizationStatusAuthorized) { // 已授权
+                } else { // 用户未选择受权
+                    [self showPhotoAuthorization];
+                }
+                if (permissionGranted){
+                    permissionGranted(status == PHAuthorizationStatusAuthorized, status);
+                }
+            });
+        }];
+    }
+}
+
++(PHAuthorizationStatus)xlAlbumAuthorization{
+    if(@available(iOS 14.0, *)){
+        return [PHPhotoLibrary authorizationStatusForAccessLevel:PHAccessLevelReadWrite];
+    } else {
+        return [PHPhotoLibrary authorizationStatus];
+    }
+}
+
+
++(void)presentLimitedLibraryPickerFromViewController:(UIViewController *)controller{
+    if(@available(iOS 14.0, *)){
+        [[PHPhotoLibrary sharedPhotoLibrary] presentLimitedLibraryPickerFromViewController:controller];
+    }
 }
 /**
  选择照片
@@ -183,7 +220,7 @@
         //相机权限
         [XLMediaOperateTools xlCheckTakeVideoAuthorization:^(BOOL granted) {
             if (granted) {
-                [XLMediaOperateTools xlCheckAlbumAuthorization:^(BOOL granted) {
+                [XLMediaOperateTools xlCheckAlbumAuthorization:^(BOOL granted, PHAuthorizationStatus status) {
                     [XLMediaOperateTools privateTakePhotoFromViewController:viewController imgMode:type duration:duration allowsEditing:allowsEditing delegate:delegate];
                 }];
             }
@@ -242,7 +279,7 @@
 }
 
 +(void)showMediaRestricted{
-    [XLProgressHUDHelper toast:@"由于系统原因，无法保存图片！"];
+    [XLProgressHUDHelper toast:@"由于系统原因，无法访问相册！"];
 }
 
 /**

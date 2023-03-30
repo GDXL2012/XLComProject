@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Photos/Photos.h>
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -34,7 +35,10 @@ typedef NS_ENUM(NSInteger, XLMediaOperateType){
 /// @param permissionGranted <#permissionGranted description#>
 + (void)xlCheckTakePhotoAuthorization:(void(^)(BOOL granted))permissionGranted;
 /** 校验是否有相册权限 */
-+ (void)xlCheckAlbumAuthorization:(void(^)(BOOL granted))permissionGranted;
++ (void)xlCheckAlbumAuthorization:(void(^)(BOOL granted, PHAuthorizationStatus status))permissionGranted;
+
++(PHAuthorizationStatus)xlAlbumAuthorization;
++(void)presentLimitedLibraryPickerFromViewController:(UIViewController *)controller;
 
 /**
  选择照片
