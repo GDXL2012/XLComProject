@@ -6,11 +6,11 @@
 //  Copyright © 2019 GDXL2012. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "XLNavigationDelegateViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface XLNavigationController : UINavigationController
+@interface XLNavigationController : XLNavigationDelegateViewController
 
 /// 显示导航栏分割线：默认YES
 @property(nonatomic,assign) BOOL showBarMetrics;

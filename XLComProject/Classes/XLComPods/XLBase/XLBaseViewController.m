@@ -82,7 +82,6 @@
               self.navigationController.navigationBarHidden){
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
-    self.xlPOPForGesture = NO;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -95,7 +94,6 @@
             [self bindingPopGestureDelegate:nil];
         }
     }
-    self.xlPOPForGesture = NO;
 }
 
 /**
@@ -155,13 +153,7 @@
         if (self.navigationController.viewControllers.count == 1) {
             return NO;
         }
-        BOOL sholdPop = [self xlShouldPopViewControllerForGesture:YES];
-        if (sholdPop) {
-            self.xlPOPForGesture = YES;
-        } else {
-            self.xlPOPForGesture = NO;
-        }
-        return sholdPop;
+        return [self xlShouldPopViewControllerForGesture:YES];
     }
     return YES;
 }

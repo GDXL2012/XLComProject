@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 // 上一个页面的标题:默认不需要设置
 @property (nonatomic, copy) NSString *previewTitle;
 
-@property (nonatomic, assign) BOOL xlPOPForGesture; /// 是否是手势返回
 @property (nonatomic, assign) BOOL showBottomAdapterView; /// 底部适配view，遮挡view
 
 #pragma mark - @Override - 生命周期方法：viewDidLoad调用
