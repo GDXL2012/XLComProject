@@ -290,7 +290,7 @@ static XLImagePreviewManager *previewManager;
         UIImage *image = [self.xlDelegate imageForEditAtIndex:self.currentIndex];
         if (image) {
             UIWindow *window = [UIApplication sharedApplication].delegate.window;
-            [XLImageEditView showImageEditView:image inView:window delegate:self];
+            [XLImageEditView showSingImageEditView:image inView:window delegate:self];
         }
     }
 }

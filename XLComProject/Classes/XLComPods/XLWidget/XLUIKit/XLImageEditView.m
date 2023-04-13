@@ -17,12 +17,15 @@
 #import "XLAdaptation.h"
 #import "XLMacroLayout.h"
 #import "UIView+Layout.h"
+#import "UIView+XLCategory.h"
+#import "XLMacroFont.h"
 
 @interface XLImageEditView () <UIScrollViewDelegate, XLImageMosaicDelegate>
 
 @property (nonatomic, strong) UIImageView       *imageView;
 @property (nonatomic, strong) UIScrollView      *scrollView;
 @property (nonatomic, strong) UIView            *imageContainerView;
+@property (nonatomic, strong) UIImageView       *singLineImageView;
 
 @property (nonatomic, copy) void (^singleTapGestureBlock)(void);
 
@@ -40,6 +43,8 @@
 @property (nonatomic, strong) XLImageMosaicTools *xlImgMosaicTools;
 @property (nonatomic, strong) NSArray            *editColorArray;
 
+@property (nonatomic, assign) XLImageEditViewStyle imageEditViewStyle;
+
 - (void)recoverSubviews;
 
 @end
@@ -51,7 +56,7 @@ NSInteger const kEditColorButtonPreTag = 1001;
 +(void)showImageEditView:(UIImage *)image
                   inView:(UIView *)view
                 delegate:(id<XLImageEditViewDelegate>)delegate{
-    XLImageEditView *editView = [[XLImageEditView alloc] initWithFrame:view.bounds];
+    XLImageEditView *editView = [[XLImageEditView alloc] initWithFrame:view.bounds style:XLImageEditViewDefault];
     editView.cmPreviewImage = image;
     editView.cmDelegate = delegate;
     [view addSubview:editView];
@@ -60,19 +65,37 @@ NSInteger const kEditColorButtonPreTag = 1001;
     }];
 }
 
--(instancetype)initWithFrame:(CGRect)frame{
+/// 显示图片编辑
++(void)showSingImageEditView:(UIImage *)image
+                      inView:(UIView *)view
+                    delegate:(id<XLImageEditViewDelegate>)delegate{
+    XLImageEditView *editView = [[XLImageEditView alloc] initWithFrame:view.bounds style:XLImageEditViewSingle];
+    editView.cmPreviewImage = image;
+    editView.cmDelegate = delegate;
+    [view addSubview:editView];
+    [editView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(view);
+    }];
+}
+
+-(instancetype)initWithFrame:(CGRect)frame style:(XLImageEditViewStyle)style{
     self = [super initWithFrame:frame];
     if (self) {
-        self.editColorArray = @[XLHexColor(@"#D8D8D8"),
-                                XLHexColor(@"#000000"),
-                                XLHexColor(@"#FF0000"),
-                                XLHexColor(@"#00FF23"),
-                                XLHexColor(@"#FFE500"),
-//                                XLHexColor(@"#1A00EF"),
-                                [UIColor clearColor]];
+        _imageEditViewStyle = style;
         
         [self initPreviewView];
-        [self initEidtToolBarView];
+        if(style == XLImageEditViewDefault){
+            self.editColorArray = @[XLHexColor(@"#D8D8D8"),
+                                    XLHexColor(@"#000000"),
+                                    XLHexColor(@"#FF0000"),
+                                    XLHexColor(@"#00FF23"),
+                                    XLHexColor(@"#FFE500"),
+                                    [UIColor clearColor]];
+            [self initEidtToolBarView];
+        } else {
+            self.editColorArray = @[XLHexColor(@"#32ca7a")];
+            [self initSingleEidtToolBarView];
+        }
         
         UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
         [self addGestureRecognizer:tap1];
@@ -115,6 +138,85 @@ NSInteger const kEditColorButtonPreTag = 1001;
     _imageView.contentMode = UIViewContentModeScaleAspectFill;
     _imageView.clipsToBounds = YES;
     [_imageContainerView addSubview:_imageView];
+}
+
+-(void)initSingleEidtToolBarView{
+    _editNaviBarView = [[UIView alloc] init];
+    _editNaviBarView.backgroundColor = [UIColor clearColor];
+    [self addSubview:_editNaviBarView];
+    [_editNaviBarView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self);
+        make.right.mas_equalTo(self);
+        make.top.mas_equalTo(self);
+        make.height.mas_equalTo(XLNavTopHeight());
+    }];
+    
+    CGFloat buttonHeight = XLNavBarHeight() - 10;
+    UIImage *image = [UIImage imageNamed:@"comm_image_edit_back_icon"];
+    _cancelEditButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _cancelEditButton.backgroundColor = [UIColor whiteColor];
+    _cancelEditButton.imageEdgeInsets = UIEdgeInsetsMake(7.0f, 7.0f, 7.0f, 7.0f);
+    [_cancelEditButton setImage:image forState:UIControlStateNormal];
+    [_cancelEditButton addTarget:self action:@selector(cancelEditButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [_cancelEditButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    _cancelEditButton.layer.cornerRadius = buttonHeight / 2.0f;
+    _cancelEditButton.layer.masksToBounds = YES;
+    [self.editNaviBarView addSubview:_cancelEditButton];
+    [_cancelEditButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(buttonHeight);
+        make.width.mas_equalTo(self.cancelEditButton.mas_height);
+        make.left.mas_equalTo(self.editNaviBarView).offset(XLHMargin);;
+        make.bottom.mas_equalTo(self.editNaviBarView);
+    }];
+    
+    _revokeEditButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _revokeEditButton.backgroundColor = [UIColor whiteColor];
+    _revokeEditButton.imageEdgeInsets = UIEdgeInsetsMake(7.0f, 7.0f, 7.0f, 7.0f);
+    image = [UIImage imageNamed:@"comm_image_edit_revoke_icon"];
+    [_revokeEditButton setImage:image forState:UIControlStateNormal];
+    [_revokeEditButton addTarget:self action:@selector(revokeEditButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [_revokeEditButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_revokeEditButton setCornerRadius:buttonHeight / 2.0f];
+    [self.editNaviBarView addSubview:_revokeEditButton];
+    [_revokeEditButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(buttonHeight);
+        make.width.mas_equalTo(self.revokeEditButton.mas_height);
+        make.right.mas_equalTo(self.editNaviBarView).offset(-XLHMargin);
+        make.bottom.mas_equalTo(self.editNaviBarView);
+    }];
+    
+    _editToolBarView = [[UIView alloc] init];
+    _editToolBarView.backgroundColor = [UIColor clearColor];
+    [self addSubview:_editToolBarView];
+    [_editToolBarView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self);
+        make.right.mas_equalTo(self);
+        make.bottom.mas_equalTo(self);
+        make.height.mas_equalTo(XLNavTopHeight());
+    }];
+    
+    _completeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_completeButton setTitle:XLNSLocalized(@"完成") forState:UIControlStateNormal];
+    [_completeButton addTarget:self action:@selector(completeButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    _completeButton.titleLabel.font = XLFont(16.0f);
+    [_completeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    _completeButton.backgroundColor = XLHexColor(@"#32ca7a");
+    [_completeButton setCornerRadius:XLButtonRadius];
+    [_editToolBarView addSubview:_completeButton];
+    [_completeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(60.0f, 35.0f));
+        make.right.mas_equalTo(self.editToolBarView).offset(-XLHMargin);
+        make.top.mas_equalTo(self.editToolBarView).offset((XLNavBarHeight() - 35.0f) / 2.0f);
+    }];
+    
+    _singLineImageView = [[UIImageView alloc] init];
+    _singLineImageView.image = [UIImage imageNamed:@"comm_iamge_edit_line_icon"];
+    [_editToolBarView addSubview:_singLineImageView];
+    [_singLineImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(35.0f, 35.0f));
+        make.left.mas_equalTo(self.editToolBarView.mas_left).offset(XLHMargin);
+        make.centerY.mas_equalTo(self.completeButton);
+    }];
 }
 
 -(void)initEidtToolBarView{
@@ -232,11 +334,6 @@ NSInteger const kEditColorButtonPreTag = 1001;
 
 -(void)editColorButtonClick:(UIButton *)button{
     NSLog(@"editColorButtonClick start");
-    if (!_xlImgMosaicTools) {
-        _xlImgMosaicTools = [[XLImageMosaicTools alloc] initMosaictoolsWithImgView:self.imageView];
-        _xlImgMosaicTools.xlMosaicDelegate = self;
-        [_xlImgMosaicTools xlBeganMosaic];
-    }
     NSInteger tagIndex = button.tag - kEditColorButtonPreTag;
     UIColor *color = [self.editColorArray objectAtIndex:tagIndex];
     if (color) {
@@ -253,6 +350,32 @@ NSInteger const kEditColorButtonPreTag = 1001;
     CALayer *layer = self.selectedColorButton.layer.sublayers.firstObject;
     layer.transform = CATransform3DMakeScale(1.2f, 1.2f, 1.0f);
     NSLog(@"editColorButtonClick end");
+}
+
+-(void)cmInitEditColor{
+    if (!_xlImgMosaicTools) {
+        _xlImgMosaicTools = [[XLImageMosaicTools alloc] initMosaictoolsWithImgView:self.imageView];
+        _xlImgMosaicTools.xlMosaicDelegate = self;
+        [_xlImgMosaicTools xlBeganMosaic];
+        
+        if(self.imageEditViewStyle == XLImageEditViewSingle){
+            CGFloat width = 3.0f * [UIScreen mainScreen].scale;
+            UIColor *color = [self.editColorArray objectAtIndex:0];
+            [self.xlImgMosaicTools setMosaicStrokeColor:color width:width];
+        } else {
+            UIColor *color = [self.editColorArray objectAtIndex:0];
+            if (color) {
+                CGFloat width = 3.0f * [UIScreen mainScreen].scale;
+                [self.xlImgMosaicTools setMosaicStrokeColor:color width:width];
+            }
+            
+            if (self.selectedColorButton == nil) {
+                self.selectedColorButton = [self.editToolBarView viewWithTag:kEditColorButtonPreTag];
+            }
+            CALayer *layer = self.selectedColorButton.layer.sublayers.firstObject;
+            layer.transform = CATransform3DMakeScale(1.2f, 1.2f, 1.0f);
+        }
+    }
 }
 
 - (void)setCmPreviewImage:(UIImage *)cmPreviewImage {
@@ -306,6 +429,8 @@ NSInteger const kEditColorButtonPreTag = 1001;
     _scrollView.frame = CGRectMake(0, 0, self.tz_width, self.tz_height);
     
     [self recoverSubviews];
+    
+    [self cmInitEditColor];
 }
 
 #pragma mark - XLImageMosaicDelegate <NSObject>
