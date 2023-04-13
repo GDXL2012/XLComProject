@@ -186,13 +186,17 @@
 /// iOS 13 该方法控制导航栏跟页面pop操作
 /// iOS 12 方法仅仅控制导航栏
 - (BOOL)navigationBar:(UINavigationBar *)navigationBar shouldPopItem:(UINavigationItem *)item{
-    UIViewController *topVc = self.topViewController;
-    if ([topVc isKindOfClass:[XLBaseViewController class]]) {
-        XLBaseViewController *baseVC = (XLBaseViewController *)topVc;
-        if ([baseVC xlShouldPopViewControllerForGesture:NO]) {
-            return [super navigationBar:navigationBar shouldPopItem:item];
+    if(@available(iOS 13.0, *) || !self.hasPopViewController){
+        UIViewController *topVc = self.topViewController;
+        if ([topVc isKindOfClass:[XLBaseViewController class]]) {
+            XLBaseViewController *baseVC = (XLBaseViewController *)topVc;
+            if ([baseVC xlShouldPopViewControllerForGesture:NO]) {
+                return [super navigationBar:navigationBar shouldPopItem:item];
+            } else {
+                return NO;
+            }
         } else {
-            return NO;
+            return [super navigationBar:navigationBar shouldPopItem:item];
         }
     } else {
         return [super navigationBar:navigationBar shouldPopItem:item];
