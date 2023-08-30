@@ -196,6 +196,10 @@ NS_ASSUME_NONNULL_BEGIN
 -(UIImage *)xlWaterMarkString:(NSString *)mark
                        inRect:(CGRect)rect
                      withAttr:(NSDictionary *)attr;
+
+// degrees 需是90的倍数
+-(UIImage *)xlRotateImageWithDegrees:(NSInteger)degrees;
+-(UIImage *)xlRotateImageLeft;
 @end
 
 NS_ASSUME_NONNULL_END

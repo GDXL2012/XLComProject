@@ -81,6 +81,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 添加点击手势
 -(UITapGestureRecognizer *)addTapGestureTarget:(nullable id)target
                                         action:(nullable SEL)action;
+
+// 添加渐变色
+-(void)setGradientLayer:(UIColor*)startColor
+               endColor:(UIColor*)endColor;
 @end
 
 NS_ASSUME_NONNULL_END

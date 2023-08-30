@@ -53,6 +53,12 @@
     return self;
 }
 
+-(void)updateImageView:(UIImageView *)imageView{
+    [_xlDosaicContentImgView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(imageView);
+    }];
+}
+
 /// 设置画笔颜色
 -(void)setMosaicStrokeColor:(UIColor *)color width:(CGFloat)width{
     _xlStrokeColor = color;
@@ -114,6 +120,11 @@
     }
 }
 
+-(void)xlResetMosaic{
+    [_xlMosaicPathArray removeAllObjects];
+    [self drawMosaicForAllPath];
+    _xlMosaicImage = nil;
+}
 /// 结束马赛克
 -(void)xlEndMosaic{
     if (self.xlPanGesture) {
@@ -129,6 +140,8 @@
     _xlMosaicImage = nil;
     [_xlDosaicContentImgView removeFromSuperview];
     _xlDosaicContentImgView = nil;
+    
+    [_xlMosaicPathArray removeAllObjects];
 }
 
 #pragma mark - Operation Revoke/Resume

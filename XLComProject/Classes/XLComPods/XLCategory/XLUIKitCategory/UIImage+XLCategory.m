@@ -254,7 +254,7 @@
     
     float datX = ((size.width - width) / 2.0f);
     float datY = ((size.height - height) / 2.0f);
-    CGRect rect = CGRectMake(datX, datY, width * image.scale, height * image.scale);
+    CGRect rect = CGRectMake(datX * image.scale, datY * image.scale, width * image.scale, height * image.scale);
     CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
     UIImage *cropped = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
@@ -641,5 +641,31 @@
     UIGraphicsEndImageContext();
   
     return aimg;
+}
+
+// degrees 需是90的倍数
+-(UIImage *)xlRotateImageWithDegrees:(NSInteger)degrees{
+    degrees = degrees / 90;
+    degrees = degrees % 4;
+    UIImageOrientation orientation = UIImageOrientationUp;
+    if(degrees == 0){
+        orientation = UIImageOrientationUp;
+    } else if(degrees == -1 || degrees == 3){
+        orientation = UIImageOrientationLeft;
+    } else if(degrees == -2 || degrees == 2){
+        orientation = UIImageOrientationDown;
+    } else if (degrees == 1 || degrees == -3){
+        orientation = UIImageOrientationRight;
+    }
+    
+    UIImage *image = [UIImage imageWithCGImage:self.CGImage scale:1.0f orientation:UIImageOrientationRight];
+    image = [UIImage fixOrientationForImage:image];
+    return image;
+}
+
+-(UIImage *)xlRotateImageLeft{
+    UIImage *image = [UIImage imageWithCGImage:self.CGImage scale:1.0f orientation:UIImageOrientationRight];
+    image = [UIImage fixOrientationForImage:image];
+    return image;
 }
 @end

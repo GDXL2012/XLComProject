@@ -45,10 +45,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<XLImageMosaicDelegate> xlMosaicDelegate;
 
 -(instancetype)initMosaictoolsWithImgView:(UIImageView *)imageView;
+-(void)updateImageView:(UIImageView *)imageView;
 #pragma mark - Mosaic Began/End
 /// 开始马赛克
 -(void)xlBeganMosaic;
 -(void)xlBeganMosaicWithPaths:(nullable NSArray <XLMosaicPath *> *)mosaicPaths;
+-(void)xlResetMosaic;
 /// 开始马赛克
 -(void)xlEndMosaic;
 
