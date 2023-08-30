@@ -97,6 +97,7 @@
     } else {
         self.placeHolderLabel.hidden = NO;
     }
+    [self textViewDidChange:self];
 }
 
 -(void)setAttributedText:(NSAttributedString *)attributedText{
