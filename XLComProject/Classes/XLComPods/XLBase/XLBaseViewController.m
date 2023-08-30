@@ -126,7 +126,10 @@
     if (self.navigationController &&
         [self xlNeedInterceptPopGesture] &&
         [self xlInteractivePopGestureRecognizer].delegate != self) {
-        [self bindingPopGestureDelegate:[self xlInteractivePopGestureRecognizer].delegate];
+        if([self xlPopGestureDelegate] == nil){
+            // 保证绑定的数据是手势原始数据
+            [self bindingPopGestureDelegate:[self xlInteractivePopGestureRecognizer].delegate];
+        }
         [self xlInteractivePopGestureRecognizer].delegate = self;
     }
 }

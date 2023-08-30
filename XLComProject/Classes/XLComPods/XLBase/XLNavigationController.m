@@ -176,6 +176,20 @@
     return [super popViewControllerAnimated:animated];
 }
 
+- (NSArray<__kindof UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated{
+    if (!XLAvailableiOS13) {
+        self.hasPopViewController = YES;
+    }
+    return [super popToViewController:viewController animated:animated];
+}
+
+- (NSArray<__kindof UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated{
+    if (!XLAvailableiOS13) {
+        self.hasPopViewController = YES;
+    }
+    return [super popToRootViewControllerAnimated:animated];
+}
+
 -(void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
     self.hasPopViewController = NO;
     [super pushViewController:viewController animated:animated];
@@ -200,6 +214,12 @@
         }
     } else {
         return [super navigationBar:navigationBar shouldPopItem:item];
+    }
+}
+
+- (void)navigationBar:(UINavigationBar *)navigationBar didPopItem:(UINavigationItem *)item{
+    if (!XLAvailableiOS13) {
+        self.hasPopViewController = NO;
     }
 }
 
