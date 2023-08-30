@@ -39,7 +39,7 @@
     if ([NSString isEmpty:regex]) {
         switch (regexType) {
             case XLPredicateRegexPassword:
-                regex = @"^[a-z0-9]{6,18}$";
+                regex = @"^[A-Za-z0-9]{6,18}$";
                 break;
             case XLPredicateRegexAccount: /// 默认按手机号处理
                 regex = @"^(1[0-9][0-9])+\\d{8}$";
