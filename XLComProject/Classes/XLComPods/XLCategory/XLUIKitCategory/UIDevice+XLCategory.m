@@ -218,7 +218,7 @@ NSString *const XLDeviceUnrecognized    = @"?unrecognized?";
     if(![NSString isEmpty:deviceName]){
         return deviceName;
     }
-    
-    return XLDeviceUnrecognized;
+    return code;
+//    return XLDeviceUnrecognized;
 }
 @end
