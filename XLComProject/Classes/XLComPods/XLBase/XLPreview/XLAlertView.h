@@ -13,8 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface XLAlertAction : NSObject <NSCopying>
 
 + (instancetype)actionWithTitle:(nullable NSString *)title style:(UIAlertActionStyle)style handler:(void (^ __nullable)(XLAlertAction *action))handler;
+// 仅支持 UIAlertControllerStyleActionSheet模式
++ (instancetype)actionWithAttributedTitle:(nullable NSAttributedString *)title style:(UIAlertActionStyle)style handler:(void (^ __nullable)(XLAlertAction *action))handler;
 
 @property (nullable, nonatomic, readonly) NSString *title;
+@property (nullable, nonatomic, readonly) NSAttributedString *attrTitle;
 @property (nonatomic, readonly) UIAlertActionStyle style;
 
 @end

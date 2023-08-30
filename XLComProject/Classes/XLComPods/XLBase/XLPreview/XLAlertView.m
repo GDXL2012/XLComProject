@@ -21,6 +21,7 @@ typedef void(^XLAlertActionHandler)(XLAlertAction *action);
 @property (nonatomic, copy) XLAlertActionHandler handler;
 
 @property (nonatomic, copy)     NSString *title;
+@property (nonatomic, copy)     NSAttributedString *attrTitle;
 @property (nonatomic, assign)   UIAlertActionStyle style;
 @end
 
@@ -292,10 +293,12 @@ static CGFloat kXLAlertCornerRadius    = 6.0f;
         self.cancelButton = [self cancelButtonWithTitle:self.cancelAction.title];
         [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(self.whiteBgView);
-            if (self.xlMessageLabel) {
-                make.top.mas_equalTo(self.xlMessageLabel.mas_bottom).offset(kXLAlertTopSpace);
-            } else {
-                make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(kXLAlertTopSpace);
+            if(totalCount == 1){
+                if (self.xlMessageLabel) {
+                    make.top.mas_equalTo(self.xlMessageLabel.mas_bottom).offset(kXLAlertTopSpace);
+                } else {
+                    make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(kXLAlertTopSpace);
+                }
             }
             make.height.mas_equalTo(kXLAlertItemHeight);
             if (fullWidth) {
@@ -303,13 +306,9 @@ static CGFloat kXLAlertCornerRadius    = 6.0f;
             } else {
                 make.width.mas_equalTo(self.whiteBgView.mas_width).multipliedBy(0.5f);
             }
-            if (totalCount == 1) {
-                make.bottom.mas_equalTo(self.whiteBgView);
-            }
+            make.bottom.mas_equalTo(self.whiteBgView);
         }];
         addCancelButton = YES;
-        
-        lastButton = self.cancelButton;
     }
     
     for (NSInteger index = 0; index < itemCount; index ++) {
@@ -335,10 +334,27 @@ static CGFloat kXLAlertCornerRadius    = 6.0f;
                 make.top.mas_equalTo(self.xlTitleLabel.mas_bottom).offset(kXLAlertTopSpace);
             }
             if (index == itemCount - 1) {
-                make.bottom.mas_equalTo(self.whiteBgView);
+                if(totalCount > 2 && self.cancelButton){
+                    make.bottom.mas_equalTo(self.cancelButton.mas_top);
+                } else {
+                    make.bottom.mas_equalTo(self.whiteBgView);
+                }
             }
         }];
         button.tag = index;
+        if(totalCount > 2 && index == itemCount - 1){
+            UIView *view = [[UIView alloc] init];
+            view.backgroundColor = XLComSepColor;
+            [self addSubview:view];
+            [view mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(self.whiteBgView);
+                make.right.mas_equalTo(self.whiteBgView);
+                make.top.mas_equalTo(button);
+                make.height.mas_equalTo(XLCellSepHeight);
+            }];
+        }
+        lastButton = button;
+        
     }
     if (totalCount == 2) {
         self.sepView1.hidden = NO;
@@ -347,6 +363,14 @@ static CGFloat kXLAlertCornerRadius    = 6.0f;
             make.top.mas_equalTo(lastButton);
             make.bottom.mas_equalTo(lastButton);
             make.width.mas_equalTo(XLCellSepHeight);
+        }];
+    } else if (totalCount > 2){
+        self.sepView1.hidden = NO;
+        [self.sepView1 mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.whiteBgView);
+            make.right.mas_equalTo(self.whiteBgView);
+            make.top.mas_equalTo(lastButton.mas_bottom);
+            make.height.mas_equalTo(XLCellSepHeight);
         }];
     } else {
         self.sepView1.hidden = YES;
@@ -566,11 +590,18 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
     NSInteger itemCount = self.actionArray.count;
     if (itemCount > 0 && indexPath.section == 0) {
         XLAlertAction *acton = self.actionArray[indexPath.row];
-        tmpTitleLabel.text = acton.title;
-        if (acton.style == UIAlertActionStyleDefault) {
-            tmpTitleLabel.textColor = XLTitleColor;
+        if(acton.attrTitle == nil){
+            tmpTitleLabel.attributedText = nil;
+            tmpTitleLabel.text = acton.title;
+            if (acton.style == UIAlertActionStyleDefault) {
+                tmpTitleLabel.textColor = XLTitleColor;
+            } else {
+                tmpTitleLabel.textColor = XLWarningColor;
+            }
+            tmpTitleLabel.numberOfLines = 1;
         } else {
-            tmpTitleLabel.textColor = XLWarningColor;
+            tmpTitleLabel.attributedText = acton.attrTitle;
+            tmpTitleLabel.numberOfLines = 0;
         }
     } else {
         tmpTitleLabel.text = self.cancelAction.title;
@@ -612,6 +643,14 @@ static CGFloat kXLAlertSheetCornerRadius    = 10.0f;
 + (instancetype)actionWithTitle:(NSString *)title style:(UIAlertActionStyle)style handler:(void (^)(XLAlertAction * _Nonnull))handler{
     XLAlertAction *action = [[XLAlertAction alloc] init];
     action.title = title;
+    action.style = style;
+    action.handler = handler;
+    return action;
+}
+
++ (instancetype)actionWithAttributedTitle:(nullable NSAttributedString *)title style:(UIAlertActionStyle)style handler:(void (^ __nullable)(XLAlertAction *action))handler{
+    XLAlertAction *action = [[XLAlertAction alloc] init];
+    action.attrTitle = title;
     action.style = style;
     action.handler = handler;
     return action;

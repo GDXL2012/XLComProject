@@ -124,7 +124,7 @@ static XLImagePreviewManager *previewManager;
         _xlDowloadButton = [self createOpButtonWithImgName:@"bottom_bar_download_icon" title:nil];
         _xlDowloadButton.tag = XLPreviewOPButtonTagDownload;
         [self.xlDowloadButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(self.bottomOpBgView.mas_left).offset(XLVSpace);
+            make.left.mas_equalTo(self.bottomOpBgView.mas_left).offset(XLHMargin);
             make.centerY.mas_equalTo(self.bottomOpBgView);
         }];
         _xlDowloadButton.backgroundColor = [UIColor colorWithWhite:0.4f alpha:0.5f];
@@ -150,7 +150,7 @@ static XLImagePreviewManager *previewManager;
     if (!hidden) {
         [self.xlDeleteButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             if (_xlMoreButton && !_xlMoreButton.hidden) {
-                make.right.mas_equalTo(self.xlMoreButton.mas_left).offset(-XLVSpace);
+                make.right.mas_equalTo(self.xlMoreButton.mas_left).offset(-XLHMargin);
             } else {
                 make.right.mas_equalTo(self.bottomOpBgView).offset(-XLHMargin);
             }
@@ -165,9 +165,9 @@ static XLImagePreviewManager *previewManager;
     if (!hidden) {
         [self.xlEditButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             if (_xlDeleteButton && !_xlDeleteButton.hidden) {
-                make.right.mas_equalTo(self.xlDeleteButton.mas_left).offset(-XLVSpace);
+                make.right.mas_equalTo(self.xlDeleteButton.mas_left).offset(-XLHMargin);
             } else if(_xlMoreButton && !_xlMoreButton.hidden){
-                make.right.mas_equalTo(self.xlMoreButton.mas_left).offset(-XLVSpace);
+                make.right.mas_equalTo(self.xlMoreButton.mas_left).offset(-XLHMargin);
             } else {
                 make.right.mas_equalTo(self.bottomOpBgView).offset(-XLHMargin);
             }
