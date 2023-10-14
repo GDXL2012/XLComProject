@@ -104,6 +104,27 @@ NSCalendarUnit const XLUnitFlags = NSCalendarUnitSecond | NSCalendarUnitMinute |
     return date;
 }
 
+/**
+ 指定年月的某一天
+
+ @param month 月
+ @param year 年
+ @return 日期
+ */
++ (NSDate *)dateForDay:(NSInteger)day atMonth:(NSInteger)month inYear:(NSInteger)year{
+    NSDateComponents *components = [CurrentCalendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay) fromDate:[NSDate date]];
+    components.day = day;
+    components.month = month;
+    components.year = year;
+    NSDate *date = [CurrentCalendar dateFromComponents:components];
+    NSLocale * locale = [NSLocale autoupdatingCurrentLocale];
+    NSTimeZone * timeZone = [NSTimeZone systemTimeZone];
+//    //设置区域、时区
+    CurrentCalendar.locale = locale;
+    CurrentCalendar.timeZone = timeZone;
+    return date;
+}
+
 #pragma mark Comparing Dates
 
 - (BOOL)isEqualToDate:(NSDate *)date{

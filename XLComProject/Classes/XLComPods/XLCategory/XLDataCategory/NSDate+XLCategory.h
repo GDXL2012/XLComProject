@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 // 日历单例
-#define CurrentCalendar [NSCalendar currentCalendar]
+#define CurrentCalendar [NSCalendar autoupdatingCurrentCalendar]
 
 extern NSTimeInterval const XLDateMinute;   // 分钟
 extern NSTimeInterval const XLDateHour;     // 小时
@@ -45,6 +45,15 @@ NS_ASSUME_NONNULL_BEGIN
  @return 日期
  */
 + (NSDate *)dateForMonth:(NSInteger)month inYear:(NSInteger)year;
+
+/**
+ 指定年月的某一天
+
+ @param month 月
+ @param year 年
+ @return 日期
+ */
++ (NSDate *)dateForDay:(NSInteger)day atMonth:(NSInteger)month inYear:(NSInteger)year;
 // 时间间隔
 - (NSTimeInterval)timeIntervalSince1970InMilliSecond;
 

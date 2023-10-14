@@ -56,6 +56,7 @@ typedef NS_ENUM(NSInteger, XLPreviewOPButtonTag) {
 @property (nonatomic, strong) UICollectionViewFlowLayout *layout;
 
 @property (nonatomic, assign) NSInteger         currentIndex;
+@property (nonatomic, assign) NSInteger         fixOldIndex;
 @property (nonatomic, assign) NSInteger         willDisplayIndex;
 @property (nonatomic, assign) XLPreviewItemType previewItemType;
 
@@ -234,6 +235,8 @@ static XLImagePreviewManager *previewManager;
         _xlCountLabel = [[UILabel alloc] init];
         _xlCountLabel.font = XLFont(14.0f);
         _xlCountLabel.textColor = [UIColor whiteColor];
+        
+        _willDisplayIndex = -1;
     }
     return self;
 }
@@ -839,18 +842,20 @@ static XLImagePreviewManager *previewManager;
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     [(XLImagePreviewCell *)cell recoverPreviewView];
     _willDisplayIndex = indexPath.row;
-    
+    _fixOldIndex = self.currentIndex;
+    self.currentIndex = _willDisplayIndex;
     [self updateBottomStateForIndex:_willDisplayIndex];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     [(XLImagePreviewCell *)cell recoverPreviewView];
     if (indexPath.row == _willDisplayIndex) {
+        _willDisplayIndex = -1;
         /// 与将要显示的是同一个:说明又划回去，恢复状态
+        self.currentIndex = self.fixOldIndex;
         [self updateBottomStateForIndex:self.currentIndex];
-    } else {
-        self.currentIndex = self.willDisplayIndex;
     }
+    _willDisplayIndex = -1;
 }
 
 -(void)updateBottomStateForIndex:(NSInteger)index{
