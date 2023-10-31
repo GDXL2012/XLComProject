@@ -17,6 +17,7 @@
 @interface XLNavigationController ()
 /// 页面已加载
 @property(nonatomic, assign) BOOL viewHasLoad;
+@property(nonatomic, assign) BOOL viewHasAppear;
 
 @property(nonatomic, assign) BOOL hasPopViewController;
 @end
@@ -27,6 +28,7 @@
     self = [super init];
     if (self) {
         _showBarMetrics = YES;
+        _viewHasAppear = NO;
         _hasPopViewController = NO;
     }
     return self;
@@ -36,6 +38,7 @@
     self = [super initWithRootViewController:rootViewController];
     if (self) {
         _showBarMetrics = YES;
+        _viewHasAppear = NO;
     }
     return self;
 }
@@ -57,8 +60,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     _viewHasLoad = YES;
-    // Do any additional setup after loading the view.
-    [self configNavigationBarStyle];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    if(!self.viewHasAppear){
+        // 需要将导航栏风格配置移到此处，否则页面跳转，tableview滑动导航栏显示会出现异常
+        self.viewHasAppear = YES;
+        [self configNavigationBarStyle];
+    }
 }
 
 /// 设置导航栏分割线显示状态
