@@ -40,7 +40,8 @@ typedef NS_OPTIONS(NSInteger, XLImagePreviewOpItems) {
 /// 是否有长按手势：defaul YES
 -(BOOL)showLongPressOperationAtIndex:(NSInteger)index;
 /// 编辑图片：返回nil则不会弹出编辑页面
--(UIImage *)imageForEditAtIndex:(NSInteger)index;
+-(void)imageForEditAtIndex:(NSInteger)index
+                  complete:(void(^)(UIImage *_Nullable image, NSError *_Nullable error))complete;
 /// 原图大小
 -(CGFloat)orignialSizeOfRemoteImageAtIndexPath:(NSInteger)index;
 

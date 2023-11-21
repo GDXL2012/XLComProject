@@ -288,7 +288,7 @@
             rectTransform = CGAffineTransformIdentity;
     };
 
-    rect = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width * image.scale, rect.size.height * image.scale);
+    rect = CGRectMake(rect.origin.x * image.scale, rect.origin.y * image.scale, rect.size.width * image.scale, rect.size.height * image.scale);
     
     // adjust the transformation scale based on the image scale
     rectTransform = CGAffineTransformScale(rectTransform, image.scale, image.scale);
@@ -323,7 +323,8 @@
         // 高度需要剪切
         height = width / aspectRatio;
     }
-    UIGraphicsBeginImageContext(CGSizeMake(width, height));
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), YES, image.scale);
+//    UIGraphicsBeginImageContext(CGSizeMake(width, height));
 //    CGFloat scale = [UIScreen mainScreen].scale;
 //    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, scale);
     float dwidth = ((width - size.width) / 2.0f);
@@ -469,15 +470,19 @@
  @return 截屏图片
  */
 +(UIImage *)screenCaptureFromView:(UIView*)view fillRadius:(BOOL)fillRadius{
-    CGRect rect = view.frame;
+    CGRect rect = view.layer.bounds;
     // 1.开启上下文
-    UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
+    UIGraphicsBeginImageContextWithOptions(rect.size, YES, [UIScreen mainScreen].scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
     if(view.layer.cornerRadius > 0 && fillRadius){ // 有圆角，填充下背景颜色
         CGContextSetFillColorWithColor(context, view.backgroundColor.CGColor);
         CGContextAddRect(context, view.bounds);
         CGContextFillPath(context);
+    } else if(view.layer.cornerRadius > 0 && !fillRadius){
+        UIBezierPath *clipPath = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:view.layer.cornerRadius];
+        [clipPath addClip];
     }
+    
     // 2.将控制器view的layer渲染到上下文
     [view.layer renderInContext:context];
     // 3.取出图片
@@ -626,7 +631,8 @@
                        inRect:(CGRect)rect
                      withAttr:(NSDictionary *)attr{
     
-    UIGraphicsBeginImageContext(self.size);
+//    UIGraphicsBeginImageContext(self.size);
+    UIGraphicsBeginImageContextWithOptions(self.size, YES, [UIScreen mainScreen].scale);
     CGFloat width = self.size.width;
     CGFloat height = self.size.height;
     [self drawInRect:CGRectMake(0.0f, 0.0f, width, height)];

@@ -289,12 +289,15 @@ static XLImagePreviewManager *previewManager;
 -(void)editMenuForPreviewAtIndex:(NSInteger)index{
     /// 编辑按钮
     if (self.xlDelegate &&
-        [self.xlDelegate respondsToSelector:@selector(imageForEditAtIndex:)]) {
-        UIImage *image = [self.xlDelegate imageForEditAtIndex:self.currentIndex];
-        if (image) {
-            UIWindow *window = [UIApplication sharedApplication].delegate.window;
-            [XLImageEditView showSingImageEditView:image inView:window delegate:self];
-        }
+        [self.xlDelegate respondsToSelector:@selector(imageForEditAtIndex:complete:)]) {
+        XLWeakSelf
+        [self.xlDelegate imageForEditAtIndex:self.currentIndex complete:^(UIImage * _Nullable image, NSError * _Nullable error) {
+            if (image) {
+                XLStrongSelf
+                UIWindow *window = [UIApplication sharedApplication].delegate.window;
+                [XLImageEditView showSingImageEditView:image inView:window delegate:strongSelf];
+            }
+        }];
     }
 }
 
