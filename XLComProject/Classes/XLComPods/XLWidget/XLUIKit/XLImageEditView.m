@@ -473,7 +473,7 @@ NSInteger const kEditColorButtonPreTag = 1001;
         [self.xlImgMosaicTools updateImageView:self.imageView];
     }
 //    self.xlRotate = self.xlRotate + 90.0f;
-    self.cmPreviewImage = [self.cmPreviewImage xlRotateImageLeft];
+    self.cmPreviewImage = [self.cmPreviewImage xlRotateImageRight];
 }
 
 -(void)xlCancelCutButtonClick{

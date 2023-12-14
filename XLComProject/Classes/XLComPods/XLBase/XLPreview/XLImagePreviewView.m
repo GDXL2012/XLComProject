@@ -106,8 +106,10 @@
         /// 设置预览图片显示
         self.itemInfo.previewHasShow = previewHasShow;
         if (self.itemInfo.previewItemType == XLPreviewItemImage) {
+            [self.indicatorView stopAnimating];
             self.previewImageView.image = self.itemInfo.originalImage;
         } else if (self.itemInfo.previewItemType == XLPreviewItemImageView) {
+            [self.indicatorView stopAnimating];
             self.previewImageView.image = self.itemInfo.originalImage;
         } else if (self.itemInfo.previewItemType == XLPreviewItemSDImageView) {
             [self showPreviewSDImageView];
@@ -128,7 +130,9 @@
         if (delegate &&
             [delegate respondsToSelector:@selector(loadImageForImageView:withUrl:complete:)]) {
             XLWeakSelf
+            [self.indicatorView startAnimating];
             [delegate loadImageForImageView:self.previewImageView withUrl:path complete:^(UIImage * _Nonnull image, NSError * _Nonnull error) {
+                [weakSelf.indicatorView stopAnimating];
                 if (weakSelf && error == nil) {
                     if (error) {
                         weakSelf.previewImageView.image = weakSelf.itemInfo.originalImage;
@@ -182,6 +186,7 @@
     if (delegate &&
         [delegate respondsToSelector:@selector(loadImageForImageView:withUrl:complete:)]) {
         XLWeakSelf
+        [self.indicatorView startAnimating];
         [delegate loadImageForImageView:self.previewImageView withUrl:urlString complete:^(UIImage * _Nonnull image, NSError * _Nonnull error) {
             XLStrongSelf
             [strongSelf.indicatorView stopAnimating];

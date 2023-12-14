@@ -199,6 +199,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // degrees 需是90的倍数
 -(UIImage *)xlRotateImageWithDegrees:(NSInteger)degrees;
+-(UIImage *)xlRotateImageRight;
 -(UIImage *)xlRotateImageLeft;
 @end
 

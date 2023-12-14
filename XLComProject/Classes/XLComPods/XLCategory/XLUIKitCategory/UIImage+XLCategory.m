@@ -669,8 +669,14 @@
     return image;
 }
 
--(UIImage *)xlRotateImageLeft{
+-(UIImage *)xlRotateImageRight{
     UIImage *image = [UIImage imageWithCGImage:self.CGImage scale:1.0f orientation:UIImageOrientationRight];
+    image = [UIImage fixOrientationForImage:image];
+    return image;
+}
+
+- (UIImage *)xlRotateImageLeft{
+    UIImage *image = [UIImage imageWithCGImage:self.CGImage scale:1.0f orientation:UIImageOrientationLeft];
     image = [UIImage fixOrientationForImage:image];
     return image;
 }

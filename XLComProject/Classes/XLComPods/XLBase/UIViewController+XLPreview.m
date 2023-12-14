@@ -25,12 +25,14 @@
 #import "XLAdaptation.h"
 #import <SDWebImage/UIView+WebCache.h>
 #import "XLAlertView.h"
+#import "UIImage+XLCategory.h"
 
 typedef NS_ENUM(NSInteger, XLPreviewOPButtonTag) {
     XLPreviewOPButtonTagMore,
     XLPreviewOPButtonTagDel,
     XLPreviewOPButtonTagEdit,
-    XLPreviewOPButtonTagDownload
+    XLPreviewOPButtonTagDownload,
+    XLPreviewOPButtonTagRotate
 };
 
 /// 管理类：
@@ -49,6 +51,7 @@ typedef NS_ENUM(NSInteger, XLPreviewOPButtonTag) {
 @property (nonatomic, strong) UIButton          *xlEditButton;      /// 编辑按钮
 @property (nonatomic, strong) UIButton          *xlDeleteButton;    /// 删除按钮
 @property (nonatomic, strong) UIButton          *xlDowloadButton;   /// 下载按钮
+@property (nonatomic, strong) UIButton          *xlRotateButton;    /// 旋转按钮
 
 /// 可见区域View：用于图片预览销毁时判断动画执行，多张图片时有效，且为预览参数为ImageView类型
 @property (nonatomic, weak)   UIView            *visibleView;
@@ -85,6 +88,17 @@ static XLImagePreviewManager *previewManager;
     if (previewManager) {
         [previewManager hiddenPreview:nil];
     }
+}
+
+-(UIButton *)xlRotateButton{
+    if (_xlRotateButton == nil) {
+        _xlRotateButton = [self createOpButtonWithImgName:@"bottom_bar_rotate_icon" title:nil];
+        _xlRotateButton.tag = XLPreviewOPButtonTagRotate;
+        _xlRotateButton.backgroundColor = [UIColor colorWithWhite:0.4f alpha:0.5f];
+        _xlRotateButton.layer.cornerRadius = self.xlBottomItemWidth / 2.0f;
+        _xlRotateButton.layer.masksToBounds = YES;
+    }
+    return _xlRotateButton;
 }
 
 -(UIButton *)xlMoreButton{
@@ -273,6 +287,24 @@ static XLImagePreviewManager *previewManager;
         [self editMenuForPreviewAtIndex:self.currentIndex];
     } else if (button.tag == XLPreviewOPButtonTagDownload){
         [self dowloadForPreviewAtIndex:self.currentIndex];
+    } else if (button.tag == XLPreviewOPButtonTagRotate){
+        [self rotatePreviewImage];
+    }
+}
+
+-(void)rotatePreviewImage{ // 旋转图片
+    XLImagePreviewCell *cell = [self.xlCollectionView visibleCells].lastObject;
+    if(cell != nil){
+        UIImageView *previewView = cell.previewView.previewImageView;
+        UIImage *image = previewView.image;
+        if(image != nil){
+            image = [image xlRotateImageLeft];
+            if(image != nil){
+                [UIView animateWithDuration:0.35f animations:^{
+                    previewView.image = image;
+                }];
+            }
+        }
     }
 }
 
@@ -601,6 +633,12 @@ static XLImagePreviewManager *previewManager;
         } else {
             make.top.mas_equalTo(window.mas_top).offset(15.0f);
         }
+    }];
+    
+    [self.xlRotateButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(self.bottomOpBgView).offset(XLHMargin);
+        make.size.mas_equalTo(CGSizeMake(self.xlBottomItemWidth, self.xlBottomItemWidth));
+        make.centerY.mas_equalTo(self.bottomOpBgView);
     }];
 }
 
