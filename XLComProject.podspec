@@ -28,7 +28,7 @@ DES OF 【iOS 工程通用基类库.】
   s.source           = { :git => 'https://github.com/GDXL2012/XLComProject.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '11.0'
 
   s.source_files = 'XLComProject/Classes/**/*'
   
@@ -45,7 +45,7 @@ DES OF 【iOS 工程通用基类库.】
   s.dependency 'MBProgressHUD'
   s.dependency 'Masonry'
   s.dependency 'MJRefresh'
-  s.dependency 'IQKeyboardManager'
+  s.dependency 'IQKeyboardManager', '6.5.11'
   s.dependency 'Reachability', '~> 3.2'
   s.dependency 'IQKeyboardManager'
   s.dependency 'MJExtension'
