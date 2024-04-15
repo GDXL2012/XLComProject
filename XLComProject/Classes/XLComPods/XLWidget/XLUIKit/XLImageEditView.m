@@ -567,7 +567,7 @@ NSInteger const kEditColorButtonPreTag = 1001;
 
 -(void)cmInitEditColor{
     if (!_xlImgMosaicTools) {
-        _xlImgMosaicTools = [[XLImageMosaicTools alloc] initMosaictoolsWithImgView:self.imageView];
+        _xlImgMosaicTools = [[XLImageMosaicTools alloc] initMosaictoolsWithImgView:self.imageView forMosaic:YES];
         _xlImgMosaicTools.xlMosaicDelegate = self;
         [_xlImgMosaicTools xlBeganMosaic];
         

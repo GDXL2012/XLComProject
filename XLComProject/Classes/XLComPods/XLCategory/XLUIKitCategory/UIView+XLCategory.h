@@ -85,6 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 // 添加渐变色
 -(void)setGradientLayer:(UIColor*)startColor
                endColor:(UIColor*)endColor;
+-(void)updateGradientLayerFrame;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -22,11 +22,23 @@
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
         if (@available(iOS 15.0, *)) {
             /// 间隔过大问题修改
-            self.sectionHeaderTopPadding = 0;
+            if(self.style == UITableViewStyleGrouped){
+                // group类型时不能设置为0，否者会失效
+                self.sectionHeaderTopPadding = CGFLOAT_MIN;
+            } else {
+                self.sectionHeaderTopPadding = 0.0f;
+            }
         }
         if(XLAvailableiOS11) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
+        if(self.style == UITableViewStyleGrouped){
+            // group类型时不能设置为0，否者会失效
+            self.estimatedSectionHeaderHeight = CGFLOAT_MIN;
+        } else {
+            self.estimatedSectionHeaderHeight = 0.0f;
+        }
+        
     }
     return self;
 }
@@ -37,10 +49,21 @@
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
         if (@available(iOS 15.0, *)) {
             /// 间隔过大问题修改
-            self.sectionHeaderTopPadding = 0;
+            if(self.style == UITableViewStyleGrouped){
+                // group类型时不能设置为0，否者会失效
+                self.sectionHeaderTopPadding = CGFLOAT_MIN;
+            } else {
+                self.sectionHeaderTopPadding = 0.0f;
+            }
         }
         if(XLAvailableiOS11) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
+        if(self.style == UITableViewStyleGrouped){
+            // group类型时不能设置为0，否者会失效
+            self.estimatedSectionHeaderHeight = CGFLOAT_MIN;
+        } else {
+            self.estimatedSectionHeaderHeight = 0.0f;
         }
     }
     return self;
@@ -52,9 +75,16 @@
     _estimatedEnable = enable;
     if (!enable) {
         if(XLAvailableiOS11) {
-            self.estimatedRowHeight = 0;
-            self.estimatedSectionFooterHeight = 0;
-            self.estimatedSectionHeaderHeight = 0;
+            if(self.style == UITableViewStyleGrouped){
+                // group类型时不能设置为0，否者会失效
+                self.estimatedRowHeight = CGFLOAT_MIN;
+                self.estimatedSectionFooterHeight = CGFLOAT_MIN;
+                self.estimatedSectionHeaderHeight = CGFLOAT_MIN;
+            } else {
+                self.estimatedRowHeight = 0;
+                self.estimatedSectionFooterHeight = 0;
+                self.estimatedSectionHeaderHeight = 0;
+            }
         }
     }
 }

@@ -30,20 +30,36 @@
 @property (nonatomic, assign) BOOL          userInteractionEnabled;
 
 @property (nonatomic, strong) UIImage       *xlMosaicImage;
+@property (nonatomic, strong) UIImage       *xlFullMosaicImage; // 全马赛克图片
+@property (nonatomic, assign) BOOL forMosaic;
+@property (nonatomic, strong) CAShapeLayer *shapeLayer;
 @end
 
 @implementation XLImageMosaicTools
 
--(instancetype)initMosaictoolsWithImgView:(UIImageView *)imageView{
+-(instancetype)initMosaictoolsWithImgView:(UIImageView *)imageView forMosaic:(BOOL)mosaic{
     self = [super init];
     if (self) {
         _xlMosaicImgView = imageView;
+        
         _xlDosaicContentImgView = [[UIImageView alloc] init];
         _xlDosaicContentImgView.backgroundColor = [UIColor clearColor];
+        _xlDosaicContentImgView.contentMode = UIViewContentModeScaleAspectFit;
         [imageView addSubview:_xlDosaicContentImgView];
         [_xlDosaicContentImgView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.edges.mas_equalTo(imageView);
         }];
+        
+        _forMosaic = mosaic;
+        if(_forMosaic){
+            CIImage *ciImage = [CIImage imageWithCGImage:imageView.image.CGImage];
+            CIFilter *filter = [CIFilter filterWithName:@"CIPixellate"];
+            [filter setDefaults];
+            [filter setValue:ciImage forKey:kCIInputImageKey];
+            
+            UIImage *filterImage = [UIImage imageWithCIImage:[filter outputImage]];
+            _xlFullMosaicImage = filterImage;
+        }
         
         _xlMosaicPathArray = [NSMutableArray array];
         _xlOldMosaicPathArray = [NSMutableArray array];
@@ -168,6 +184,18 @@
     CGPoint draggingPosition = [gesture locationInView:gesture.view];
 
     if(gesture.state == UIGestureRecognizerStateBegan) {
+        if(self.forMosaic && self.shapeLayer == nil){
+            self.shapeLayer = [CAShapeLayer layer];
+            self.shapeLayer.strokeColor = [UIColor blueColor].CGColor;
+            self.shapeLayer.fillColor = nil;
+            CGFloat width = 3.0f * [UIScreen mainScreen].scale;
+            self.shapeLayer.lineWidth = width;
+            _xlDosaicContentImgView.image = self.xlFullMosaicImage;
+            _xlDosaicContentImgView.layer.mask = self.shapeLayer;
+            // 需设置成黑色，偶现不分马赛克位置是透明的
+            _xlDosaicContentImgView.backgroundColor = [UIColor blackColor];
+        }
+        
         // 初始化一个UIBezierPath对象, 把起始点存储到UIBezierPath对象中, 用来存储所有的轨迹点
         XLMosaicPath *path = [XLMosaicPath xlPathWithStartPoint:draggingPosition strokeWidth:self.xlStrokeWidth color:self.xlStrokeColor];
         [self.xlMosaicPathArray addObject:path];
@@ -190,6 +218,7 @@
     }
 }
 
+// TODO： 暂时没有用到的地方
 -(void)drawMosaicForCancel{
     if (self.xlOldMosaicPathArray.count > 0) {
         CGFloat scale = [UIScreen mainScreen].scale;
@@ -215,6 +244,26 @@
 }
 
 -(void)drawMosaicForAllPath{
+    if(self.forMosaic){
+        [self p_drawMosaicForAllPath];
+    } else {
+        [self p_graffitiForAllPath];
+    }
+}
+
+-(void)p_drawMosaicForAllPath{
+    
+    CGMutablePathRef mutablePath = CGPathCreateMutable();
+    
+    for (XLMosaicPath *path in self.xlMosaicPathArray) {
+//        [path drawPathInCurrentImageContext];
+        CGPathAddPath(mutablePath, nil, path.CGPath);
+    }
+    self.shapeLayer.path = mutablePath;
+}
+
+// 涂鸦
+-(void)p_graffitiForAllPath{
     @autoreleasepool {
         CGFloat scale = [UIScreen mainScreen].scale;
         CGSize size = self.xlMosaicImgView.frame.size;
@@ -244,7 +293,8 @@
             UIGraphicsBeginImageContextWithOptions(originalSize, NO, scale);
 //            [self.xlMosaicImgView.image drawAtPoint:CGPointZero];
             [self.xlMosaicImgView.image drawInRect:CGRectMake(0, 0, originalSize.width, originalSize.height)];
-            [self.xlDosaicContentImgView.image drawInRect:CGRectMake(0, 0, originalSize.width, originalSize.height)];
+
+            [self.xlDosaicContentImgView.layer renderInContext:UIGraphicsGetCurrentContext()];
             _xlMosaicImage = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
         }
@@ -275,7 +325,6 @@
     maosaicPath.lineJoinStyle = kCGLineJoinRound;
     
     [maosaicPath moveToPoint:startPoint];
-    
     
     CAShapeLayer *shapeLayer = [[CAShapeLayer alloc] init];
     shapeLayer.lineCap      = kCALineCapRound;

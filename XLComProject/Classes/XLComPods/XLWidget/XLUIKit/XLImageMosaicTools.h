@@ -43,8 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 图片马赛克
 @interface XLImageMosaicTools : NSObject
 @property (nonatomic, weak) id<XLImageMosaicDelegate> xlMosaicDelegate;
-
--(instancetype)initMosaictoolsWithImgView:(UIImageView *)imageView;
+// 马赛克：NO 涂鸦
+-(instancetype)initMosaictoolsWithImgView:(UIImageView *)imageView forMosaic:(BOOL)mosaic;
 -(void)updateImageView:(UIImageView *)imageView;
 #pragma mark - Mosaic Began/End
 /// 开始马赛克
@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 开始马赛克
 -(void)xlEndMosaic;
 
-/// 设置画笔颜色
+/// 设置画笔颜色：涂鸦时有效
 -(void)setMosaicStrokeColor:(UIColor *)color width:(CGFloat)width;
 
 #pragma mark - Operation Revoke/Resume
