@@ -67,7 +67,7 @@ typedef NS_ENUM(NSInteger, XLCutWindowMoveType) {
 @property (nonatomic, strong) NSArray            *editColorArray;
 
 @property (nonatomic, assign) XLImageEditViewStyle imageEditViewStyle;
-@property (nonatomic, assign) XLImageEditViewStyle editeOpType;
+@property (nonatomic, assign) XLImageEditOpType editeOpType;
 @property (nonatomic, assign) XLImageEditViewStyle cutWindowMoveType;
 @property (nonatomic, assign) CGPoint xlStartMovePoint;  // 原始位置
 @property (nonatomic, assign) CGFloat xlRotate; // 旋转角度
