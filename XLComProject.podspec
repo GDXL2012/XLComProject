@@ -45,8 +45,8 @@ DES OF 【iOS 工程通用基类库.】
   s.dependency 'MBProgressHUD'
   s.dependency 'Masonry'
   s.dependency 'MJRefresh'
-  s.dependency 'IQKeyboardManager', '6.5.11'
-  s.dependency 'Reachability', '~> 3.2'
+  s.dependency 'IQKeyboardManager'
+  s.dependency 'Reachability'
   s.dependency 'IQKeyboardManager'
   s.dependency 'MJExtension'
 end
