@@ -39,7 +39,7 @@ static CGFloat CMFileSizeUnitTransformG  = 1024.0f * 1024.0f * 1024.0f;
 /// @param error <#error description#>
 -(BOOL)deleteFileIfExit:(NSString *)filePath error:(NSError * _Nullable)error{
     if ([XLFileTools fileIsExit:filePath]) {
-        [XLFileTools deleteFile:filePath error:error];
+        return [XLFileTools deleteFile:filePath error:error];
     } else {
         return YES;
     }
