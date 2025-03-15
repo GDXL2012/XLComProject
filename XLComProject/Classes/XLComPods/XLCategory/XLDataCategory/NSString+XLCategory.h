@@ -13,6 +13,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (XLCategory)
+// 字符串加密
+-(NSString *)sha1String;
+
 /// 返回安全字符：
 /// @param string <#string description#>
 +(NSString *)safeString:(NSString *)string;

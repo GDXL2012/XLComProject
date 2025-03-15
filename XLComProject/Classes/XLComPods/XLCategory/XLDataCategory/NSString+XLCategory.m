@@ -7,7 +7,23 @@
 //
 
 #import "NSString+XLCategory.h"
+#import <CommonCrypto/CommonCrypto.h>
 @implementation NSString (XLCategory)
+
+// 字符串加密
+-(NSString *)sha1String{
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    
+    uint8_t digest[CC_SHA1_DIGEST_LENGTH];
+    memset(digest, 0x0, CC_SHA1_DIGEST_LENGTH);
+    
+    CC_SHA1(data.bytes, (CC_LONG)data.length, digest);
+    NSMutableString *output = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH * sizeof(unsigned char)];
+    for (int index = 0; index < CC_SHA1_DIGEST_LENGTH; index ++) {
+        [output appendFormat:@"%02x", digest[index]];
+    }
+    return output;
+}
 
 /// 返回安全字符：
 /// @param string <#string description#>
